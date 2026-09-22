@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
+import { applyTextureQuality } from './texture-quality';
 
 /**
  * The MacBook on the desk, loaded from `public/models/macbook.glb`.
@@ -61,6 +62,7 @@ export const LAPTOP_NORMAL = SCREEN_NORMAL_LOCAL.clone()
 export function Laptop({ still = false }: { still?: boolean }) {
   const glow = useRef<THREE.PointLight>(null);
   const { scene } = useGLTF(MODEL_URL);
+  const maxAnisotropy = useThree((s) => s.gl.capabilities.getMaxAnisotropy());
 
   // Clone so the cached GLTF is never mutated by material tweaks below.
   const model = useMemo(() => scene.clone(true), [scene]);
@@ -78,7 +80,8 @@ export function Laptop({ still = false }: { still?: boolean }) {
       if (material.emissiveIntensity > 0 && material.emissiveMap) return;
       material.envMapIntensity = 0.7;
     });
-  }, [model]);
+    applyTextureQuality(model, maxAnisotropy);
+  }, [model, maxAnisotropy]);
 
   useFrame((state) => {
     if (still || !glow.current) return;
