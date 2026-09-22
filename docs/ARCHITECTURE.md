@@ -139,7 +139,54 @@ rather than instanced geometry.
 
 ---
 
-## 9. Things deliberately left out
+## 9. Posing the character
+
+Limb placement goes through `<Limb from={...} to={...}>`
+(`components/three/limb.tsx`), which takes two joint positions and solves the
+capsule's midpoint, length and rotation.
+
+The alternative — writing Euler angles directly — does not converge. Every
+adjustment to a shoulder invalidates the elbow below it, so each tweak costs a
+re-derivation of everything downstream. With a solver the pose is a list of
+joint coordinates at the top of `avatar.tsx`, readable as a skeleton and
+editable one coordinate at a time.
+
+The derivation is in the file's header comment. The short version: three.js
+applies Euler order `XYZ` as `Rx·Ry·Rz`, so with no Y term a capsule's local +Y
+maps to `(−sin z, cos z·cos x, cos z·sin x)`, which inverts to
+`z = asin(−d.x)`, `x = atan2(d.z, d.y)`.
+
+Two failure modes this rules out:
+
+- **Capsule axis.** `CapsuleGeometry`'s long axis is +Y, so anything meant to
+  lie horizontally — an eyebrow, a lash line — needs a quarter turn about Z.
+  Without it, brows stand upright in the eye socket.
+- **Cap overshoot.** The geometry's second argument is the *cylinder* height,
+  not the total length, so the hemispherical caps have to be subtracted from
+  the joint distance or every limb overshoots by one diameter.
+
+A related rule for the face: the skull's z semi-axis is 0.285, and at the eyes'
+x offset the surface falls to about 0.269. Any feature placed shallower than
+that is swallowed by the head. Cheek geometry was tried and removed for exactly
+this reason — the spheres sat proud of the eye plane and buried the eyes. In
+the reference image the cheeks are lighting, not shape.
+
+---
+
+## 10. Derived constants over remembered ones
+
+`LAPTOP_SCREEN` — the point the scroll cinematic flies into — was originally a
+hand-computed literal. It silently drifted by 0.018 units the first time the lid
+geometry changed, which at the final camera distance of 0.2 is roughly 9% off
+centre, and nothing failed loudly.
+
+It is now composed from the same transforms three.js applies
+(`LAPTOP_POSITION → LID_OFFSET/LID_TILT_X → SCREEN_OFFSET`), and the JSX reads
+from those same constants. Move the laptop and the camera target moves with it.
+
+---
+
+## 11. Things deliberately left out
 
 **GSAP.** See the README note. The scroll cinematic needs a damped camera follow
 inside `useFrame`; a second animation clock would fight it for the same camera.

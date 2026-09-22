@@ -51,7 +51,7 @@ export default function Scene() {
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.15,
       }}
-      camera={{ position: [0.05, 1.55, 4.6], fov: 38, near: 0.05, far: 60 }}
+      camera={{ position: [0.05, 1.52, 4.95], fov: 38, near: 0.05, far: 60 }}
       // Auto-degrades DPR if the frame budget slips, rather than dropping frames.
       performance={{ min: 0.5 }}
       onCreated={({ gl, scene }) => {

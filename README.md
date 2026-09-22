@@ -186,6 +186,7 @@ often than the browser paints.
 | `avatar.tsx` | The character — geometry + three idle behaviours |
 | `office.tsx` | Desk, laptop, chair, window wall, city, and all lighting |
 | `camera-rig.tsx` | The scroll-driven camera move |
+| `limb.tsx` | Solves a capsule's transform from two joint positions |
 
 Three decisions worth calling out:
 
@@ -196,10 +197,12 @@ let the idle animation be driven directly rather than baked. Proportions are
 deliberately non-realistic — an oversized head on a compact body is the
 stylisation lever.
 
-**Limbs are solved, not eyeballed.** Each arm and leg segment is a capsule
-placed at the midpoint of a joint→joint vector and rotated so its local +Y
-aligns with that vector. Posing capsules by adjusting Euler angles until they
-look right never converges; solving the two angles takes a minute and is exact.
+**Limbs are solved, not eyeballed.** `<Limb from={...} to={...}>` takes two
+joint positions and solves the capsule's midpoint, length and rotation, so the
+pose reads as a skeleton at the top of `avatar.tsx` rather than a list of Euler
+angles. Posing by hand does not converge — every shoulder tweak invalidates the
+elbow below it. See `docs/ARCHITECTURE.md` §9 for the derivation and the two
+failure modes it rules out.
 
 **Damping is exponential, never `delta * rate`.** `lerp(a, b, delta * 28)` looks
 correct and is a bug: `delta * rate` is an interpolation *factor*, not a rate, so

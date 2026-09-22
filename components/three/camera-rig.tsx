@@ -18,16 +18,19 @@ import { LAPTOP_NORMAL, LAPTOP_SCREEN } from './office';
  * Every frame damps toward the target, so a fast scroll still resolves smoothly.
  */
 
-/** Framing target for the opening shot: just below the eyeline, so the head
- *  sits high in frame and the body fills the lower half. */
-const SUBJECT = new THREE.Vector3(0.62, 1.3, 0.3);
+/** Framing target for the opening shot.
+ *  Sits below the eyeline so the head reads high in frame, but low enough that
+ *  the sneakers clear the bottom edge — the feet are nearer the camera than
+ *  the torso, so they leave the frustum sooner than the maths on the torso
+ *  depth suggests. */
+const SUBJECT = new THREE.Vector3(0.62, 1.18, 0.3);
 
 /** Final camera position: just off the screen surface, along its normal. */
 const SCREEN_EYE = LAPTOP_SCREEN.clone().addScaledVector(LAPTOP_NORMAL, 0.2);
 
 const PATH = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(0.05, 1.55, 4.6), // establishing wide
-  new THREE.Vector3(0.25, 1.5, 3.5), // push in
+  new THREE.Vector3(0.05, 1.52, 4.95), // establishing wide
+  new THREE.Vector3(0.25, 1.48, 3.6), // push in
   new THREE.Vector3(0.75, 1.4, 2.5), // begin the swing right
   new THREE.Vector3(1.45, 1.25, 1.55), // over the desk
   new THREE.Vector3(1.95, 1.12, 0.55), // approaching the lid
