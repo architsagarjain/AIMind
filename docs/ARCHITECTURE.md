@@ -125,7 +125,10 @@ for no benefit.
 | Lever | Effect |
 | --- | --- |
 | `next/dynamic` on the scene | three + R3F + drei stay out of the initial bundle |
-| `useCanRender3D()` gate | The 3D chunk is never fetched on a device that would stutter |
+| `useCanRender3D()` gate | Neither the 3D chunk nor the models are fetched on a device that would stutter |
+| Models repacked, not shipped raw | 15.7MB of source exports serve as 4.9MB |
+| `KHR_mesh_quantization`, not Draco | No wasm decoder fetched at runtime |
+| `immutable` on `/models/*` | Both GLBs are paid for once |
 | `dpr={[1, 1.75]}` | Caps fragment cost; above ~1.75 the difference is invisible |
 | `performance={{ min: 0.5 }}` | R3F degrades resolution instead of dropping frames |
 | Closed windows unmount | The tree holds only what is on screen |
@@ -133,89 +136,187 @@ for no benefit.
 | rAF-coalesced scroll | One update per paint, not per event |
 | No postprocessing | Bloom is emissive materials + additive points + a CSS vignette |
 
-Polygon counts are kept low deliberately: the character is ~40 primitives, the
-office ~60, and the city skyline is a single `Points` cloud of 1,100 vertices
-rather than instanced geometry.
+The two loaded models dominate the 3D budget: 38k vertices for the character
+and 91k for the laptop. Everything hand-built — desk, chair, window wall — stays
+deliberately cheap, and the city skyline is a single `Points` cloud of 1,100
+vertices rather than instanced geometry.
+
+Neither GLB touches the initial bundle. First-load JS for `/` is 179KB; the
+models arrive afterwards, in parallel with the room rendering, and only on
+devices that passed the capability probe.
 
 ---
 
 ## 9. The character model
 
-`components/three/avatar-model.tsx` loads `public/models/archit.glb`.
+`components/three/avatar-model.tsx` loads `public/models/archit.glb`, which is
+**rigged by `scripts/rig-character.mjs`** — the source export carries no
+skeleton of its own.
 
-### What the file supports
+### Why this model could be rigged and the previous one could not
 
-The supplied model is a **single static mesh**: no skin, no skeleton, no
-animations, no morph targets. That is not a defect — it is what a photogrammetry
-or generative pipeline produces — but it rules out three things:
+An earlier export stood with hands in pockets and arms flush against the torso.
+No weight solver can separate what was scanned as one surface: bending an elbow
+dragged the jacket with it. The replacement is a relaxed A-pose, and that is
+measurable rather than a matter of taste. Slicing the mesh horizontally and
+clustering vertices along X gives:
 
-| Wanted | Needs | Present? |
-| --- | --- | --- |
-| Sitting in the chair | A rig, to bend the legs | No |
-| Blinking | `eyeBlink*` morph targets | No |
-| Head turning independently | A head or neck bone | No |
-
-So the idle animates the **root**, not parts: a breath that scales the figure a
-fraction, a slow weight shift, and a gentle turn toward the pointer. Applied to
-the whole figure that reads as presence. Applied to a limb of an unrigged mesh
-it would read as broken.
-
-The hero composition changed to match. The earlier layout had the subject seated
-at the desk; a standing figure cannot be posed into that, so the camera now
-frames him standing beside the desk with the laptop to his right.
-
-### Swapping in a rigged model
-
-The wrapper is the seam. Keep `AvatarModel`, and in `useFrame` drive bones and
-morph targets instead of the root transform:
-
-```ts
-// blink, if the model carries ARKit-style morph targets
-const dict = mesh.morphTargetDictionary;
-mesh.morphTargetInfluences[dict.eyeBlinkLeft] = blink;
-
-// head tracking, if there is a head bone
-headBone.rotation.y = THREE.MathUtils.lerp(headBone.rotation.y, pointer.x * 0.3, k);
+```
+ y        clusters  spans
+ -0.79       2      [-0.221,-0.092] [0.088,0.218]                   legs
+ -0.20       1      [-0.204, 0.200]                                 jacket hem
+ -0.08       3      [-0.414,-0.332] [-0.229,0.225] [0.328,0.410]    arm | torso | arm
+  0.31       2      arms beginning to merge at the armpit
+  0.70       1      [-0.068, 0.064]                                 neck, narrowest slice
 ```
 
-`FOOT_OFFSET` and `SCALE` are the only placement constants; both are derived
-from the mesh bounds and would need re-measuring for a new file.
+Three distinct clusters from y=-0.165 to y=+0.309 is the air gap a solver needs.
+
+That same pass supplies the joint positions rather than assuming proportions:
+the crotch where the leg clusters merge, the armpit where the arm clusters
+merge, the neck at the narrowest slice, the head top from the bounding box.
+
+### Skinning method
+
+Bone-envelope weighting across 19 bones. For each vertex the distance to each
+bone's segment is mapped through a compact falloff `(1 - (d/r)²)²`; the best
+four influences are kept and normalised.
+
+Envelopes rather than raw inverse distance, because inverse distance lets a
+shoulder vertex pick up the far arm. Two further corrections matter:
+
+- **Limb sidedness.** Left- and right-arm envelopes still overlap across the
+  chest, so limb bones reject vertices on the opposite side of the body
+  outright. Cheaper and safer than shrinking radii until they happen not to
+  overlap.
+- **The head/neck blend is special-cased.** It is the one joint that has to
+  look right, so its weight is a `smoothstep` up the neck rather than a
+  distance falloff — a vertical gradient reads as a head turning, where a
+  spherical one shears the jaw.
+
+### What the rig supports
+
+Verified by posing each joint and rendering:
+
+| | Result |
+| --- | --- |
+| Head + neck turn | Clean to ~30°; no shearing at jaw or collar |
+| Arms raised to ~70° | Clean; the jacket follows the shoulder |
+| Spine lean, chest breath | Clean |
+| **Sitting (hips and knees toward 90°)** | **Pinches at both joints** |
+
+Sitting is not viable, so the figure stands. Envelope weights have no notion of
+how tailored fabric folds; at large bends the trouser cross-section collapses.
+That needs corrective shape keys, or a model authored seated.
+
+Blinking is also out of reach: the eyes are painted into the albedo texture, so
+there is no eyelid geometry to drive and no morph targets to blend.
+
+### The rest pose is not the shipped pose
+
+The A-pose spread is what makes the mesh riggable, but it reads as a scanning
+pose rather than a person standing. Because there is now a skeleton, `REST` in
+`avatar-model.tsx` rotates the upper arms down and breaks the elbows slightly at
+bind time. This is the payoff a static mesh could not offer: the pose the model
+ships in no longer has to be the pose on screen.
+
+The idle sway **adds** to those rest rotations rather than assigning over them.
+Assigning would snap the arms back out to the scan pose every frame — the same
+class of mistake as the placement bug below.
+
+### Cloning
+
+`SkeletonUtils.clone`, not `Object3D.clone`. The latter copies a `SkinnedMesh`
+but leaves it bound to the *original* skeleton, so every instance would deform
+in lockstep with whichever one moved last.
+
+`frustumCulled` is off on the skinned mesh: its bounds move with the pose, and
+culling against the bind-pose box pops the figure out of frame mid-turn.
 
 ### One bug worth remembering
 
-The breath animation originally wrote `scale` and `position.y` on the same group
-that carried the scale-to-height and foot-offset transform. Assigning those
-properties **overwrites** the placement rather than adding to it, so the figure
-sank 0.9 units into the floor and only the head and torso showed above it.
+The breath animation originally wrote `scale` and `position.y` on the same
+group that carried the scale-to-height and foot-offset transform. Assigning
+those properties **overwrites** the placement rather than adding to it, so the
+figure sank 0.9 units into the floor with only the head and torso above it.
 
-The fix is structural, not arithmetic: the animated group is now a separate
-parent of the static placement group, so the breath is a delta on top of the
-layout rather than a replacement for it. Any transform that is both laid out and
-animated needs that split.
+The fix is structural, not arithmetic: anything both laid out and animated needs
+the two split across separate groups.
 
-### Texture repacking
+### Sharpness
 
-The source export was **4.21MB**, of which ~3MB was three 2048² JPEGs (albedo,
-metallic-roughness, normal). At hero size the figure is around 700px tall, so
-2048² buys nothing.
+Three levers, all applied:
 
-`scripts/optimize-model.mjs` resizes the embedded images and rebuilds the
-container — relaying out every bufferView with the 4-byte alignment accessors
-require, and rebuilding the JSON and BIN chunks with their own padding:
+- **Textures at 2048²**, up from 1024². The head takes only a small slice of UV
+  space — at 1024² the face had roughly 350 texels across something that renders
+  240px at 2× DPR, and looked soft. WebP keeps all three maps under 0.5MB even
+  at 2048².
+- **Anisotropic filtering** (`components/three/texture-quality.ts`), capped at
+  8. Without it any surface at a glancing angle is sampled with a heavy mip bias
+  and goes muddy. Fixed-function on the GPU, so effectively free. Capped rather
+  than taking the device maximum: past 8 there is nothing visible at this scale,
+  and some mobile GPUs report 16 while charging for it.
+- **Vertex quantization**, to pay for what the textures cost: 5.62MB →
+  **1.98MB**, with the head turn rendering identically before and after.
 
-```bash
-node scripts/optimize-model.mjs <source.glb> public/models/archit.glb 1024
-```
+Still available if more is wanted: an environment map. `envMapIntensity` is set
+on the materials but no environment exists in the scene, so image-based lighting
+currently contributes nothing.
 
-Result: **1.44MB**, a 66% reduction, with no visible loss. The normal map keeps
-higher JPEG quality than the colour maps because normals show compression
-artefacts as shading noise.
+---
 
-Re-run it whenever the source model is replaced. Do not commit a raw export
-into `public/` — a 4MB hero asset undoes the code-splitting the rest of the
-scene depends on.
+## 10. The laptop model
 
-## 10. Derived constants over remembered ones
+`components/three/laptop.tsx` loads `public/models/macbook.glb`. It replaced a
+procedural laptop built from boxes.
+
+### Preparation
+
+The source export is ~10MB: roughly 7MB of float32 geometry across 121k vertices
+and 2.8MB of PNG textures. `scripts/optimize-laptop.mjs` brings it to **2.90MB
+(-71%)** by welding, pruning, compressing textures to WebP at 1024², and
+quantizing vertex attributes.
+
+**Quantization rather than Draco** is deliberate. Draco needs a ~200KB wasm
+decoder fetched at runtime — drei defaults to a Google CDN, an external
+dependency on every page load. `KHR_mesh_quantization` is decoded natively by
+three with no decoder at all and gets most of the saving.
+
+Geometry stays at 91k vertices. Simplification would cut further, but the
+keyboard and port detail is exactly what sells the model during the dive, when
+the deck fills the viewport. The file is lazy-loaded behind the
+device-capability gate and served `immutable`, so the cost is paid once by
+visitors who can actually use it.
+
+### The screen
+
+The stock model ships a macOS wallpaper at `emissiveStrength` 8. That surface is
+the cinematic's destination, so the build swaps it for an ARCHIT.OS desktop
+generated by `scripts/make-screen-texture.mjs` — the OS the visitor is about to
+land in.
+
+Baked into the GLB rather than drawn at runtime: the quad already has UVs, so a
+swapped image maps correctly with no extra geometry, no canvas texture upload
+and no per-frame cost. The source PNG lives in `assets/`, not `public/` — it is
+an input to the build, not something the site serves.
+
+Two fixes were needed, both visible only once the camera arrived:
+
+- **The screen UVs run bottom-up relative to the image.** Unflipped, every glyph
+  renders upside down while the reading order stays correct (`Projects` →
+  `bɿojɘcƚƨ`) and the menu bar lands along the bottom edge. That signature is
+  how you tell a flip from a rotation.
+- **The panel shipped as metal 0.9 / roughness 0.1** — a mirror. Against the
+  screen spill light that is two blown specular blobs across the UI at exactly
+  the moment it fills the frame. An emissive display should not be reflective,
+  so the bake forces it matte.
+
+The spill light is also parked well forward of the panel; closer in, its own
+reflection washes the UI.
+
+---
+
+## 11. Derived constants over remembered ones
 
 `LAPTOP_SCREEN` — the point the scroll cinematic flies into — was originally a
 hand-computed literal. It silently drifted by 0.018 units the first time the lid

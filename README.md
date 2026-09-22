@@ -132,7 +132,7 @@ to start persisting conversations. Neither is required to ship.
 ├── components/
 │   ├── experience-shell.tsx    # orchestrates hero → dive → boot → desktop
 │   ├── hero/                   # nav, hero copy, scroll cue, boot sequence
-│   ├── three/                  # scene, avatar, office, camera rig, fallback
+│   ├── three/                  # scene, avatar, laptop, office, camera rig
 │   ├── desktop/                # menu bar, folders, dock, window chrome
 │   ├── windows/                # the five window bodies
 │   ├── chat/                   # chat UI + a tiny markdown renderer
@@ -146,24 +146,19 @@ to start persisting conversations. Neither is required to ship.
 │
 ├── lib/
 │   ├── ai/                     # system prompt, knowledge base, fallback, rate limit
-│   ├── scripts/                    # build-time asset prep, not runtime
-│   ├── optimize-model.mjs      # repacks the character GLB
-│   ├── optimize-laptop.mjs     # repacks the MacBook + bakes the screen
-│   └── make-screen-texture.mjs # renders the ARCHIT.OS screen PNG
-│
-├── assets/screen.png           # build input, deliberately not in public/
-│
-├── supabase/               # browser client, admin client, queries
+│   ├── supabase/               # browser client, admin client, queries
 │   ├── store/                  # experience + windows (zustand)
 │   ├── hooks/                  # chat, preferences, telemetry
 │   └── utils.ts
 │
-├── scripts/                    # build-time asset prep, not runtime
-│   ├── optimize-model.mjs      # repacks the character GLB
-│   ├── optimize-laptop.mjs     # repacks the MacBook + bakes the screen
+├── scripts/                    # build-time asset prep, never run at runtime
+│   ├── rig-character.mjs       # fits a skeleton + solves skin weights
+│   ├── optimize-laptop.mjs     # repacks the MacBook + bakes its screen
 │   └── make-screen-texture.mjs # renders the ARCHIT.OS screen PNG
 │
 ├── assets/screen.png           # build input, deliberately not in public/
+│
+├── public/models/              # archit.glb (rigged), macbook.glb
 │
 ├── supabase/
 │   ├── migrations/0001_init.sql
@@ -192,28 +187,34 @@ often than the browser paints.
 
 ### The 3D scene
 
-`components/three/` is four files:
+`components/three/` is six files:
 
 | File | Role |
 | --- | --- |
 | `scene.tsx` | The `<Canvas>`: DPR cap, tone mapping, fog, perf guard |
-| `avatar.tsx` | The character — geometry + three idle behaviours |
-| `office.tsx` | Desk, laptop, chair, window wall, city, and all lighting |
+| `avatar-model.tsx` | Loads the rigged character; drives its bones |
+| `laptop.tsx` | Loads the MacBook; owns the camera's dive target |
+| `office.tsx` | Desk, chair, window wall, city, and all lighting |
 | `camera-rig.tsx` | The scroll-driven camera move |
-| `limb.tsx` | Solves a capsule's transform from two joint positions |
+| `texture-quality.ts` | Anisotropic filtering for loaded models |
 
 Three decisions worth calling out:
 
-**The character is a supplied GLB, not procedural.** An earlier build modelled
-the figure from primitives; it was replaced once a real scan was available. The
-file is a single static mesh — no skin, no skeleton, no animations, no morph
-targets — which rules out sitting, blinking and independent head turn. The idle
-therefore moves the whole figure: a breath, a slow weight shift, and a gentle
-turn toward the pointer. See `docs/ARCHITECTURE.md` §9.
+**The character is a supplied GLB, rigged here.** The scan ships as a single
+static mesh with no skeleton, so `scripts/rig-character.mjs` fits a 19-bone
+humanoid skeleton to it and solves skin weights. The head then turns toward the
+cursor on its own neck, the chest breathes, and the arms sway.
+
+That is only possible because the export is a relaxed A-pose: slicing the mesh
+horizontally shows three distinct vertex clusters (arm / torso / arm) through
+the upper body, which is the air gap a weight solver needs. An earlier export
+with hands in pockets could not be rigged at all. Sitting is still not viable —
+envelope weights pinch tailored trousers at hip and knee — so the figure stands.
+See `docs/ARCHITECTURE.md` §9.
 
 **Models are repacked, not shipped as exported.** The character went from
-4.21MB to **1.44MB** (textures downscaled to 1024²); the MacBook from 10.11MB to
-**2.90MB** (welded, WebP textures, vertex quantization — no Draco, so no wasm
+5.62MB to **1.98MB** (2048² WebP textures, vertex quantization); the MacBook
+from 10.11MB to **2.90MB** (welded, WebP textures, vertex quantization — no Draco, so no wasm
 decoder is fetched at runtime). Both scripts live in `scripts/`; see
 `docs/ARCHITECTURE.md` §9 and §10.
 
@@ -382,7 +383,7 @@ they cannot drift apart.
   frames.
 - Scroll handling is rAF-coalesced; drag/resize bypass React entirely during the
   gesture.
-- The two models (1.44MB + 2.90MB) are fetched only after the capability check
+- The two models (1.98MB + 2.90MB) are fetched only after the capability check
   passes, in parallel with the room rendering, and served `immutable` for a
   year. They are never requested on a device that would stutter on them.
 - Fonts via `next/font` (self-hosted, `display: swap`, no layout shift).
