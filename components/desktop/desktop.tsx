@@ -59,24 +59,25 @@ export function Desktop({ onExit }: { onExit: () => void }) {
       initial={{ opacity: 0, scale: 1.04 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-0 z-500 overflow-hidden bg-void"
+      className="os-light fixed inset-0 z-500 overflow-hidden bg-void"
     >
       {/* ------------------------------------------------------------ wallpaper */}
+      {/* A macOS-style desktop: a light gradient with soft colour pooling,
+          rather than the near-black used by the hero. The hero is a night
+          office; this is the laptop screen you just flew into. */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_28%_18%,#0f1c38_0%,#050816_55%)]" />
-        <div className="bloom top-[-14%] left-[8%] h-[46rem] w-[46rem] animate-[breathe_9s_ease-in-out_infinite]" />
+        <div className="absolute inset-0 bg-[linear-gradient(160deg,#dfe9f7_0%,#eef1f8_38%,#f6f2f7_70%,#e9eef9_100%)]" />
         <div
-          className="bloom right-[4%] bottom-[-18%] h-[34rem] w-[34rem]"
-          style={{ background: 'radial-gradient(circle,#1d9bf033 0%,transparent 70%)' }}
+          className="absolute -top-[18%] -left-[6%] h-[46rem] w-[46rem] rounded-full blur-[110px]"
+          style={{ background: 'radial-gradient(circle,#9cc4f288 0%,transparent 70%)' }}
         />
-        {/* Faint grid, the Linear/Arc texture cue */}
         <div
-          className="absolute inset-0 opacity-[0.045]"
-          style={{
-            backgroundImage:
-              'linear-gradient(#6ef2ff 1px,transparent 1px),linear-gradient(90deg,#6ef2ff 1px,transparent 1px)',
-            backgroundSize: '72px 72px',
-          }}
+          className="absolute -right-[10%] bottom-[-22%] h-[40rem] w-[40rem] rounded-full blur-[120px]"
+          style={{ background: 'radial-gradient(circle,#c9b6ee7a 0%,transparent 70%)' }}
+        />
+        <div
+          className="absolute top-[22%] right-[18%] h-[26rem] w-[26rem] rounded-full blur-[110px]"
+          style={{ background: 'radial-gradient(circle,#a8e5e57a 0%,transparent 70%)' }}
         />
       </div>
 
@@ -85,10 +86,10 @@ export function Desktop({ onExit }: { onExit: () => void }) {
 
       {/* Wallpaper wordmark */}
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-        <p className="font-display text-[clamp(3rem,12vw,9rem)] leading-none font-extrabold tracking-tight text-white/[0.025]">
+        <p className="font-display text-[clamp(3rem,12vw,9rem)] leading-none font-extrabold tracking-tight text-[#0b1a33]/[0.055]">
           ARCHIT.AI
         </p>
-        <p className="mt-4 text-[10px] font-semibold tracking-[0.34em] text-white/10 uppercase">
+        <p className="mt-4 text-[10px] font-semibold tracking-[0.34em] text-[#0b1a33]/20 uppercase">
           {profile.altTagline}
         </p>
       </div>

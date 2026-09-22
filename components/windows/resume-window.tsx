@@ -41,7 +41,7 @@ export function ResumeWindow() {
             </a>
             <a
               href={`mailto:${profile.links.email}`}
-              className="inline-flex h-11 items-center gap-2 rounded-full border border-hairline-strong bg-white/5 px-5 text-[11px] font-bold tracking-[0.14em] text-ink uppercase transition-all duration-300 hover:border-accent/40"
+              className="inline-flex h-11 items-center gap-2 rounded-full border border-hairline-strong surface-2 px-5 text-[11px] font-bold tracking-[0.14em] text-ink uppercase transition-all duration-300 hover:border-accent/40"
             >
               <Mail className="h-4 w-4" />
               Get In Touch
@@ -75,7 +75,7 @@ export function ResumeWindow() {
               <ul className="mt-3 space-y-1.5">
                 {role.bullets.map((bullet, bi) => (
                   <li key={bi} className="flex gap-2.5 text-[13px] leading-relaxed text-muted">
-                    <span className="mt-[0.52rem] h-1 w-1 shrink-0 rounded-full bg-white/25" />
+                    <span className="mt-[0.52rem] h-1 w-1 shrink-0 rounded-full bg-ink/25" />
                     {bullet}
                   </li>
                 ))}
@@ -92,7 +92,7 @@ export function ResumeWindow() {
           {education.map((entry) => (
             <div
               key={entry.school}
-              className="rounded-xl border border-hairline-strong bg-white/[0.03] p-4"
+              className="rounded-xl border border-hairline-strong surface-1 p-4"
             >
               <h3 className="font-display text-sm font-bold text-ink">{entry.school}</h3>
               <p className="mt-1 text-[13px] text-muted">{entry.degree}</p>
@@ -130,7 +130,7 @@ export function ResumeWindow() {
           {projects.map((project) => (
             <div
               key={project.slug}
-              className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border border-hairline bg-white/[0.02] px-4 py-3"
+              className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border border-hairline surface-1 px-4 py-3"
             >
               <div>
                 <p className="text-sm font-semibold text-ink">{project.name}</p>

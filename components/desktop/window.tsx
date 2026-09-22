@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
  * the chat and project lists.
  */
 
-const TOP_INSET = 34; // menu bar height — windows cannot be dragged under it
+const TOP_INSET = 26; // menu bar height — windows cannot be dragged under it
 const DOCK_INSET = 96;
 
 interface DesktopWindowProps {
@@ -141,9 +141,10 @@ export function DesktopWindow({ id, title, subtitle, icon, children }: DesktopWi
       transition={{ type: 'spring', stiffness: 380, damping: 32, mass: 0.7 }}
       onPointerDown={() => focus(id)}
       className={cn(
-        'glass-strong absolute flex flex-col overflow-hidden rounded-[var(--radius-window)]',
+        'glass-strong absolute flex flex-col overflow-hidden rounded-[10px]',
         'shadow-[var(--shadow-window)]',
-        focused ? 'ring-1 ring-accent/25' : 'ring-0',
+        // macOS dims an unfocused window rather than ringing the focused one.
+        focused ? 'opacity-100' : 'opacity-[0.97]',
       )}
       style={{
         zIndex: win.z,
@@ -157,8 +158,8 @@ export function DesktopWindow({ id, title, subtitle, icon, children }: DesktopWi
         onPointerDown={startGesture('move')}
         onDoubleClick={() => toggleMaximize(id)}
         className={cn(
-          'flex shrink-0 items-center gap-3 border-b border-hairline px-4 py-3',
-          'bg-gradient-to-b from-white/[0.06] to-transparent',
+          'flex h-[38px] shrink-0 items-center gap-3 border-b border-hairline px-3.5',
+          'bg-gradient-to-b from-[#ffffff]/70 to-[#f3f3f5]/60',
           win.maximized ? 'cursor-default' : 'cursor-grab active:cursor-grabbing',
         )}
       >
@@ -168,7 +169,7 @@ export function DesktopWindow({ id, title, subtitle, icon, children }: DesktopWi
             onClick={() => close(id)}
             onPointerDown={(e) => e.stopPropagation()}
             aria-label={`Close ${title}`}
-            className="flex h-3 w-3 items-center justify-center rounded-full bg-[#ff5f57] transition-transform hover:scale-110"
+            className="flex h-[12px] w-[12px] items-center justify-center rounded-full bg-[#ff5f57] shadow-[inset_0_0_0_0.5px_#00000026] transition-transform hover:scale-110"
           >
             <X className="h-2 w-2 text-black/60 opacity-0 transition-opacity group-hover:opacity-100" strokeWidth={3} />
           </button>
@@ -176,7 +177,7 @@ export function DesktopWindow({ id, title, subtitle, icon, children }: DesktopWi
             onClick={() => minimize(id)}
             onPointerDown={(e) => e.stopPropagation()}
             aria-label={`Minimise ${title}`}
-            className="flex h-3 w-3 items-center justify-center rounded-full bg-[#febc2e] transition-transform hover:scale-110"
+            className="flex h-[12px] w-[12px] items-center justify-center rounded-full bg-[#febc2e] shadow-[inset_0_0_0_0.5px_#00000026] transition-transform hover:scale-110"
           >
             <Minus className="h-2 w-2 text-black/60 opacity-0 transition-opacity group-hover:opacity-100" strokeWidth={4} />
           </button>
@@ -184,17 +185,19 @@ export function DesktopWindow({ id, title, subtitle, icon, children }: DesktopWi
             onClick={() => toggleMaximize(id)}
             onPointerDown={(e) => e.stopPropagation()}
             aria-label={`${win.maximized ? 'Restore' : 'Maximise'} ${title}`}
-            className="flex h-3 w-3 items-center justify-center rounded-full bg-[#28c840] transition-transform hover:scale-110"
+            className="flex h-[12px] w-[12px] items-center justify-center rounded-full bg-[#28c840] shadow-[inset_0_0_0_0.5px_#00000026] transition-transform hover:scale-110"
           >
             <Square className="h-1.5 w-1.5 text-black/60 opacity-0 transition-opacity group-hover:opacity-100" strokeWidth={4} />
           </button>
         </div>
 
-        <div className="flex min-w-0 flex-1 items-center justify-center gap-2 pr-16">
+        {/* macOS centres the title over the whole bar, so the left padding is
+            mirrored on the right to keep it optically centred. */}
+        <div className="flex min-w-0 flex-1 items-center justify-center gap-2 pr-[62px]">
           {icon}
-          <p className="truncate text-[12px] font-semibold text-ink">{title}</p>
+          <p className="truncate text-[13px] font-semibold text-ink">{title}</p>
           {subtitle && (
-            <p className="hidden truncate text-[11px] text-faint sm:block">— {subtitle}</p>
+            <p className="hidden truncate text-[12px] text-faint sm:block">— {subtitle}</p>
           )}
         </div>
       </div>
@@ -209,7 +212,7 @@ export function DesktopWindow({ id, title, subtitle, icon, children }: DesktopWi
           className="absolute right-0 bottom-0 z-10 h-4 w-4 cursor-nwse-resize"
           aria-hidden="true"
         >
-          <span className="absolute right-1 bottom-1 h-2 w-2 border-r border-b border-white/25" />
+          <span className="absolute right-1 bottom-1 h-2 w-2 border-r border-b border-hairline-strong" />
         </div>
       )}
     </motion.div>

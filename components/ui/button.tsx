@@ -15,8 +15,8 @@ const VARIANTS: Record<Variant, string> = {
   primary:
     'bg-ink text-void hover:bg-accent hover:shadow-[var(--shadow-glow-sm)] active:scale-[0.98]',
   secondary:
-    'bg-white/5 text-ink border border-hairline-strong hover:bg-white/10 hover:border-accent/40 active:scale-[0.98]',
-  ghost: 'text-muted hover:text-ink hover:bg-white/5',
+    'surface-2 text-ink border border-hairline-strong hover:surface-3 hover:border-accent/40 active:scale-[0.98]',
+  ghost: 'text-muted hover:text-ink hover:surface-2',
 };
 
 const SIZES: Record<Size, string> = {

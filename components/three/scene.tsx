@@ -51,14 +51,14 @@ export default function Scene() {
         powerPreference: 'high-performance',
         alpha: false,
         toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 1.15,
+        toneMappingExposure: 1.38,
       }}
       camera={{ position: [0.12, 1.2, 4.15], fov: 38, near: 0.05, far: 60 }}
       // Auto-degrades DPR if the frame budget slips, rather than dropping frames.
       performance={{ min: 0.5 }}
       onCreated={({ gl, scene }) => {
         gl.setClearColor('#050816');
-        scene.fog = new THREE.FogExp2('#050816', 0.058);
+        scene.fog = new THREE.FogExp2('#0a1024', 0.042);
       }}
     >
       <Office still={reduced} />

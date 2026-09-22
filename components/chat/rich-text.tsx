@@ -41,7 +41,7 @@ function renderInline(text: string, keyPrefix: string) {
       return (
         <code
           key={key}
-          className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-[0.85em] text-accent"
+          className="rounded surface-3 px-1.5 py-0.5 font-mono text-[0.85em] text-accent"
         >
           {part.slice(1, -1)}
         </code>

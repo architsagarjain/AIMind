@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowUp, RotateCcw, Sparkles, Square } from 'lucide-react';
+import { ArrowUp, RotateCcw, Sparkles, Square, Volume2, VolumeX } from 'lucide-react';
 import { useChat } from '@/lib/hooks/use-chat';
+import { useSpeech } from '@/lib/hooks/use-speech';
 import { STARTER_PROMPTS } from '@/lib/ai/prompts';
 import { profile } from '@/content/profile';
 import { RichText } from './rich-text';
@@ -18,6 +19,7 @@ import { cn } from '@/lib/utils';
  */
 export function Chat({ compact = false }: { compact?: boolean }) {
   const { messages, isStreaming, error, mode, send, stop, reset } = useChat();
+  const speech = useSpeech();
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -77,7 +79,8 @@ export function Chat({ compact = false }: { compact?: boolean }) {
                   className={cn(
                     'text-[14px] leading-relaxed',
                     message.role === 'user'
-                      ? 'max-w-[85%] rounded-2xl rounded-br-md bg-white/[0.07] px-4 py-3 text-ink'
+                      ? // iMessage-style: the sender's bubble is the accent colour.
+                        'max-w-[85%] rounded-2xl rounded-br-md bg-accent-2 px-4 py-2.5 text-white'
                       : 'max-w-[92%] text-muted',
                   )}
                 >
@@ -85,6 +88,28 @@ export function Chat({ compact = false }: { compact?: boolean }) {
                     <RichText content={message.content} />
                   ) : (
                     <ThinkingDots />
+                  )}
+
+                  {/* Read aloud. Hidden entirely when the deployment has no
+                      ElevenLabs key, so it never offers something that 503s. */}
+                  {message.role === 'assistant' && message.content && !isStreaming && speech.available && (
+                    <button
+                      onClick={() => void speech.speak(message.id, message.content)}
+                      aria-label={speech.speakingId === message.id ? 'Stop playback' : 'Read aloud'}
+                      className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-hairline-strong px-2.5 py-1 text-[11px] font-medium text-faint transition-colors hover:border-accent/40 hover:text-accent"
+                    >
+                      {speech.speakingId === message.id ? (
+                        <>
+                          <VolumeX className="h-3.5 w-3.5" />
+                          Stop
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="h-3.5 w-3.5" />
+                          Listen
+                        </>
+                      )}
+                    </button>
                   )}
                 </div>
               </motion.div>
@@ -107,7 +132,7 @@ export function Chat({ compact = false }: { compact?: boolean }) {
               e.preventDefault();
               submit(input);
             }}
-            className="flex items-end gap-2 rounded-2xl border border-hairline-strong bg-white/[0.04] p-2 transition-colors focus-within:border-accent/40"
+            className="flex items-end gap-2 rounded-2xl border border-hairline-strong surface-2 p-2 transition-colors focus-within:border-accent/40"
           >
             <textarea
               ref={inputRef}
@@ -134,7 +159,7 @@ export function Chat({ compact = false }: { compact?: boolean }) {
                 type="button"
                 onClick={stop}
                 aria-label="Stop generating"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-hairline-strong bg-white/5 text-muted transition-colors hover:text-ink"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-hairline-strong surface-2 text-muted transition-colors hover:text-ink"
               >
                 <Square className="h-3.5 w-3.5 fill-current" />
               </button>
@@ -226,7 +251,7 @@ function EmptyState({ compact, onPick }: { compact: boolean; onPick: (text: stri
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.12 + i * 0.05, duration: 0.5 }}
               onClick={() => onPick(prompt.label)}
-              className="group rounded-xl border border-hairline-strong bg-white/[0.03] px-4 py-3 text-left text-[13px] text-muted transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-white/[0.06] hover:text-ink"
+              className="group rounded-xl border border-hairline-strong surface-1 px-4 py-3 text-left text-[13px] text-muted transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:surface-2 hover:text-ink"
             >
               {prompt.label}
             </motion.button>

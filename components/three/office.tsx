@@ -251,8 +251,8 @@ export function Office({ still = false }: { still?: boolean }) {
       {/* -------------------------------------------------------------- lights */}
       {/* The set is lit as a night interior: a cool ambient base, a soft key on
           the face, a cyan rim for separation, and warm practicals. */}
-      <ambientLight intensity={0.62} color="#7787a8" />
-      <hemisphereLight args={['#2a3d63', '#07070d', 0.7]} />
+      <ambientLight intensity={0.95} color="#8496b8" />
+      <hemisphereLight args={['#3d548a', '#0d0f1a', 1.0]} />
 
       {/* Key — front-left of the subject, soft and cool */}
       <spotLight

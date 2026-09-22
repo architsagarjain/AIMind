@@ -41,6 +41,13 @@
   /* --- Radius ------------------------------------------------------------- */
   --radius-window: 14px;
 
+  /* --- Raised surface tints ------------------------------------------------
+     Semantic, so the OS theme can flip them from white-on-dark to
+     black-on-light without every component knowing which theme it is in. */
+  --tint-1: #ffffff08;
+  --tint-2: #ffffff0d;
+  --tint-3: #ffffff1a;
+
   /* --- Stacking ----------------------------------------------------------- */
   --z-desktop: 10;
   --z-window: 100;
@@ -178,6 +185,18 @@
    Utilities
    =========================================================================== */
 
+@utility surface-1 {
+  background-color: var(--tint-1);
+}
+
+@utility surface-2 {
+  background-color: var(--tint-2);
+}
+
+@utility surface-3 {
+  background-color: var(--tint-3);
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
@@ -201,4 +220,95 @@
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+
+/* ===========================================================================
+   macOS theme for the desktop layer
+   ---------------------------------------------------------------------------
+   The hero is a night office and stays dark; the desktop is a MacBook screen
+   and should read like one. Rather than fork every component, this scope
+   redefines the same tokens they already consume, so the ~70 tokenised colour
+   utilities across the OS layer re-theme on their own. Only the hard-coded
+   tints needed replacing, which is why they became `surface-1/2/3`.
+   =========================================================================== */
+
+.os-light {
+  --color-void: #eef1f6;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-surface-glass: #ffffffcc;
+
+  /* Apple's own text greys — near-black rather than pure black, which is
+     what keeps a light UI from looking harsh. */
+  --color-ink: #1d1d1f;
+  --color-muted: #4b4b51;
+  --color-faint: #86868b;
+
+  --color-hairline: #00000014;
+  --color-hairline-strong: #00000021;
+
+  /* The brand cyan is unreadable on white, so the light theme leans on the
+     brand's secondary blue, which is close to the macOS system accent. */
+  --color-accent: #0a7ea4;
+  --color-accent-soft: #0a7ea412;
+  --color-accent-2: #1d9bf0;
+
+  --tint-1: #00000008;
+  --tint-2: #0000000d;
+  --tint-3: #00000014;
+
+  --shadow-glow: 0 0 40px -14px #1d9bf040;
+  --shadow-glow-sm: 0 0 18px -8px #1d9bf04d;
+  --shadow-window:
+    0 30px 60px -20px #0b1a3312,
+    0 12px 24px -12px #0b1a331a,
+    0 0 0 0.5px #00000026;
+
+  color-scheme: light;
+
+  /* San Francisco where it exists, which is the single biggest cue that this
+     is a Mac rather than a dark web app wearing traffic lights. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue',
+    var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue',
+    var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+}
+
+.os-light ::selection {
+  background: var(--color-accent-2);
+  color: #ffffff;
+}
+
+.os-light * {
+  scrollbar-color: #00000029 transparent;
+}
+.os-light ::-webkit-scrollbar-thumb {
+  background: #00000029;
+}
+.os-light ::-webkit-scrollbar-thumb:hover {
+  background: #0000003d;
+}
+
+/* Frosted panels pick up the light surface automatically, but need a brighter
+   base and a hairline that reads on white. */
+.os-light .glass {
+  background: #ffffffb8;
+  border-color: #ffffff80;
+  box-shadow: inset 0 0 0 0.5px #00000014;
+}
+.os-light .glass-strong {
+  background: #fbfbfdf2;
+  border-color: #ffffffcc;
+  box-shadow: inset 0 0 0 0.5px #0000001f;
+}
+
+.os-light .text-gradient-accent {
+  background: linear-gradient(120deg, #0a7ea4 0%, #1d9bf0 100%);
+}
+
+.os-light .bloom {
+  background: radial-gradient(circle, #1d9bf01f 0%, transparent 70%);
 }

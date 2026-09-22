@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useWindows, WINDOW_IDS } from '@/lib/store/windows';
-import { WINDOW_META } from './icons';
+import { FOLDER_BLUE, WINDOW_META } from './icons';
 import { useTelemetry } from '@/lib/hooks/use-telemetry';
 
 /**
@@ -17,9 +17,9 @@ export function FolderGrid() {
   const track = useTelemetry();
 
   return (
-    <div className="absolute top-14 left-4 z-10 grid grid-cols-1 gap-2 md:left-6">
+    <div className="absolute top-10 left-3 z-10 grid grid-cols-1 gap-1 md:left-5">
       {WINDOW_IDS.map((id, i) => {
-        const { label, Icon, accent } = WINDOW_META[id];
+        const { label, Icon } = WINDOW_META[id];
         return (
           <motion.button
             key={id}
@@ -30,17 +30,27 @@ export function FolderGrid() {
               open(id);
               track('window_opened', { window: id, source: 'desktop' });
             }}
-            className="group flex w-[88px] flex-col items-center gap-1.5 rounded-xl px-2 py-3 transition-colors hover:bg-white/5 focus-visible:bg-white/5"
+            className="group flex w-[86px] flex-col items-center gap-1.5 rounded-lg px-2 py-2.5 transition-colors hover:surface-2 focus-visible:surface-2"
           >
-            <span
-              className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-hairline-strong bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-xl transition-all duration-300 group-hover:-translate-y-1 group-hover:border-accent/40"
-              style={{ boxShadow: `0 8px 24px -12px ${accent}66` }}
-            >
-              <Icon className="h-6 w-6" style={{ color: accent }} strokeWidth={1.6} />
-              {/* Folder tab detail */}
-              <span className="absolute -top-px left-3 h-px w-6 bg-white/25" />
+            {/* macOS folder: a tab above a rounded body, in the system blue,
+                with the app glyph knocked out of it. */}
+            <span className="relative block h-[52px] w-[62px] transition-transform duration-200 group-hover:-translate-y-1">
+              <span
+                className="absolute top-0 left-0 h-3 w-[26px] rounded-t-[5px]"
+                style={{ background: `linear-gradient(180deg, ${FOLDER_BLUE}e6, ${FOLDER_BLUE}cc)` }}
+              />
+              <span
+                className="absolute inset-x-0 top-[7px] bottom-0 flex items-center justify-center rounded-[7px]"
+                style={{
+                  background: `linear-gradient(170deg, ${FOLDER_BLUE}f2 0%, ${FOLDER_BLUE}bf 100%)`,
+                  boxShadow: 'inset 0 1px 0 #ffffff66, 0 3px 8px -3px #0b1a3359',
+                }}
+              >
+                <Icon className="h-[22px] w-[22px] text-white/90" strokeWidth={1.7} />
+              </span>
             </span>
-            <span className="text-center text-[10px] leading-tight font-semibold tracking-wide text-ink/90">
+            {/* Label sits on the wallpaper, so it needs its own contrast. */}
+            <span className="rounded px-1.5 py-0.5 text-center text-[11px] leading-tight font-medium text-ink [text-shadow:0_1px_2px_#ffffffcc]">
               {label}
             </span>
           </motion.button>

@@ -21,9 +21,11 @@ export function Dock() {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.35, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="absolute bottom-4 left-1/2 z-900 -translate-x-1/2"
+      className="absolute bottom-2.5 left-1/2 z-900 -translate-x-1/2"
     >
-      <div className="glass-strong flex items-end gap-1.5 rounded-2xl px-2.5 py-2.5 shadow-[var(--shadow-window)]">
+      {/* macOS dock: a translucent slab with a hairline, icons as squircles,
+          and a running dot under each open app. */}
+      <div className="glass-strong flex items-end gap-2 rounded-[22px] px-3 py-2.5 shadow-[var(--shadow-window)]">
         {WINDOW_IDS.map((id) => {
           const { label, Icon, accent } = WINDOW_META[id];
           const win = windows[id];
@@ -49,26 +51,32 @@ export function Dock() {
               className="group relative flex flex-col items-center"
             >
               {/* Tooltip */}
-              <span className="pointer-events-none absolute -top-10 rounded-lg border border-hairline-strong bg-surface-raised px-2.5 py-1.5 text-[10px] font-semibold whitespace-nowrap text-ink opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              {/* macOS shows the label in a floating bubble above the icon. */}
+              <span className="pointer-events-none absolute -top-11 rounded-md border border-hairline bg-surface-raised px-2.5 py-1 text-[12px] font-medium whitespace-nowrap text-ink opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100">
                 {label}
               </span>
 
+              {/* Squircle-ish radius and a top-lit gradient: the two things
+                  that read as a macOS app icon rather than a web button. */}
               <span
                 className={cn(
-                  'flex h-12 w-12 items-center justify-center rounded-xl border transition-all duration-300',
-                  'bg-gradient-to-br from-white/10 to-white/[0.02]',
-                  'group-hover:-translate-y-1.5 group-hover:scale-105',
-                  isActive ? 'border-accent/40' : 'border-hairline-strong',
+                  'flex h-[52px] w-[52px] items-center justify-center rounded-[14px]',
+                  'transition-transform duration-200 ease-out',
+                  'group-hover:-translate-y-2 group-hover:scale-110',
                 )}
-                style={isActive ? { boxShadow: `0 6px 20px -8px ${accent}99` } : undefined}
+                style={{
+                  background: `linear-gradient(160deg, ${accent}f2 0%, ${accent}b8 52%, ${accent}8a 100%)`,
+                  boxShadow:
+                    'inset 0 1px 0 #ffffff80, inset 0 -1px 0 #00000014, 0 4px 10px -3px #0b1a3359',
+                }}
               >
-                <Icon className="h-5 w-5" style={{ color: accent }} strokeWidth={1.7} />
+                <Icon className="h-[26px] w-[26px] text-white" strokeWidth={1.7} />
               </span>
 
               <span
                 className={cn(
-                  'mt-1.5 h-1 w-1 rounded-full transition-all duration-300',
-                  win.open ? 'bg-accent' : 'bg-transparent',
+                  'mt-1 h-[3px] w-[3px] rounded-full transition-colors duration-200',
+                  win.open ? 'bg-ink/55' : 'bg-transparent',
                 )}
               />
             </button>

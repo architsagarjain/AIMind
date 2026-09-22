@@ -308,6 +308,18 @@ Type: **Inter Tight** for headings (`--font-display`), **Inter** for body
 Component primitives: `.glass`, `.glass-strong`, `.text-gradient-accent`,
 `.rule-fade`, `.bloom`. Motion curves: `--ease-out-expo`, `--ease-in-out-quint`.
 
+### Two themes, one token set
+
+The hero is a night office and stays dark. The desktop is a MacBook screen, so
+it renders light and macOS-like — `.os-light` on the desktop root **redefines
+the same tokens** the components already consume, so the ~90 tokenised colour
+utilities across the OS layer re-theme without a single component fork.
+
+Only hard-coded tints needed replacing. Those became semantic
+`surface-1/2/3` utilities backed by `--tint-1/2/3`, which flip from white-on-
+dark to black-on-light with the scope. Accents are saturated in the OS layer:
+the brand cyan `#6EF2FF` is effectively invisible on white.
+
 ---
 
 ## Database schema

@@ -3,6 +3,10 @@ import type { Project } from '@/types';
 /**
  * Case-study copy.
  *
+ * `accent` is the card's highlight colour. These are saturated rather than the
+ * brand cyan because the Projects window renders on the light macOS desktop,
+ * where #6EF2FF is effectively invisible.
+ *
  * NOTE ON NUMBERS: the only hard figures below are the ones supplied directly
  * (20K+ ZenCabs users, 7+ clients, 1 year at PwC). Narrative sections describe
  * approach rather than claiming unverified outcomes, because the AI clone reads
@@ -24,7 +28,7 @@ export const projects: Project[] = [
       { label: 'Market', value: 'Jammu' },
       { label: 'Role', value: 'Strategy & Growth' },
     ],
-    accent: '#6EF2FF',
+    accent: '#0A84FF',
     caseStudy: {
       challenge:
         'Jammu is a market the national aggregators never prioritised. Riders defaulted to informal, phone-call bookings and unpredictable fares; drivers had no dependable pipeline of work. Any platform had to solve both sides at once — a marketplace with a supply gap is just an app, and one with a demand gap is a cost centre.',
@@ -67,7 +71,7 @@ export const projects: Project[] = [
       { label: 'Practice', value: 'Risk Consulting' },
       { label: 'Focus', value: 'GRC' },
     ],
-    accent: '#1D9BF0',
+    accent: '#5E5CE6',
     caseStudy: {
       challenge:
         'Enterprise clients carry risk they cannot see. Controls exist on paper, ownership is spread across functions, and the gap between the documented process and the one people actually follow is where losses live. The work is finding that gap and closing it without grinding the business to a halt.',
@@ -108,7 +112,7 @@ export const projects: Project[] = [
       { label: 'Role', value: 'Founder' },
       { label: 'Model', value: 'Execution-led' },
     ],
-    accent: '#6EF2FF',
+    accent: '#0E9F9F',
     caseStudy: {
       challenge:
         'Most small and mid-sized businesses do not have a strategy problem — they have an execution problem. They already know roughly what to do. What they lack is someone to build the operating system that makes it happen weekly, and the honesty to cut the things that are not working.',
@@ -149,7 +153,7 @@ export const projects: Project[] = [
       { label: 'Workstreams', value: '3' },
       { label: 'Channel', value: 'Digital' },
     ],
-    accent: '#1D9BF0',
+    accent: '#C05CE0',
     caseStudy: {
       challenge:
         'Matrimonial is a crowded, trust-driven and largely commoditised category where almost everyone competes on database size. Moving a business up-market means the brand has to earn a premium before the pricing can ask for one — and the lead flow has to get narrower and better, not bigger.',

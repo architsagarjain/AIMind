@@ -58,7 +58,7 @@ export function ProjectsWindow() {
                     setActive(project);
                     track('project_viewed', { project: project.slug });
                   }}
-                  className="group relative overflow-hidden rounded-2xl border border-hairline-strong bg-white/[0.03] p-5 text-left transition-all duration-400 hover:-translate-y-1 hover:border-accent/40 hover:bg-white/[0.06]"
+                  className="group relative overflow-hidden rounded-2xl border border-hairline-strong surface-1 p-5 text-left transition-all duration-400 hover:-translate-y-1 hover:border-accent/40 hover:surface-2"
                 >
                   {/* Accent wash on hover */}
                   <span
@@ -138,7 +138,7 @@ function CaseStudy({ project, onBack }: { project: Project; onBack: () => void }
       </p>
 
       {/* Metric strip */}
-      <div className="mt-7 grid grid-cols-3 divide-x divide-white/10 overflow-hidden rounded-xl border border-hairline-strong bg-white/[0.03]">
+      <div className="mt-7 grid grid-cols-3 divide-x divide-[color:var(--color-hairline-strong)] overflow-hidden rounded-xl border border-hairline-strong surface-1">
         {project.metrics.map((metric) => (
           <div key={metric.label} className="px-4 py-4 text-center">
             <p

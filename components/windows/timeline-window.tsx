@@ -15,10 +15,11 @@ const KIND_ICON: Record<TimelineMilestone['kind'], typeof Rocket> = {
   venture: Rocket,
 };
 
+/** Saturated for the light desktop; the brand cyan is invisible on white. */
 const KIND_COLOR: Record<TimelineMilestone['kind'], string> = {
-  education: '#1D9BF0',
-  work: '#9CA3AF',
-  venture: '#6EF2FF',
+  education: '#0A84FF',
+  work: '#6E6E73',
+  venture: '#0E9F9F',
 };
 
 /** Vertical timeline where each milestone expands in place. */
@@ -110,7 +111,7 @@ export function TimelineWindow() {
                       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
                     >
-                      <ul className="mt-4 space-y-2.5 rounded-xl border border-hairline bg-white/[0.03] p-4">
+                      <ul className="mt-4 space-y-2.5 rounded-xl border border-hairline surface-1 p-4">
                         {milestone.details.map((detail, di) => (
                           <li key={di} className="flex gap-3 text-[13px] leading-relaxed text-muted">
                             <span

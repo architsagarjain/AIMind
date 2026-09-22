@@ -353,7 +353,59 @@ it.
 
 ---
 
-## 12. Things deliberately left out
+## 12. Two themes from one token set
+
+The hero is a night office; the desktop is the MacBook screen you just flew
+into. Those want opposite treatments, and the desktop should read as macOS
+rather than as a dark web app wearing traffic lights.
+
+Forking every component into light and dark variants would have doubled the OS
+layer. Instead `.os-light` on the desktop root redefines the *same* CSS
+variables the components already consume — `--color-ink`, `--color-muted`,
+`--color-hairline`, `--color-accent` and the rest — so roughly 90 tokenised
+utilities re-theme on their own.
+
+Three things did not come for free:
+
+- **Hard-coded tints.** `bg-white/5` is invisible on white. Those became
+  semantic `surface-1/2/3` utilities backed by `--tint-1/2/3`, which the scope
+  flips from white alphas to black alphas.
+- **Accents.** The brand cyan has almost no contrast on a light surface, so the
+  OS layer uses saturated colours in the macOS system family. Desktop folders
+  are all one Finder blue — macOS only varies *app* icons — while the dock
+  varies per app.
+- **Typography.** The scope puts `-apple-system` ahead of Inter, so on a Mac the
+  interface renders in San Francisco. That single substitution does more for the
+  illusion than any amount of chrome detailing.
+
+Proportions are copied rather than invented: a 26px menu bar, 38px title bars
+with the title optically centred over the full width, 52px dock icons on a
+22px-radius slab, and traffic lights at 12px with an inset hairline.
+
+---
+
+## 13. Voice
+
+`/api/speak` streams ElevenLabs TTS for an assistant reply; `useSpeech` plays it.
+
+Two decisions worth recording:
+
+- **The voice is resolved by name, not ID.** Voice IDs are account-specific, and
+  a wrong one fails at request time with an opaque 400. The route reads the
+  account's `/v1/voices`, prefers a stock male voice by name, falls back to
+  anything labelled male, and caches the result for the instance.
+  `ELEVENLABS_VOICE_ID` short-circuits it.
+- **Absence is a UI state, not an error.** With no key the route returns 503 and
+  `useSpeech` flips `available` to false, so the Listen control disappears
+  instead of offering something that fails. Same posture as the chat's offline
+  responder.
+
+The 1,200-character cap is the load-bearing guard: TTS bills per character and
+the endpoint is public.
+
+---
+
+## 14. Things deliberately left out
 
 **GSAP.** See the README note. The scroll cinematic needs a damped camera follow
 inside `useFrame`; a second animation clock would fight it for the same camera.

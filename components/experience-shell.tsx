@@ -176,7 +176,7 @@ export function ExperienceShell() {
               style={{
                 opacity: fade,
                 background:
-                  'linear-gradient(175deg, #050816f2 0%, #050816d9 34%, #05081699 58%, #05081633 78%, transparent 100%)',
+                  'linear-gradient(175deg, #050816e0 0%, #050816bf 34%, #05081680 58%, #05081626 78%, transparent 100%)',
               }}
             />
             <div
@@ -184,7 +184,7 @@ export function ExperienceShell() {
               style={{
                 opacity: fade,
                 background:
-                  'linear-gradient(100deg, #050816e6 0%, #050816b3 26%, #0508164d 44%, transparent 62%)',
+                  'linear-gradient(100deg, #050816d9 0%, #05081699 26%, #05081633 44%, transparent 60%)',
               }}
             />
 
@@ -193,7 +193,7 @@ export function ExperienceShell() {
               className="pointer-events-none absolute inset-0"
               style={{
                 background:
-                  'radial-gradient(ellipse at 50% 45%, transparent 38%, #05081699 78%, #050816 100%)',
+                  'radial-gradient(ellipse at 50% 45%, transparent 46%, #05081666 80%, #050816d9 100%)',
               }}
             />
             <div
