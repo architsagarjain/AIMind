@@ -1,0 +1,75 @@
+import type { TimelineMilestone } from '@/types';
+
+export const timeline: TimelineMilestone[] = [
+  {
+    id: 'symbiosis',
+    year: '2019 — 2022',
+    title: 'BBA, Marketing & Finance',
+    org: 'Symbiosis, Pune',
+    location: 'Pune, India',
+    kind: 'education',
+    summary: 'Where the commercial instinct from a business family met actual frameworks.',
+    details: [
+      'Studied marketing and finance — the two languages every business decision eventually gets translated into.',
+      'Coming from a fourth-generation business family, a lot of this was formalising intuition I had grown up around.',
+      'Pune is also where I started taking on real client work rather than waiting for a degree to end before beginning.',
+    ],
+  },
+  {
+    id: 'cairros',
+    year: '2022 — Present',
+    title: 'Founder',
+    org: 'Cairros Consulting',
+    location: 'India',
+    kind: 'venture',
+    summary: 'Started my own consulting practice — growth, marketing and strategy for founders.',
+    details: [
+      'Built a practice focused on execution rather than advisory-only engagements.',
+      'Served 7+ clients across growth, marketing, strategy and brand transformation.',
+      'Running my own P&L taught me more about business than any single engagement did.',
+    ],
+  },
+  {
+    id: 'pwc',
+    year: '1 Year',
+    title: 'Risk Consultant',
+    org: 'PwC India',
+    location: 'India',
+    kind: 'work',
+    summary: 'Governance, risk and compliance inside one of the Big Four.',
+    details: [
+      'Worked on GRC engagements — mapping processes, testing controls and finding the gap between the documented process and the real one.',
+      'Learned structured problem-solving at a standard where the work has to survive people actively looking for holes.',
+      'Saw exactly how large organisations make decisions — which is a large part of why I wanted to go build in a small one.',
+    ],
+  },
+  {
+    id: 'zencabs',
+    year: '2023 — 2024',
+    title: 'Head of Strategy & Growth',
+    org: 'ZenCabs',
+    location: 'Jammu, India',
+    kind: 'venture',
+    summary: 'Took a Jammu-based mobility platform past 20,000+ users.',
+    details: [
+      'Owned strategy and growth for a two-sided marketplace in a market the national aggregators had skipped.',
+      'Built the driver onboarding and retention motion, because supply was the constrained side.',
+      'Ran on-ground acquisition alongside digital, and set the operating cadence the growth function ran on.',
+      'Crossed 20,000+ users.',
+    ],
+  },
+  {
+    id: 'masters-union',
+    year: 'Present',
+    title: 'PGP in Technology & Business',
+    org: "Masters' Union",
+    location: 'Gurugram, India',
+    kind: 'education',
+    summary: 'Adding the technology layer to an operating and growth background.',
+    details: [
+      'Pursuing the PGP in Technology & Business — the deliberate step from business operator toward technology builder.',
+      'I had spent three years shipping growth and strategy work; the gap was building the thing itself.',
+      "Masters' Union is practitioner-taught, which suits how I actually learn: do it, then understand why it worked.",
+    ],
+  },
+];

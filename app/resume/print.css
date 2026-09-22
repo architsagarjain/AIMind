@@ -1,0 +1,52 @@
+/* Print stylesheet: the dark UI becomes a clean A4 document.
+   Colours are forced to black-on-white so the PDF is readable and cheap to
+   print, and the interactive chrome is removed entirely. */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .resume-page {
+    max-width: none !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  /* Flatten every token-driven colour to print-safe values. */
+  .resume-page * {
+    color: #111111 !important;
+    border-color: #d4d4d4 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .resume-page h2 {
+    color: #0b6b7a !important;
+    letter-spacing: 0.18em;
+  }
+
+  .resume-page span[class*='rounded-full'] {
+    background: #444444 !important;
+  }
+
+  article,
+  section {
+    break-inside: avoid;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
