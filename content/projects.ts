@@ -1,180 +1,271 @@
 import type { Project } from '@/types';
 
 /**
- * Case-study copy.
+ * Case studies.
  *
- * `accent` is the card's highlight colour. These are saturated rather than the
- * brand cyan because the Projects window renders on the light macOS desktop,
- * where #6EF2FF is effectively invisible.
- *
- * NOTE ON NUMBERS: the only hard figures below are the ones supplied directly
- * (20K+ ZenCabs users, 7+ clients, 1 year at PwC). Narrative sections describe
- * approach rather than claiming unverified outcomes, because the AI clone reads
- * this file as fact and is instructed never to invent achievements. If you add
- * a metric here, the clone will quote it.
+ * Every number below is from Archit's CV. The AI clone reads this file as fact
+ * and is instructed never to invent a figure, so nothing speculative goes in
+ * `metrics` or `results`.
  */
 export const projects: Project[] = [
   {
     slug: 'zencabs',
     name: 'ZenCabs',
-    subtitle: 'City mobility, built for Jammu',
+    subtitle: 'EV mobility, built for Jammu',
     role: 'Head of Strategy & Growth',
-    period: '2023 — 2024',
+    period: 'Jan 2026 — Present',
     summary:
-      'Took a local cab platform from a standing start to 20,000+ users by building demand in a market the big aggregators had skipped.',
-    tags: ['Growth', 'Marketplace', 'Operations', 'Go-To-Market'],
+      'Took an EV mobility venture from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months.',
+    tags: ['Founder’s Office', 'GTM', 'Marketplace Ops', 'Growth'],
     metrics: [
-      { label: 'Users', value: '20K+' },
-      { label: 'Market', value: 'Jammu' },
-      { label: 'Role', value: 'Strategy & Growth' },
+      { label: 'Users', value: '25K+' },
+      { label: 'Run-Rate', value: '₹3 Cr' },
+      { label: 'Monthly GMV', value: '₹25L+' },
     ],
     accent: '#0A84FF',
     caseStudy: {
       challenge:
-        'Jammu is a market the national aggregators never prioritised. Riders defaulted to informal, phone-call bookings and unpredictable fares; drivers had no dependable pipeline of work. Any platform had to solve both sides at once — a marketplace with a supply gap is just an app, and one with a demand gap is a cost centre.',
+        'Jammu is a market the national aggregators never prioritised. Riders defaulted to informal, phone-call bookings and unpredictable fares; drivers had no dependable pipeline of work. An EV fleet adds a second constraint on top — every idle car is capital sitting still, so utilisation is not a nice-to-have, it is the business model.',
       strategy: [
-        'Treat supply as the harder half: sign and retain drivers first, because a rider who opens the app to zero cars never opens it again.',
-        'Win on reliability rather than price. In a small market, a ride that actually shows up is worth more than a discount.',
-        'Grow route by route instead of city-wide — concentrate density where demand already clustered rather than spreading thin.',
-        'Use local trust as the acquisition channel: in Jammu, word of mouth and on-ground presence outperform paid digital spend.',
+        'Treat supply as the harder half: sign and retain driver partners first, because a rider who opens the app to zero cars never opens it again.',
+        'Make utilisation the north-star metric rather than raw ride count — on an owned EV fleet, revenue per car is what actually compounds.',
+        'Win on reliability rather than price. In a small market a ride that shows up is worth more than a discount.',
+        'Institutionalise the operating cadence early: weekly KPI reviews with the founder, so problems surface in days rather than quarters.',
       ],
       execution: [
-        'Built the driver-onboarding funnel end to end — sourcing, verification, training and the incentive structure that kept drivers active.',
-        'Ran on-ground acquisition at the places demand physically concentrates: transport hubs, campuses, markets and hotels.',
-        'Set up the operating cadence — daily supply/demand tracking, cancellation and wait-time review, and a weekly loop feeding it back into incentives.',
-        'Ran local digital marketing and referral loops alongside the on-ground push, so the two channels compounded instead of competing.',
+        'Built the founder’s-office layer end to end — GTM strategy, pricing, and the weekly operating cadence the growth function ran on.',
+        'Onboarded 43 driver partners by designing the recruitment, training and incentive frameworks from scratch.',
+        'Institutionalised 10+ SOPs across onboarding and dispatch to attack the cancellation problem directly.',
+        'Ran voice-of-customer loops and retention plays to convert first-time riders into monthly actives.',
+        'Built the market sizing and expansion case that justified adding 10+ cars a month.',
       ],
       results: [
-        'Crossed 20,000+ users on the platform.',
-        'Established a repeatable driver-onboarding and retention motion rather than a one-off acquisition spike.',
-        'Built the operating rhythm — the metrics, the review cadence, the incentive levers — that the growth function continued to run on.',
+        'Scaled from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months.',
+        'Grew monthly GMV past ₹25L across 7,500+ rides at a ₹331 average order value.',
+        'Converted 27% of the user base into 6,679 monthly active riders.',
+        'Cut ride cancellations from 40% to 6%.',
+        'Lifted fleet utilisation from 40% to 75%, tracked against 15+ KPIs in weekly founder reviews.',
+        'Raised revenue per car to ₹62.5K per month.',
+        'Grew the fleet to 40 cars in three months.',
       ],
       lessons: [
         'Marketplaces are supply problems wearing a demand costume. Solve the constrained side first.',
-        'Density beats coverage. A platform that works perfectly on four routes beats one that half-works across the city.',
-        'In a tier-2 market, distribution is physical. The best growth channel was people, not ad spend.',
-        'Retention is a product of reliability. Every cancelled ride costs more than the acquisition that produced it.',
+        'On an owned fleet, utilisation is the business. A 40% to 75% move is worth more than any acquisition campaign I could have run with the same effort.',
+        'Cancellations are a retention problem disguised as an ops problem. Every cancelled ride costs more than the acquisition that produced it.',
+        'The weekly KPI review with the founder was the single highest-leverage thing I built. Not a deck — a cadence.',
       ],
     },
   },
   {
     slug: 'pwc',
     name: 'PwC India',
-    subtitle: 'Risk Consulting — Governance, Risk & Compliance',
-    role: 'Risk Consultant',
-    period: '1 Year',
+    subtitle: 'Risk Consulting — diagnostics, process and cost',
+    role: 'Risk Consulting Specialist 2',
+    period: 'Oct 2024 — Jan 2026',
     summary:
-      'A year inside one of the Big Four, learning how large organisations actually control risk — and how decisions really get made at scale.',
-    tags: ['Consulting', 'Governance', 'Risk', 'Compliance'],
+      'Fifteen months in Big-4 risk consulting: ₹6+ Cr in annual client cost savings, and an internal AI tool that saved 10,000+ consulting hours.',
+    tags: ['Consulting', 'Process Design', 'Cost Reduction', 'Applied AI'],
     metrics: [
-      { label: 'Tenure', value: '1 Year' },
-      { label: 'Practice', value: 'Risk Consulting' },
-      { label: 'Focus', value: 'GRC' },
+      { label: 'Client Savings', value: '₹6+ Cr' },
+      { label: 'Engagements', value: '₹12 Cr+' },
+      { label: 'Hours Saved', value: '10K+' },
     ],
     accent: '#5E5CE6',
     caseStudy: {
       challenge:
-        'Enterprise clients carry risk they cannot see. Controls exist on paper, ownership is spread across functions, and the gap between the documented process and the one people actually follow is where losses live. The work is finding that gap and closing it without grinding the business to a halt.',
+        'Enterprise clients carry cost and risk they cannot see. Controls exist on paper, ownership is spread across functions, and the gap between the documented process and the one people actually follow is where both losses and delay live. The work is finding that gap, sizing it, and closing it without grinding the business to a halt.',
       strategy: [
-        'Start from the process, not the policy document — map how work actually flows before judging whether the control is adequate.',
-        'Prioritise by exposure. Not every gap deserves the same remediation effort.',
-        'Make findings actionable: a risk nobody owns is a risk nobody fixes.',
+        'Start from the process, not the policy document — walk how work actually flows before judging whether the control is adequate.',
+        'Size everything. A finding without a number attached does not get prioritised, and does not get funded.',
+        'Attack decision latency as well as cost: approval structure is usually the cheapest thing to fix and the least examined.',
+        'Automate the repeatable parts of our own delivery, not just the client’s.',
       ],
       execution: [
-        'Worked across governance, risk and compliance engagements — walking processes, testing controls and documenting where design and operation diverged.',
-        'Translated findings into remediation that business owners would realistically adopt rather than technically-correct recommendations that sit unread.',
-        'Presented to client stakeholders, which is where I learned that the quality of the analysis matters less than whether the room believes it.',
+        'Ran root-cause diagnostics and process redesign across procurement, HR and finance, reengineering 25+ processes.',
+        'Designed delegation-of-authority matrices and approval workflows for CXOs.',
+        'Co-developed an internal audit AI tool, then led firm-level training across 10 pilot engagements to drive adoption.',
+        'Anchored DOA, internal audit and SOP development across 10 functions in two international mandates.',
+        'Ran structured leadership reporting and business reviews to secure CXO buy-in.',
       ],
       results: [
-        'Completed a year in the risk consulting practice at PwC India.',
-        'Built the structured problem-solving habit — hypothesis, evidence, recommendation — that I still use on every growth problem.',
-        'Learned to work to a standard of rigour where the work has to survive review by people looking for holes.',
+        'Delivered ₹6+ Cr in annual client cost savings.',
+        'Realised ₹2 Cr+ of that by reengineering 25+ processes across procurement, HR and finance.',
+        'Cut decision turnaround by 30%+ through DOA matrices and redesigned approval workflows.',
+        'Saved 10,000+ consulting hours across 200+ consultants with the internal audit AI tool.',
+        'Reached 50% tool adoption within six months.',
+        'Won ₹80L in additional business by prioritising 8+ initiatives through opportunity assessment.',
+        'Executed engagements worth ₹12 Cr+ for 10+ clients including Cars24, Stryker India and PIF.',
+        'Secured CXO buy-in on 20+ recommendations.',
       ],
       lessons: [
         'Structure is a superpower. Most problems are unsolvable only because nobody has framed them properly yet.',
-        'Rigour and speed are not opposites — consulting taught me to be fast because the framework was already sound.',
-        'The deliverable is not the deck. It is whether anything changed after the deck.',
-        'I learned how big organisations work, which is precisely why I wanted to go build in a small one.',
+        'Put a number on it or it does not get fixed. Sizing a finding is half the work of closing it.',
+        'The fastest cost saving is usually a decision-rights problem, not a spend problem.',
+        'Building the AI tool taught me more about adoption than about AI. Fifty percent uptake took training, not features.',
       ],
     },
   },
   {
     slug: 'cairros',
-    name: 'Cairros Consulting',
-    subtitle: 'Growth, marketing and strategy for founders',
-    role: 'Founder',
-    period: '2022 — Present',
+    name: 'Cairros',
+    subtitle: 'Consulting & marketing agency',
+    role: 'Founder & Managing Partner',
+    period: 'Aug 2022 — May 2024',
     summary:
-      'My own consulting practice — helping founders and businesses fix positioning, build growth engines and execute the strategy instead of just writing it.',
-    tags: ['Growth', 'Marketing', 'Strategy', 'Transformation'],
+      'The agency I started in college and scaled to seven-figure annual revenue in two years, owning strategy, sales and delivery end to end.',
+    tags: ['Venture Building', 'P&L', 'Growth', 'Brand'],
     metrics: [
-      { label: 'Clients Served', value: '7+' },
-      { label: 'Role', value: 'Founder' },
-      { label: 'Model', value: 'Execution-led' },
+      { label: 'Revenue', value: '7-Figure' },
+      { label: 'Sectors', value: '4' },
+      { label: 'Built In', value: '2 Years' },
     ],
     accent: '#0E9F9F',
     caseStudy: {
       challenge:
-        'Most small and mid-sized businesses do not have a strategy problem — they have an execution problem. They already know roughly what to do. What they lack is someone to build the operating system that makes it happen weekly, and the honesty to cut the things that are not working.',
+        'Most small and mid-sized businesses do not have a strategy problem — they have an execution problem. They already know roughly what to do. What they lack is someone to build the operating system that makes it happen weekly, and the honesty to cut what is not working. Doing that as a student, with no brand and no balance sheet, meant every engagement had to sell the next one.',
       strategy: [
         'Diagnose before prescribing. The presenting problem ("we need more marketing") is almost never the actual constraint.',
-        'Fix positioning first — no amount of spend rescues a message the market does not want.',
-        'Build one growth channel to competence before opening a second.',
+        'Own the P&L, not just the deliverable. Running the business taught me more than any single engagement did.',
+        'Go deep in a sector before going wide — reputation in one vertical is what buys the right to enter the next.',
         'Leave behind an operating cadence, not a document. The engagement should outlive the engagement.',
       ],
       execution: [
-        'Ran growth, marketing and strategy engagements across 7+ clients.',
-        'Worked hands-on rather than advisory-only — building the funnel, writing the positioning, setting up the tracking and running the weekly review alongside the founders.',
-        'Handled brand and digital transformation work for businesses moving from offline-first to a modern digital funnel.',
+        'Built the agency from scratch while at Symbiosis — strategy, sales and delivery end to end.',
+        'Ran menu reengineering and table-turnaround operations for restaurant clients.',
+        'Took a magazine client through a pricing and sales restructure over six months.',
+        'Expanded across four sectors via rebrand, hiring and growth mandates backed by market research.',
       ],
       results: [
-        'Served 7+ clients across growth, marketing, strategy and transformation mandates.',
-        'Built a practice model where the deliverable is a running growth function, not a slide deck.',
+        'Scaled to seven-figure annual revenue in two years.',
+        'Grew three restaurant clients 30% in revenue, at 7% month on month.',
+        'Raised a magazine client’s sales 3.5x, from ₹2L to ₹7L per month, at 23% month on month over six months.',
+        'Expanded the practice across four sectors.',
       ],
       lessons: [
         'Founders do not buy strategy. They buy momentum.',
-        'Consulting that stops at recommendation is half a job — I would rather be measured on what shipped.',
+        'Running your own P&L teaches you which advice is actually expensive to follow.',
         'Saying no to the wrong client is the highest-leverage decision in a services business.',
-        'Every engagement taught me something I later used at ZenCabs. Consulting is a very fast way to see many businesses.',
+        'Every engagement compounded. Cairros is why I could walk into PwC already knowing how a business breaks.',
+      ],
+    },
+  },
+  {
+    slug: 'mccs-infra',
+    name: 'MCCS Infra',
+    subtitle: 'Infrastructure & construction',
+    role: 'Business Transformation Consultant',
+    period: 'Nov 2024 — Jul 2025',
+    summary:
+      'Restructured manpower and hiring for an infrastructure business, unlocking ₹2 Cr in cost savings and 4.5x inbound enquiries.',
+    tags: ['Transformation', 'Workforce', 'Digital Strategy'],
+    metrics: [
+      { label: 'Cost Unlocked', value: '₹2 Cr' },
+      { label: 'Enquiries', value: '4.5x' },
+      { label: 'Hiring TAT', value: '−80%' },
+    ],
+    accent: '#FF9F0A',
+    caseStudy: {
+      challenge:
+        'Construction businesses carry their cost base in people and idle capacity, and typically hire reactively — which means paying a premium for speed they never actually get. Meanwhile the commercial front door is invisible: no digital presence, so every enquiry comes through the same handful of relationships.',
+      strategy: [
+        'Treat manpower as a capacity planning problem rather than a headcount problem.',
+        'Fix the hiring system before hiring anyone else — a broken funnel just scales the cost.',
+        'Open a second demand channel so the business is not hostage to its existing network.',
+      ],
+      execution: [
+        'Restructured manpower and rebuilt capacity planning against the actual project pipeline.',
+        'Redesigned the hiring system and resource allocation end to end.',
+        'Drove the digital strategy and a full brand overhaul to open inbound as a channel.',
+      ],
+      results: [
+        'Unlocked ₹2 Cr in cost savings through manpower restructuring and capacity planning.',
+        'Accelerated inbound enquiries 4.5x.',
+        'Compressed hiring turnaround time by 80% and halved cost per hire.',
+      ],
+      lessons: [
+        'In a people-heavy business, the org chart is the cost structure. Change one and you have changed the other.',
+        'Reactive hiring is the most expensive hiring. Fixing the system beat fixing any individual role.',
+        'A brand overhaul is a growth lever in sectors that assume it is a vanity spend.',
       ],
     },
   },
   {
     slug: 'shaadi-mangalam',
     name: 'Shaadi Mangalam',
-    subtitle: 'Luxury matrimonial platform',
-    role: 'Brand & Growth',
-    period: 'Client Engagement',
+    subtitle: 'Wedding services',
+    role: 'Growth & Business Strategy Consultant',
+    period: 'Apr 2026 — Present',
     summary:
-      'Repositioned a matrimonial business toward the premium end of the market and built the digital funnel to generate qualified leads for it.',
-    tags: ['Brand', 'Digital Marketing', 'Lead Generation', 'Positioning'],
+      'Restructured pricing and sales for a wedding services business — monthly leads tripled to 3,000 and conversion moved from 1.4% to 4%.',
+    tags: ['Growth', 'Pricing', 'Lead Generation', 'Product'],
     metrics: [
-      { label: 'Focus', value: 'Luxury Segment' },
-      { label: 'Workstreams', value: '3' },
-      { label: 'Channel', value: 'Digital' },
+      { label: 'Monthly Leads', value: '3,000' },
+      { label: 'Conversion', value: '1.4% → 4%' },
+      { label: 'Fixes Shipped', value: '100+' },
     ],
     accent: '#C05CE0',
     caseStudy: {
       challenge:
-        'Matrimonial is a crowded, trust-driven and largely commoditised category where almost everyone competes on database size. Moving a business up-market means the brand has to earn a premium before the pricing can ask for one — and the lead flow has to get narrower and better, not bigger.',
+        'Wedding services is a crowded, trust-driven and high-consideration category. Volume alone does nothing: a business can triple its leads and go backwards if pricing and the sales motion are not built to convert them. The constraint was never traffic.',
       strategy: [
-        'Reposition from volume to selectivity. In a luxury segment, who you turn away is part of the product.',
-        'Rebuild the brand expression to match the price point — every touchpoint had to feel considered.',
-        'Optimise the funnel for lead quality rather than lead count, since this is a high-touch, high-consideration purchase.',
+        'Fix conversion before chasing volume — tripling leads into a 1.4% funnel just multiplies the waste.',
+        'Restructure pricing so the sales conversation starts from value rather than from a discount.',
+        'Treat the website as product, not brochure: ship fixes in sprints and measure each one.',
       ],
       execution: [
-        'Led the brand transformation — positioning, identity direction and messaging aimed at the premium segment.',
-        'Built and ran the digital marketing engine across the acquisition channels that reach that audience.',
-        'Set up lead generation and qualification so the sales conversation started with the right people.',
+        'Restructured pricing and the sales process end to end.',
+        'Led the website redesign and the digital strategy behind it.',
+        'Shipped 100+ process and product fixes across sprints.',
       ],
       results: [
-        'Delivered a repositioned brand aimed squarely at the luxury end of the matrimonial market.',
-        'Stood up a digital lead-generation funnel where the business previously relied on offline and referral flow.',
+        'Tripled monthly leads to 3,000.',
+        'Lifted conversion from 1.4% to 4%.',
+        'Shipped 100+ process and product fixes.',
       ],
       lessons: [
-        'Premium is not a price change. It is a consistency requirement across every single touchpoint.',
-        'In high-consideration categories, one qualified lead beats fifty curious ones — optimise accordingly.',
-        'Trust categories are won on signalling. What the brand implies matters as much as what it claims.',
+        'Conversion first, volume second. Almost every growth brief I get has this backwards.',
+        'Pricing is the fastest lever in a services business and the one founders are most reluctant to touch.',
+        'Shipping 100 small fixes beat waiting to ship one big redesign.',
+      ],
+    },
+  },
+  {
+    slug: 'equip9',
+    name: 'Equip9',
+    subtitle: 'Construction-tech marketplace',
+    role: 'Digital Marketing Executive',
+    period: 'Dec 2022 — Oct 2024',
+    summary:
+      'Segmentation-led acquisition for a construction-tech marketplace: 40% better lead conversion and 300% profit growth.',
+    tags: ['Performance Marketing', 'Segmentation', 'Content', 'AI Workflows'],
+    metrics: [
+      { label: 'Profit Growth', value: '300%' },
+      { label: 'Conversion', value: '+40%' },
+      { label: 'Revenue', value: '₹30L+' },
+    ],
+    accent: '#0A84FF',
+    caseStudy: {
+      challenge:
+        'A marketplace selling to contractors and equipment owners cannot run one message at everyone — the buyer renting a machine for a week and the owner listing a fleet want completely different things. Undifferentiated acquisition was burning spend on the wrong half of the audience.',
+      strategy: [
+        'Segment the audience properly and let each segment have its own message and funnel.',
+        'Optimise for conversion quality, not lead volume, because sales capacity was the real bottleneck.',
+        'Industrialise content production so the channel could scale without linear headcount.',
+      ],
+      execution: [
+        'Rebuilt acquisition around segmentation rather than a single blended funnel.',
+        'Owned branding and client delivery across 15+ accounts.',
+        'Built a content engine plus AI workflow agents to compress production time.',
+      ],
+      results: [
+        'Improved lead conversion by 40% and drove 300% profit growth.',
+        'Generated ₹30L+ in annual revenue across 15+ accounts.',
+        'Halved content production turnaround.',
+      ],
+      lessons: [
+        'Segmentation is the cheapest performance lever there is, and the most skipped.',
+        'If sales capacity is the bottleneck, more leads make things worse, not better.',
+        'Automating the content pipeline was the first time I saw AI move a real operating metric.',
       ],
     },
   },

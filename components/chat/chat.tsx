@@ -111,6 +111,12 @@ export function Chat({ compact = false }: { compact?: boolean }) {
                       )}
                     </button>
                   )}
+
+                  {/* A voice failure names its cause — wrong key, missing model
+                      and spent quota are very different fixes. */}
+                  {message.role === 'assistant' && speech.error && (
+                    <p className="mt-2 text-[11px] text-red-400/90">{speech.error}</p>
+                  )}
                 </div>
               </motion.div>
             ))}

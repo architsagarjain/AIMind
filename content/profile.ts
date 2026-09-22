@@ -7,13 +7,13 @@ import type { HeroStat } from '@/types';
  * Every surface reads from this folder: the hero, the desktop windows, the
  * resume, and the knowledge base handed to the AI clone.
  *
- * Editing rule: figures in `metrics` and `stats` are quoted verbatim by the AI.
- * Only put numbers here you are willing to defend in an interview — the system
- * prompt forbids the model from inventing any others.
+ * All figures here are taken from Archit's CV. The AI clone quotes them
+ * verbatim and is forbidden from inventing any others, so nothing goes in
+ * `metrics` or `stats` that is not on the CV.
  */
 
 export const profile = {
-  name: 'Archit Jain',
+  name: 'Archit Sagar Jain',
   firstName: 'Archit',
   lastName: 'Jain',
   product: 'ARCHIT.AI',
@@ -21,35 +21,53 @@ export const profile = {
   altTagline: "Don't read my portfolio. Talk to it.",
   roles: ['Founder', 'Growth Operator', 'Strategy Enthusiast'],
   hometown: 'Jammu, India',
+  based: 'Gurugram, India',
   currently: "PGP in Technology & Business, Masters' Union",
+  alsoCurrently: 'Head of Strategy & Growth, ZenCabs',
+
+  /** The CV's professional summary, trimmed for the hero. */
+  summary:
+    'I turn ambiguous problems into decisions, systems and outcomes. ₹6+ Cr in client cost savings at PwC India, and ZenCabs from launch to a ₹3 Cr annualised run-rate in four months.',
+
   description:
-    "I build, market and scale ideas. From consulting at PwC to launching ZenCabs in Jammu and studying at Masters' Union, I'm always curious about what's next.",
+    'I build, market and scale ideas. From risk consulting at PwC India to running strategy and growth at ZenCabs, and now the PGP at Masters’ Union.',
+
   about: [
     'I come from a fourth-generation business family in Jammu, so operating a business was the dinner-table conversation long before it was a career.',
-    'I started in marketing and consulting, then spent a year at PwC India in risk consulting — governance, risk and compliance work that taught me how large organisations actually make decisions.',
-    'From there I went the other direction entirely: I joined ZenCabs in Jammu as Head of Strategy & Growth and helped take it to 20,000+ users, and I founded Cairros Consulting to do growth, marketing and strategy work for founders.',
-    "Today I'm at Masters' Union pursuing a PGP in Technology & Business, sitting at the intersection of startups, growth and technology — which is exactly where I want to be.",
+    'I started Cairros in my second year of college and scaled it to seven-figure annual revenue in two years — strategy, sales and delivery, end to end. That is still the fastest education I have had.',
+    'At PwC India I spent fifteen months in risk consulting, delivering ₹6+ Cr in annual client cost savings across engagements worth ₹12 Cr+ for clients including Cars24, Stryker India and PIF. I also co-built an internal audit AI tool that saved 10,000+ consulting hours across 200+ consultants.',
+    'Then I went the other direction entirely. At ZenCabs I took an EV mobility venture from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months — cancellations from 40% to 6%, fleet utilisation from 40% to 75%.',
+    'Today I am at Masters’ Union on the PGP in Technology & Business, sitting where consulting rigour meets founder-speed execution. That is exactly where I want to be.',
   ],
+
   interests: [
-    'Startups',
+    'Founder’s Office',
     'Growth',
+    'Go-To-Market',
     'Strategy',
     'Consulting',
-    'Marketing',
+    'Operations',
     'Product',
     'AI',
   ],
+
+  /** Shown in the hero as a credibility strip. */
+  affiliations: ['PwC India', 'Masters’ Union', 'ZenCabs', 'Cairros', 'Symbiosis'],
+
   links: {
-    email: 'hello@architjain.ai',
-    linkedin: 'https://www.linkedin.com/in/architsagarjain',
-    github: 'https://github.com/architsagarjain',
+    email: 'architsagarjain@gmail.com',
+    phone: '+91 96222 65599',
+    linkedin: 'https://www.linkedin.com/in/archit-sagar-jain/',
   },
 } as const;
 
-/** Hero stat strip. Keep to four — the layout is tuned for it. */
+/**
+ * Hero stat strip. Keep to four — the layout is tuned for it.
+ * Every figure is from the CV.
+ */
 export const heroStats: HeroStat[] = [
-  { value: '20K+', label: 'ZenCabs Users' },
-  { value: '7+', label: 'Clients Served' },
-  { value: '1', label: 'Year At PwC' },
-  { value: '∞', label: 'Ideas Ahead' },
+  { value: '₹6+ Cr', label: 'Client Savings Delivered' },
+  { value: '25K+', label: 'ZenCabs Users' },
+  { value: '₹3 Cr', label: 'Run-Rate In 4 Months' },
+  { value: '10K+', label: 'Consulting Hours Saved' },
 ];

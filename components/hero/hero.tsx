@@ -6,18 +6,22 @@ import { heroStats, profile } from '@/content/profile';
 import { EASE_OUT_EXPO } from '@/lib/utils';
 
 /**
- * Hero overlay: the copy layer that sits on top of the 3D canvas.
+ * Hero overlay: the copy layer on top of the 3D canvas.
+ *
+ * The figures do the persuading here, so they are given real hierarchy rather
+ * than being tucked under the fold — the headline number appears inline in the
+ * summary, and the stat strip uses the accent colour instead of plain white.
  *
  * `fade` is driven by scroll progress so the text dissolves as the camera
- * begins its push — the 3D scene should be the only thing left by the dive.
+ * begins its push; by the dive, only the 3D scene is left.
  */
 
 const rise = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 26 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, delay: 0.25 + i * 0.09, ease: EASE_OUT_EXPO },
+    transition: { duration: 0.85, delay: 0.2 + i * 0.075, ease: EASE_OUT_EXPO },
   }),
 };
 
@@ -28,13 +32,18 @@ interface HeroProps {
   fade: number;
 }
 
+/** Inline emphasis for a figure inside running copy. */
+function Figure({ children }: { children: React.ReactNode }) {
+  return <span className="font-semibold text-ink">{children}</span>;
+}
+
 export function Hero({ onTalk, onExplore, fade }: HeroProps) {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-20 flex flex-col justify-between px-6 pt-24 pb-5 md:px-12 md:pt-36 md:pb-10"
+      className="pointer-events-none absolute inset-0 z-20 flex flex-col justify-between px-6 pt-20 pb-5 md:px-12 md:pt-28 md:pb-10"
       style={{
         opacity: fade,
-        // Copy drifts up and back slightly as it fades — a parallax depth cue.
+        // Copy drifts up and back as it fades — a parallax depth cue.
         transform: `translate3d(0, ${(1 - fade) * -40}px, 0) scale(${1 - (1 - fade) * 0.04})`,
         filter: fade < 0.98 ? `blur(${(1 - fade) * 6}px)` : undefined,
         willChange: 'opacity, transform',
@@ -42,8 +51,26 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
     >
       {/* ------------------------------------------------------------- copy */}
       <div className="max-w-xl lg:max-w-2xl">
-        <motion.p
+        {/* Status pill: what he is doing *right now*, which the rest of the
+            page can only tell you by implication. */}
+        <motion.div
           custom={0}
+          variants={rise}
+          initial="hidden"
+          animate="show"
+          className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-hairline-strong bg-white/[0.04] py-1.5 pr-4 pl-2.5 backdrop-blur-xl"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+          </span>
+          <span className="text-[10px] font-semibold tracking-[0.14em] text-muted uppercase">
+            {profile.currently.split(',')[0]} · {profile.alsoCurrently.split(',')[0]}
+          </span>
+        </motion.div>
+
+        <motion.p
+          custom={1}
           variants={rise}
           initial="hidden"
           animate="show"
@@ -53,22 +80,22 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
         </motion.p>
 
         <motion.h1
-          custom={1}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className="mt-3 font-display text-[clamp(2.6rem,11vw,7.5rem)] leading-[0.86] font-extrabold md:mt-4"
-        >
-          <span className="block text-ink">ARCHIT</span>
-          <span className="block text-gradient-accent">JAIN</span>
-        </motion.h1>
-
-        <motion.p
           custom={2}
           variants={rise}
           initial="hidden"
           animate="show"
-          className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[8.5px] font-semibold tracking-[0.14em] text-ink uppercase sm:gap-x-3 sm:text-[10px] sm:tracking-[0.2em] md:mt-7 md:text-[11px]"
+          className="mt-3 font-display text-[clamp(2.6rem,10vw,6.8rem)] leading-[0.86] font-extrabold md:mt-4"
+        >
+          <span className="block text-ink">ARCHIT</span>
+          <span className="text-gradient-accent block">JAIN</span>
+        </motion.h1>
+
+        <motion.p
+          custom={3}
+          variants={rise}
+          initial="hidden"
+          animate="show"
+          className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[8.5px] font-semibold tracking-[0.14em] text-ink uppercase sm:gap-x-3 sm:text-[10px] sm:tracking-[0.2em] md:mt-6 md:text-[11px]"
         >
           {profile.roles.map((role, i) => (
             <span key={role} className="flex items-center gap-2 sm:gap-3">
@@ -78,24 +105,42 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           ))}
         </motion.p>
 
+        {/* The summary carries the two numbers worth remembering. */}
         <motion.p
-          custom={3}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className="mt-5 max-w-lg text-[13.5px] leading-relaxed text-muted sm:text-[15px] md:mt-7 md:text-base"
-        >
-          I build, market and scale ideas. From consulting at PwC to launching ZenCabs in Jammu, to
-          studying at Masters&apos; Union — I&apos;m always curious about what&apos;s next.
-        </motion.p>
-
-        {/* ---------------------------------------------------------- actions */}
-        <motion.div
           custom={4}
           variants={rise}
           initial="hidden"
           animate="show"
-          className="pointer-events-auto mt-7 flex flex-wrap items-center gap-3 md:mt-10 md:gap-4"
+          className="mt-5 max-w-lg text-[13.5px] leading-relaxed text-muted sm:text-[15px] md:mt-6 md:text-base"
+        >
+          I turn ambiguous problems into decisions, systems and outcomes.{' '}
+          <Figure>₹6+ Cr</Figure> in client cost savings at PwC India, and ZenCabs from launch to a{' '}
+          <Figure>₹3 Cr</Figure> annualised run-rate in four months.
+        </motion.p>
+
+        {/* Credibility strip — the names do work that adjectives cannot. */}
+        <motion.p
+          custom={5}
+          variants={rise}
+          initial="hidden"
+          animate="show"
+          className="mt-5 hidden flex-wrap items-center gap-x-3 gap-y-2 text-[9px] font-semibold tracking-[0.2em] text-faint uppercase sm:flex md:mt-6 md:text-[10px]"
+        >
+          {profile.affiliations.map((org, i) => (
+            <span key={org} className="flex items-center gap-3">
+              {i > 0 && <span className="h-3 w-px bg-hairline-strong" />}
+              {org}
+            </span>
+          ))}
+        </motion.p>
+
+        {/* ---------------------------------------------------------- actions */}
+        <motion.div
+          custom={6}
+          variants={rise}
+          initial="hidden"
+          animate="show"
+          className="pointer-events-auto mt-7 flex flex-wrap items-center gap-3 md:mt-9 md:gap-4"
         >
           <button
             onClick={onTalk}
@@ -116,7 +161,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
         </motion.div>
 
         <motion.p
-          custom={5}
+          custom={7}
           variants={rise}
           initial="hidden"
           animate="show"
@@ -128,23 +173,22 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
 
       {/* ------------------------------------------------------------ bottom */}
       <div className="flex items-end justify-between gap-8">
-        {/* Stats */}
         <motion.dl
-          custom={6}
+          custom={8}
           variants={rise}
           initial="hidden"
           animate="show"
-          className="flex flex-wrap items-center gap-x-4 gap-y-3 sm:gap-x-10 sm:gap-y-4"
+          className="flex flex-wrap items-center gap-x-4 gap-y-3 sm:gap-x-9 sm:gap-y-4"
         >
           {heroStats.map((stat, i) => (
-            <div key={stat.label} className="flex items-center gap-4 sm:gap-10">
-              {i > 0 && <span className="hidden h-8 w-px bg-hairline-strong sm:block" />}
+            <div key={stat.label} className="flex items-center gap-4 sm:gap-9">
+              {i > 0 && <span className="hidden h-9 w-px bg-hairline-strong sm:block" />}
               <div>
                 <dt className="sr-only">{stat.label}</dt>
-                <dd className="font-display text-lg font-extrabold text-ink tabular-nums sm:text-2xl md:text-[28px]">
+                <dd className="text-gradient-accent font-display text-lg font-extrabold tabular-nums sm:text-2xl md:text-[30px]">
                   {stat.value}
                 </dd>
-                <p className="mt-1 text-[8px] font-semibold tracking-[0.12em] text-faint uppercase sm:text-[9px] sm:tracking-[0.18em]">
+                <p className="mt-1 text-[8px] font-semibold tracking-[0.12em] text-faint uppercase sm:text-[9px] sm:tracking-[0.16em]">
                   {stat.label}
                 </p>
               </div>
@@ -152,9 +196,8 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           ))}
         </motion.dl>
 
-        {/* Meet-the-AI card */}
         <motion.button
-          custom={7}
+          custom={9}
           variants={rise}
           initial="hidden"
           animate="show"
@@ -190,13 +233,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
   );
 }
 
-/**
- * Scroll affordance — a mouse glyph over a draining progress line.
- *
- * Lives on the right edge rather than under the copy: the left column already
- * carries the headline, buttons and stat strip, and anything placed there
- * collides with the description at common viewport heights.
- */
+/** Scroll affordance — a mouse glyph over a draining progress line. */
 export function ScrollCue({ progress, fade }: { progress: number; fade: number }) {
   return (
     <div

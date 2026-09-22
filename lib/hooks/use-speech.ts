@@ -15,6 +15,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 export function useSpeech() {
   const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [available, setAvailable] = useState(true);
+  /** Surfaced next to the control, so a failure is legible rather than silent. */
+  const [error, setError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const urlRef = useRef<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -43,6 +45,7 @@ export function useSpeech() {
         return;
       }
       cleanup();
+      setError(null);
       setSpeakingId(id);
 
       const controller = new AbortController();
@@ -57,11 +60,19 @@ export function useSpeech() {
         });
 
         if (res.status === 503) {
+          // No key configured: hide the control rather than offering something
+          // that cannot work.
           setAvailable(false);
           setSpeakingId(null);
           return;
         }
-        if (!res.ok) throw new Error(`speak failed (${res.status})`);
+        if (!res.ok) {
+          // Anything else is a real failure worth showing — a wrong key, a
+          // model the plan lacks, or exhausted quota all land here, and the
+          // route passes the upstream reason through.
+          const detail = (await res.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(detail?.error ?? `Playback failed (${res.status})`);
+        }
 
         const url = URL.createObjectURL(await res.blob());
         urlRef.current = url;
@@ -75,6 +86,7 @@ export function useSpeech() {
       } catch (err) {
         if (!(err instanceof DOMException && err.name === 'AbortError')) {
           console.error('[speech]', err);
+          setError(err instanceof Error ? err.message : 'Playback failed.');
         }
         setSpeakingId(null);
       }
@@ -82,5 +94,5 @@ export function useSpeech() {
     [cleanup, speakingId, stop],
   );
 
-  return { speak, stop, speakingId, available };
+  return { speak, stop, speakingId, available, error };
 }
