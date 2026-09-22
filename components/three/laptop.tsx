@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
+import { MODEL_URLS } from '@/lib/model-manifest';
 import { applyTextureQuality } from './texture-quality';
 
 /**
@@ -20,7 +21,8 @@ import { applyTextureQuality } from './texture-quality';
  * which swaps the stock macOS wallpaper for an ARCHIT.OS desktop.
  */
 
-const MODEL_URL = '/models/macbook.glb';
+/** Content-hashed; see scripts/write-model-manifest.mjs. */
+const MODEL_URL = MODEL_URLS.macbook;
 
 /** The model is authored in centimetres; the scene is in metres. */
 const CM = 0.01;

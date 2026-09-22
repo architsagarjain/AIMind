@@ -2,12 +2,14 @@
   "name": "archit-ai",
   "version": "1.0.0",
   "private": true,
-  "description": "ARCHIT.AI — Talk. Explore. Know Me.",
+  "description": "ARCHIT.AI \u2014 Talk. Explore. Know Me.",
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run models && next dev",
+    "models": "node scripts/write-model-manifest.mjs",
+    "prebuild": "npm run models",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

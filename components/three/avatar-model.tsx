@@ -5,6 +5,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
+import { MODEL_URLS } from '@/lib/model-manifest';
 import { applyTextureQuality } from './texture-quality';
 
 /**
@@ -24,7 +25,9 @@ import { applyTextureQuality } from './texture-quality';
  * no notion of how fabric folds. The figure therefore stands.
  */
 
-const MODEL_URL = '/models/archit.glb';
+/** Carries a content hash, so the immutable cache header cannot serve a
+ *  stale model after the file is replaced. See scripts/write-model-manifest.mjs. */
+const MODEL_URL = MODEL_URLS.archit;
 
 /** Mesh bounds are centred on the origin, so the feet sit this far below it. */
 const FOOT_OFFSET = 0.9513;

@@ -333,6 +333,24 @@ is the only thing to redo if the model is replaced.
 The same pattern covers the character: `FOOT_OFFSET` and `SCALE` in
 `avatar-model.tsx` come from its mesh bounds.
 
+### Model URLs are content-hashed for the same reason
+
+`/models/*` is served `Cache-Control: immutable, max-age=31536000`, which is
+correct for a multi-megabyte asset — but only if the URL changes when the bytes
+do. Originally it did not, and `archit.glb` was replaced three times at the same
+path. Every browser that had already loaded the site kept the first version
+pinned for a year and rendered a stale model no matter what was deployed. The
+deploy looked fine; the page did not change.
+
+`scripts/write-model-manifest.mjs` hashes each GLB and generates
+`lib/model-manifest.ts`, which the components import instead of hard-coding
+paths. It runs on `prebuild`, so the manifest cannot drift from what is in
+`public/models/`.
+
+The general rule: a long `immutable` cache is a promise that the URL identifies
+the bytes. Keep that promise in the filename or the query string, or do not make
+it.
+
 ---
 
 ## 12. Things deliberately left out

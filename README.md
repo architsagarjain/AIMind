@@ -386,6 +386,9 @@ they cannot drift apart.
 - The two models (1.98MB + 2.90MB) are fetched only after the capability check
   passes, in parallel with the room rendering, and served `immutable` for a
   year. They are never requested on a device that would stutter on them.
+- Model URLs carry a content hash (`scripts/write-model-manifest.mjs`, run on
+  `prebuild`), so that year-long cache can never serve a stale model after the
+  file is replaced.
 - Fonts via `next/font` (self-hosted, `display: swap`, no layout shift).
 - `optimizePackageImports` for `lucide-react`, `framer-motion`, `drei`.
 - No postprocessing pass — the cyan bloom is achieved with emissive materials,
