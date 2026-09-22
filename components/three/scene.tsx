@@ -5,6 +5,7 @@ import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { ContactShadows } from '@react-three/drei';
 import { AvatarModel } from './avatar-model';
+import { Laptop } from './laptop';
 import { Office } from './office';
 import { CameraRig } from './camera-rig';
 import { useExperience } from '@/lib/store/experience';
@@ -64,6 +65,7 @@ export default function Scene() {
       {/* The model streams separately from the rest of the scene, so the room
           and lighting render immediately rather than blocking on it. */}
       <Suspense fallback={null}>
+        <Laptop still={reduced} />
         <AvatarModel pointer={pointer} still={reduced} />
         {/* Grounding shadow. Baked on the first frame rather than re-rendered
             every frame — the figure only sways a few millimetres, so a live

@@ -13,44 +13,11 @@ import * as THREE from 'three';
  *   x ≈ 2.6    desk, running off the right edge of frame
  *   z ≈ -4.2   window wall and the city beyond it
  *
- * LAPTOP_SCREEN below is the camera rig's destination, derived from the laptop
- * group's nested transforms — if the laptop moves, that constant moves with it.
+ * The laptop itself is a loaded model; see `laptop.tsx`, which also owns the
+ * camera rig's target constants.
  */
-
-/**
- * Laptop placement, declared once and consumed by both the JSX below and the
- * camera rig.
- *
- * The screen's world position used to be a hand-computed literal, which
- * silently drifted the moment the lid geometry changed — the camera then flew
- * to where the screen *used* to be. Composing the same transforms three.js will
- * apply makes the constant derived rather than remembered.
- */
-const LAPTOP_POSITION = new THREE.Vector3(2.0, 0.775, -0.1);
-const LAPTOP_ROTATION_Y = 0.55;
-/** Lid pivot, relative to the laptop group. */
-const LID_OFFSET = new THREE.Vector3(0, 0.014, -0.12);
-const LID_TILT_X = -0.26;
-/** Screen plane, relative to the lid pivot. */
-const SCREEN_OFFSET = new THREE.Vector3(0, 0.285, 0.004);
-
-const LAPTOP_MATRIX = new THREE.Matrix4()
-  .makeRotationY(LAPTOP_ROTATION_Y)
-  .premultiply(new THREE.Matrix4().makeTranslation(LAPTOP_POSITION));
-const LID_MATRIX = LAPTOP_MATRIX.clone()
-  .multiply(new THREE.Matrix4().makeTranslation(LID_OFFSET))
-  .multiply(new THREE.Matrix4().makeRotationX(LID_TILT_X));
-
-/** World-space centre of the laptop screen — the camera rig's destination. */
-export const LAPTOP_SCREEN = SCREEN_OFFSET.clone().applyMatrix4(LID_MATRIX);
-
-/** Unit normal the screen faces, used to park the camera just off its surface. */
-export const LAPTOP_NORMAL = new THREE.Vector3(0, 0, 1)
-  .transformDirection(LID_MATRIX)
-  .normalize();
 
 export function Office({ still = false }: { still?: boolean }) {
-  const screenGlow = useRef<THREE.PointLight>(null);
   const cityRef = useRef<THREE.Points>(null);
 
   const materials = useMemo(
@@ -61,43 +28,8 @@ export function Office({ still = false }: { still?: boolean }) {
       metal: new THREE.MeshStandardMaterial({ color: '#9aa0ab', roughness: 0.3, metalness: 0.85 }),
       // Anodised aluminium: low roughness + high metalness is what separates a
       // MacBook read from a generic grey slab.
-      aluminium: new THREE.MeshStandardMaterial({
-        color: '#b9bec7',
-        roughness: 0.22,
-        metalness: 0.95,
-      }),
-      aluminiumDark: new THREE.MeshStandardMaterial({
-        color: '#70757e',
-        roughness: 0.3,
-        metalness: 0.9,
-      }),
-      bezel: new THREE.MeshStandardMaterial({ color: '#0a0a0e', roughness: 0.5 }),
-      keycap: new THREE.MeshStandardMaterial({ color: '#15151b', roughness: 0.75 }),
-      logo: new THREE.MeshStandardMaterial({
-        color: '#000000',
-        emissive: '#e8f7ff',
-        emissiveIntensity: 0.7,
-      }),
       metalDark: new THREE.MeshStandardMaterial({ color: '#4a4f58', roughness: 0.4, metalness: 0.7 }),
-      chair: new THREE.MeshStandardMaterial({ color: '#16161f', roughness: 0.75 }),
-      screen: new THREE.MeshStandardMaterial({
-        color: '#08121f',
-        emissive: '#0d2740',
-        emissiveIntensity: 1,
-        roughness: 0.2,
-      }),
-      screenUi: new THREE.MeshStandardMaterial({
-        color: '#000000',
-        emissive: '#6ef2ff',
-        emissiveIntensity: 1.6,
-        roughness: 0.4,
-      }),
-      screenUiDim: new THREE.MeshStandardMaterial({
-        color: '#000000',
-        emissive: '#1d9bf0',
-        emissiveIntensity: 0.5,
-        roughness: 0.4,
-      }),
+      chair: new THREE.MeshStandardMaterial({ color: '#101017', roughness: 0.88 }),
       mug: new THREE.MeshStandardMaterial({ color: '#15151d', roughness: 0.5 }),
       book: new THREE.MeshStandardMaterial({ color: '#2a2a38', roughness: 0.85 }),
       leaf: new THREE.MeshStandardMaterial({ color: '#254a37', roughness: 0.75 }),
@@ -145,16 +77,11 @@ export function Office({ still = false }: { still?: boolean }) {
   useFrame((state) => {
     if (still) return;
     const t = state.clock.elapsedTime;
-    if (screenGlow.current) {
-      screenGlow.current.intensity = 1.5 + Math.sin(t * 2.3) * 0.12 + Math.sin(t * 7.1) * 0.05;
-    }
     if (cityRef.current) {
       const material = cityRef.current.material as THREE.PointsMaterial;
       material.opacity = 0.78 + Math.sin(t * 0.6) * 0.07;
     }
   });
-
-  const m = materials;
 
   return (
     <group>
@@ -237,99 +164,6 @@ export function Office({ still = false }: { still?: boolean }) {
         ))}
       </group>
 
-      {/* -------------------------------------------------------------- laptop */}
-      {/* Proportioned off a 14" notebook: a thin tapered deck, a narrow bezel,
-          and a lid a touch wider than it is tall. LAPTOP_SCREEN is derived from
-          exactly these transforms — move the laptop and it moves with it. */}
-      <group position={LAPTOP_POSITION} rotation={[0, LAPTOP_ROTATION_Y, 0]}>
-        {/* Deck */}
-        <mesh position={[0, 0.007, 0.18]} castShadow material={m.aluminium}>
-          <boxGeometry args={[0.82, 0.014, 0.57]} />
-        </mesh>
-        {/* Foot shadow line under the front lip */}
-        <mesh position={[0, -0.002, 0.18]} material={m.aluminiumDark}>
-          <boxGeometry args={[0.8, 0.006, 0.55]} />
-        </mesh>
-
-        {/* Keyboard well + keycap field */}
-        <mesh position={[0, 0.015, 0.14]} material={m.bezel}>
-          <boxGeometry args={[0.66, 0.003, 0.26]} />
-        </mesh>
-        {Array.from({ length: 5 }).map((_, row) =>
-          Array.from({ length: 14 }).map((__, col) => (
-            <mesh
-              key={`${row}-${col}`}
-              position={[-0.315 + col * 0.0485, 0.018, 0.045 + row * 0.048]}
-              material={m.keycap}
-            >
-              <boxGeometry args={[0.04, 0.003, 0.04]} />
-            </mesh>
-          )),
-        )}
-        {/* Trackpad */}
-        <mesh position={[0, 0.016, 0.335]} material={m.aluminiumDark}>
-          <boxGeometry args={[0.24, 0.002, 0.16]} />
-        </mesh>
-
-        {/* Lid, hinged back ~15° */}
-        <group position={LID_OFFSET} rotation={[LID_TILT_X, 0, 0]}>
-          {/* Outer shell */}
-          <mesh position={[0, 0.28, -0.008]} castShadow material={m.aluminium}>
-            <boxGeometry args={[0.82, 0.56, 0.011]} />
-          </mesh>
-          {/* Backlit logo on the shell */}
-          <mesh position={[0, 0.28, -0.015]} material={m.logo}>
-            <circleGeometry args={[0.05, 20]} />
-          </mesh>
-          {/* Bezel then screen, so the display is inset rather than flush */}
-          <mesh position={[0, 0.28, 0.0]} material={m.bezel}>
-            <planeGeometry args={[0.8, 0.54]} />
-          </mesh>
-          <mesh position={SCREEN_OFFSET} material={m.screen}>
-            <planeGeometry args={[0.76, 0.5]} />
-          </mesh>
-
-          {/* On-screen UI — a title bar, a sidebar, copy lines and a panel, so
-              the camera's dive lands on something structured, not a void. */}
-          <group position={[0, 0.285, 0.007]}>
-            <mesh position={[0, 0.222, 0]} material={m.screenUi}>
-              <planeGeometry args={[0.73, 0.016]} />
-            </mesh>
-            {/* Sidebar */}
-            <mesh position={[-0.3, 0.02, 0]} material={m.screenUiDim}>
-              <planeGeometry args={[0.14, 0.4]} />
-            </mesh>
-            {[0.12, 0.06, 0, -0.06, -0.12].map((y, i) => (
-              <mesh key={y} position={[-0.3, y + 0.06, 0.001]} material={m.screenUi}>
-                <planeGeometry args={[0.1 - (i % 2) * 0.02, 0.008]} />
-              </mesh>
-            ))}
-            {/* Body copy */}
-            {[0.15, 0.105, 0.06, 0.015, -0.03].map((y, i) => (
-              <mesh key={y} position={[-0.02 - i * 0.012, y, 0]} material={m.screenUi}>
-                <planeGeometry args={[0.34 - i * 0.035, 0.011]} />
-              </mesh>
-            ))}
-            {/* Card */}
-            <mesh position={[0.2, -0.11, 0]} material={m.screenUiDim}>
-              <planeGeometry args={[0.22, 0.14]} />
-            </mesh>
-            <mesh position={[0.2, -0.06, 0.001]} material={m.screenUi}>
-              <planeGeometry args={[0.18, 0.01]} />
-            </mesh>
-          </group>
-
-          <pointLight
-            ref={screenGlow}
-            position={[0, 0.28, 0.5]}
-            color="#6ef2ff"
-            intensity={1.5}
-            distance={3.2}
-            decay={2}
-          />
-        </group>
-      </group>
-
       {/* ----------------------------------------------------------------- mug */}
       <group position={[2.78, 0.775, 0.16]}>
         <mesh material={materials.mug} castShadow>
@@ -379,7 +213,7 @@ export function Office({ still = false }: { still?: boolean }) {
       {/* --------------------------------------------------------------- chair */}
       {/* Sits behind the subject; the backrest is deliberately low so it frames
           the shoulders instead of hiding them. */}
-      <group position={[1.55, 0, -0.55]} rotation={[0, -0.75, 0]}>
+      <group position={[1.42, 0, -0.62]} rotation={[0, -0.8, 0]}>
         <mesh position={[0, 1.02, -0.36]} rotation={[0.14, 0, 0]} castShadow material={materials.chair}>
           <boxGeometry args={[0.72, 0.82, 0.1]} />
         </mesh>

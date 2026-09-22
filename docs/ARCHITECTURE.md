@@ -222,13 +222,19 @@ hand-computed literal. It silently drifted by 0.018 units the first time the lid
 geometry changed, which at the final camera distance of 0.2 is roughly 9% off
 centre, and nothing failed loudly.
 
-It is now composed from the same transforms three.js applies
-(`LAPTOP_POSITION → LID_OFFSET/LID_TILT_X → SCREEN_OFFSET`), and the JSX reads
-from those same constants. Move the laptop and the camera target moves with it.
+It is now composed in `laptop.tsx` from the placement constants the JSX itself
+uses, so moving the laptop moves the camera target with it. The screen's
+position and normal in model space were *measured* off the source GLB — the
+bounding-box centre and average vertex normal of the one mesh carrying an
+emissive texture — rather than estimated from the lid angle. That measurement
+is the only thing to redo if the model is replaced.
+
+The same pattern covers the character: `FOOT_OFFSET` and `SCALE` in
+`avatar-model.tsx` come from its mesh bounds.
 
 ---
 
-## 11. Things deliberately left out
+## 12. Things deliberately left out
 
 **GSAP.** See the README note. The scroll cinematic needs a damped camera follow
 inside `useFrame`; a second animation clock would fight it for the same camera.

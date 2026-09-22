@@ -146,10 +146,24 @@ to start persisting conversations. Neither is required to ship.
 │
 ├── lib/
 │   ├── ai/                     # system prompt, knowledge base, fallback, rate limit
-│   ├── supabase/               # browser client, admin client, queries
+│   ├── scripts/                    # build-time asset prep, not runtime
+│   ├── optimize-model.mjs      # repacks the character GLB
+│   ├── optimize-laptop.mjs     # repacks the MacBook + bakes the screen
+│   └── make-screen-texture.mjs # renders the ARCHIT.OS screen PNG
+│
+├── assets/screen.png           # build input, deliberately not in public/
+│
+├── supabase/               # browser client, admin client, queries
 │   ├── store/                  # experience + windows (zustand)
 │   ├── hooks/                  # chat, preferences, telemetry
 │   └── utils.ts
+│
+├── scripts/                    # build-time asset prep, not runtime
+│   ├── optimize-model.mjs      # repacks the character GLB
+│   ├── optimize-laptop.mjs     # repacks the MacBook + bakes the screen
+│   └── make-screen-texture.mjs # renders the ARCHIT.OS screen PNG
+│
+├── assets/screen.png           # build input, deliberately not in public/
 │
 ├── supabase/
 │   ├── migrations/0001_init.sql
@@ -197,9 +211,15 @@ targets — which rules out sitting, blinking and independent head turn. The idl
 therefore moves the whole figure: a breath, a slow weight shift, and a gentle
 turn toward the pointer. See `docs/ARCHITECTURE.md` §9.
 
-**The model is repacked, not shipped as exported.** The source was 4.21MB, of
-which ~3MB was three 2048² JPEGs. Downscaled to 1024² it is **1.44MB** with no
-visible loss at hero size. The repack script is in `docs/ARCHITECTURE.md` §9.
+**Models are repacked, not shipped as exported.** The character went from
+4.21MB to **1.44MB** (textures downscaled to 1024²); the MacBook from 10.11MB to
+**2.90MB** (welded, WebP textures, vertex quantization — no Draco, so no wasm
+decoder is fetched at runtime). Both scripts live in `scripts/`; see
+`docs/ARCHITECTURE.md` §9 and §10.
+
+**The laptop screen shows ARCHIT.OS.** It is the surface the cinematic flies
+into, so the stock macOS wallpaper is swapped at build time for a rendering of
+the desktop the visitor is about to land in.
 
 **Damping is exponential, never `delta * rate`.** `lerp(a, b, delta * 28)` looks
 correct and is a bug: `delta * rate` is an interpolation *factor*, not a rate, so
@@ -362,8 +382,9 @@ they cannot drift apart.
   frames.
 - Scroll handling is rAF-coalesced; drag/resize bypass React entirely during the
   gesture.
-- The 1.44MB character model is fetched only after the capability check passes,
-  in parallel with the room rendering, and is served `immutable` for a year.
+- The two models (1.44MB + 2.90MB) are fetched only after the capability check
+  passes, in parallel with the room rendering, and served `immutable` for a
+  year. They are never requested on a device that would stutter on them.
 - Fonts via `next/font` (self-hosted, `display: swap`, no layout shift).
 - `optimizePackageImports` for `lucide-react`, `framer-motion`, `drei`.
 - No postprocessing pass — the cyan bloom is achieved with emissive materials,

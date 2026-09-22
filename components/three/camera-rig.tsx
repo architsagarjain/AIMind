@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { LAPTOP_NORMAL, LAPTOP_SCREEN } from './office';
+import { LAPTOP_NORMAL, LAPTOP_SCREEN } from './laptop';
 
 /**
  * Scroll-driven camera move, in three beats:
