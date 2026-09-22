@@ -139,39 +139,81 @@ rather than instanced geometry.
 
 ---
 
-## 9. Posing the character
+## 9. The character model
 
-Limb placement goes through `<Limb from={...} to={...}>`
-(`components/three/limb.tsx`), which takes two joint positions and solves the
-capsule's midpoint, length and rotation.
+`components/three/avatar-model.tsx` loads `public/models/archit.glb`.
 
-The alternative — writing Euler angles directly — does not converge. Every
-adjustment to a shoulder invalidates the elbow below it, so each tweak costs a
-re-derivation of everything downstream. With a solver the pose is a list of
-joint coordinates at the top of `avatar.tsx`, readable as a skeleton and
-editable one coordinate at a time.
+### What the file supports
 
-The derivation is in the file's header comment. The short version: three.js
-applies Euler order `XYZ` as `Rx·Ry·Rz`, so with no Y term a capsule's local +Y
-maps to `(−sin z, cos z·cos x, cos z·sin x)`, which inverts to
-`z = asin(−d.x)`, `x = atan2(d.z, d.y)`.
+The supplied model is a **single static mesh**: no skin, no skeleton, no
+animations, no morph targets. That is not a defect — it is what a photogrammetry
+or generative pipeline produces — but it rules out three things:
 
-Two failure modes this rules out:
+| Wanted | Needs | Present? |
+| --- | --- | --- |
+| Sitting in the chair | A rig, to bend the legs | No |
+| Blinking | `eyeBlink*` morph targets | No |
+| Head turning independently | A head or neck bone | No |
 
-- **Capsule axis.** `CapsuleGeometry`'s long axis is +Y, so anything meant to
-  lie horizontally — an eyebrow, a lash line — needs a quarter turn about Z.
-  Without it, brows stand upright in the eye socket.
-- **Cap overshoot.** The geometry's second argument is the *cylinder* height,
-  not the total length, so the hemispherical caps have to be subtracted from
-  the joint distance or every limb overshoots by one diameter.
+So the idle animates the **root**, not parts: a breath that scales the figure a
+fraction, a slow weight shift, and a gentle turn toward the pointer. Applied to
+the whole figure that reads as presence. Applied to a limb of an unrigged mesh
+it would read as broken.
 
-A related rule for the face: the skull's z semi-axis is 0.285, and at the eyes'
-x offset the surface falls to about 0.269. Any feature placed shallower than
-that is swallowed by the head. Cheek geometry was tried and removed for exactly
-this reason — the spheres sat proud of the eye plane and buried the eyes. In
-the reference image the cheeks are lighting, not shape.
+The hero composition changed to match. The earlier layout had the subject seated
+at the desk; a standing figure cannot be posed into that, so the camera now
+frames him standing beside the desk with the laptop to his right.
 
----
+### Swapping in a rigged model
+
+The wrapper is the seam. Keep `AvatarModel`, and in `useFrame` drive bones and
+morph targets instead of the root transform:
+
+```ts
+// blink, if the model carries ARKit-style morph targets
+const dict = mesh.morphTargetDictionary;
+mesh.morphTargetInfluences[dict.eyeBlinkLeft] = blink;
+
+// head tracking, if there is a head bone
+headBone.rotation.y = THREE.MathUtils.lerp(headBone.rotation.y, pointer.x * 0.3, k);
+```
+
+`FOOT_OFFSET` and `SCALE` are the only placement constants; both are derived
+from the mesh bounds and would need re-measuring for a new file.
+
+### One bug worth remembering
+
+The breath animation originally wrote `scale` and `position.y` on the same group
+that carried the scale-to-height and foot-offset transform. Assigning those
+properties **overwrites** the placement rather than adding to it, so the figure
+sank 0.9 units into the floor and only the head and torso showed above it.
+
+The fix is structural, not arithmetic: the animated group is now a separate
+parent of the static placement group, so the breath is a delta on top of the
+layout rather than a replacement for it. Any transform that is both laid out and
+animated needs that split.
+
+### Texture repacking
+
+The source export was **4.21MB**, of which ~3MB was three 2048² JPEGs (albedo,
+metallic-roughness, normal). At hero size the figure is around 700px tall, so
+2048² buys nothing.
+
+`scripts/optimize-model.mjs` resizes the embedded images and rebuilds the
+container — relaying out every bufferView with the 4-byte alignment accessors
+require, and rebuilding the JSON and BIN chunks with their own padding:
+
+```bash
+node scripts/optimize-model.mjs <source.glb> public/models/archit.glb 1024
+```
+
+Result: **1.44MB**, a 66% reduction, with no visible loss. The normal map keeps
+higher JPEG quality than the colour maps because normals show compression
+artefacts as shading noise.
+
+Re-run it whenever the source model is replaced. Do not commit a raw export
+into `public/` — a 4MB hero asset undoes the code-splitting the rest of the
+scene depends on.
 
 ## 10. Derived constants over remembered ones
 

@@ -19,19 +19,17 @@ import { LAPTOP_NORMAL, LAPTOP_SCREEN } from './office';
  */
 
 /** Framing target for the opening shot.
- *  Sits below the eyeline so the head reads high in frame, but low enough that
- *  the sneakers clear the bottom edge — the feet are nearer the camera than
- *  the torso, so they leave the frustum sooner than the maths on the torso
- *  depth suggests. */
-const SUBJECT = new THREE.Vector3(0.62, 1.18, 0.3);
+ *  Set for a standing figure: chest height, so the head sits high in frame and
+ *  the full body clears the bottom edge. */
+const SUBJECT = new THREE.Vector3(0.66, 0.98, 0.6);
 
 /** Final camera position: just off the screen surface, along its normal. */
 const SCREEN_EYE = LAPTOP_SCREEN.clone().addScaledVector(LAPTOP_NORMAL, 0.2);
 
 const PATH = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(0.05, 1.52, 4.95), // establishing wide
-  new THREE.Vector3(0.25, 1.48, 3.6), // push in
-  new THREE.Vector3(0.75, 1.4, 2.5), // begin the swing right
+  new THREE.Vector3(0.12, 1.2, 4.15), // establishing wide
+  new THREE.Vector3(0.35, 1.3, 3.5), // push in
+  new THREE.Vector3(0.85, 1.32, 2.45), // begin the swing right
   new THREE.Vector3(1.45, 1.25, 1.55), // over the desk
   new THREE.Vector3(1.95, 1.12, 0.55), // approaching the lid
   SCREEN_EYE, // nose against the screen

@@ -379,7 +379,7 @@ export function Office({ still = false }: { still?: boolean }) {
       {/* --------------------------------------------------------------- chair */}
       {/* Sits behind the subject; the backrest is deliberately low so it frames
           the shoulders instead of hiding them. */}
-      <group position={[0.75, 0, -0.12]} rotation={[0, -0.12, 0]}>
+      <group position={[1.55, 0, -0.55]} rotation={[0, -0.75, 0]}>
         <mesh position={[0, 1.02, -0.36]} rotation={[0.14, 0, 0]} castShadow material={materials.chair}>
           <boxGeometry args={[0.72, 0.82, 0.1]} />
         </mesh>
@@ -423,7 +423,7 @@ export function Office({ still = false }: { still?: boolean }) {
       {/* Key — front-left of the subject, soft and cool */}
       <spotLight
         position={[-1.6, 3.2, 3.2]}
-        target-position={[0.75, 1.4, 0.3]}
+        target-position={[0.78, 1.3, 0.35]}
         angle={0.7}
         penumbra={1}
         intensity={30}
@@ -436,24 +436,25 @@ export function Office({ still = false }: { still?: boolean }) {
       />
 
       {/* Cyan rim from behind-left — the signature separation light */}
-      <pointLight position={[-1.3, 2.0, -1.3]} intensity={20} color="#6ef2ff" distance={8} decay={2} />
+      <pointLight position={[-1.2, 1.9, -1.0]} intensity={22} color="#6ef2ff" distance={8} decay={2} />
 
       {/* Second rim, camera-right, so the far shoulder catches an edge */}
       <pointLight position={[3.0, 2.0, 1.2]} intensity={9} color="#8fd0ff" distance={7} decay={2} />
 
       {/* Warm practical bouncing off the desk */}
-      <pointLight position={[2.5, 1.25, 0.95]} intensity={11} color="#ffb070" distance={6.5} decay={2} />
+      <pointLight position={[2.65, 1.2, 0.8]} intensity={10} color="#ffb070" distance={4.6} decay={2} />
 
-      {/* Low warm bounce, so the subject's desk-side edge is not pure shadow */}
-      <pointLight position={[1.5, 0.75, 1.1]} intensity={4.5} color="#ff9e5e" distance={4} decay={2} />
+      {/* Low warm bounce on the desk itself. Kept short-range: at a longer
+          distance it washed the charcoal suit brown. */}
+      <pointLight position={[2.2, 0.72, 1.0]} intensity={3.5} color="#ff9e5e" distance={2.8} decay={2} />
 
       {/* Subject fill, camera-left and close.
           Without it the hoodie sits at the same value as the background and
           the whole figure collapses into a silhouette — the face reads but the
           body does not. Kept dim and cool so it lifts form without flattening
           the night-interior grade. */}
-      <pointLight position={[-0.7, 1.35, 2.3]} intensity={7.5} color="#b9cdf0" distance={6} decay={2} />
-      <pointLight position={[0.2, 0.7, 1.9]} intensity={3.2} color="#9fb6de" distance={4} decay={2} />
+      <pointLight position={[-0.6, 1.75, 2.5]} intensity={12} color="#c3d6f5" distance={7.5} decay={2} />
+      <pointLight position={[0.35, 0.5, 2.1]} intensity={6} color="#a8bde3" distance={5} decay={2} />
 
       {/* Cool wash from the window behind */}
       <directionalLight position={[1.5, 4, -5]} intensity={0.7} color="#7ea4ff" />

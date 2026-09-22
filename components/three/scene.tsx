@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
-import { Avatar } from './avatar';
+import { ContactShadows } from '@react-three/drei';
+import { AvatarModel } from './avatar-model';
 import { Office } from './office';
 import { CameraRig } from './camera-rig';
 import { useExperience } from '@/lib/store/experience';
@@ -51,7 +52,7 @@ export default function Scene() {
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.15,
       }}
-      camera={{ position: [0.05, 1.52, 4.95], fov: 38, near: 0.05, far: 60 }}
+      camera={{ position: [0.12, 1.2, 4.15], fov: 38, near: 0.05, far: 60 }}
       // Auto-degrades DPR if the frame budget slips, rather than dropping frames.
       performance={{ min: 0.5 }}
       onCreated={({ gl, scene }) => {
@@ -60,7 +61,24 @@ export default function Scene() {
       }}
     >
       <Office still={reduced} />
-      <Avatar pointer={pointer} still={reduced} />
+      {/* The model streams separately from the rest of the scene, so the room
+          and lighting render immediately rather than blocking on it. */}
+      <Suspense fallback={null}>
+        <AvatarModel pointer={pointer} still={reduced} />
+        {/* Grounding shadow. Baked on the first frame rather than re-rendered
+            every frame — the figure only sways a few millimetres, so a live
+            shadow pass would cost a render target for no visible gain. */}
+        <ContactShadows
+          position={[0.72, 0.008, 0.62]}
+          scale={3.4}
+          blur={2.6}
+          opacity={0.62}
+          far={2.2}
+          resolution={512}
+          frames={1}
+          color="#000814"
+        />
+      </Suspense>
       <CameraRig progress={progress} pointer={pointer} still={reduced} />
     </Canvas>
   );

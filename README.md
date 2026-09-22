@@ -190,19 +190,16 @@ often than the browser paints.
 
 Three decisions worth calling out:
 
-**The character is procedural, not a GLB.** A rigged Pixar-style model is a
-multi-megabyte asset and a modelling dependency. Primitives with good materials
-and lighting hit the same "alive, not realistic" note, ship in kilobytes, and
-let the idle animation be driven directly rather than baked. Proportions are
-deliberately non-realistic — an oversized head on a compact body is the
-stylisation lever.
+**The character is a supplied GLB, not procedural.** An earlier build modelled
+the figure from primitives; it was replaced once a real scan was available. The
+file is a single static mesh — no skin, no skeleton, no animations, no morph
+targets — which rules out sitting, blinking and independent head turn. The idle
+therefore moves the whole figure: a breath, a slow weight shift, and a gentle
+turn toward the pointer. See `docs/ARCHITECTURE.md` §9.
 
-**Limbs are solved, not eyeballed.** `<Limb from={...} to={...}>` takes two
-joint positions and solves the capsule's midpoint, length and rotation, so the
-pose reads as a skeleton at the top of `avatar.tsx` rather than a list of Euler
-angles. Posing by hand does not converge — every shoulder tweak invalidates the
-elbow below it. See `docs/ARCHITECTURE.md` §9 for the derivation and the two
-failure modes it rules out.
+**The model is repacked, not shipped as exported.** The source was 4.21MB, of
+which ~3MB was three 2048² JPEGs. Downscaled to 1024² it is **1.44MB** with no
+visible loss at hero size. The repack script is in `docs/ARCHITECTURE.md` §9.
 
 **Damping is exponential, never `delta * rate`.** `lerp(a, b, delta * 28)` looks
 correct and is a bug: `delta * rate` is an interpolation *factor*, not a rate, so
@@ -365,6 +362,8 @@ they cannot drift apart.
   frames.
 - Scroll handling is rAF-coalesced; drag/resize bypass React entirely during the
   gesture.
+- The 1.44MB character model is fetched only after the capability check passes,
+  in parallel with the room rendering, and is served `immutable` for a year.
 - Fonts via `next/font` (self-hosted, `display: swap`, no layout shift).
 - `optimizePackageImports` for `lucide-react`, `framer-motion`, `drei`.
 - No postprocessing pass — the cyan bloom is achieved with emissive materials,
