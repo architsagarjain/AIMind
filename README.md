@@ -403,12 +403,20 @@ Set these in **Project → Settings → Environment Variables**:
 | `NEXT_PUBLIC_SUPABASE_URL` | All | No |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | All | No |
 | `SUPABASE_SERVICE_ROLE_KEY` | Production, Preview | No — **never** prefix with `NEXT_PUBLIC_` |
-| `NEXT_PUBLIC_SITE_URL` | All | Recommended — used for OG tags and the sitemap |
+| `NEXT_PUBLIC_SITE_URL` | All | No — falls back to the Vercel deployment host. Set it once you have a domain |
 
 Then:
 
 1. Run `supabase/migrations/0001_init.sql` against your Supabase project.
 2. Point your domain at the deployment and update `NEXT_PUBLIC_SITE_URL`.
+
+> **A blank env var is not an unset one.** `process.env.X ?? fallback` only
+> catches `undefined`, so an environment variable added in the Vercel dashboard
+> with an empty value arrives as `''` and sails past the default. That is how
+> `metadataBase: new URL('')` took down a production build here with
+> `ERR_INVALID_URL` on `/_not-found`. `lib/site.ts` now treats blank, unparseable
+> and scheme-less values as unset and falls back rather than throwing — a wrong
+> OG URL is cosmetic, a failed build is not.
 
 ### Self-hosting
 

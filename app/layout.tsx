@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Inter_Tight } from 'next/font/google';
 import { profile } from '@/content/profile';
+import { SITE_URL, SITE_URL_OBJECT } from '@/lib/site';
 import './globals.css';
 
 const inter = Inter({
@@ -16,10 +17,8 @@ const interTight = Inter_Tight({
   weight: ['500', '600', '700', '800'],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: SITE_URL_OBJECT,
   title: {
     default: `${profile.product} — ${profile.tagline}`,
     template: `%s — ${profile.product}`,
@@ -40,7 +39,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: 'website',
-    url: siteUrl,
+    url: SITE_URL,
     title: `${profile.name} — ${profile.product}`,
     description: profile.altTagline,
     siteName: profile.product,
