@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { AnimatedGrid } from '@/components/ui/animated-grid';
 
 /**
  * Static stand-in for the 3D scene.
@@ -12,6 +13,12 @@ import { motion } from 'framer-motion';
 export function SceneFallback({ animated = true }: { animated?: boolean }) {
   return (
     <div className="relative h-full w-full overflow-hidden" aria-hidden="true">
+      {/* Base layer: a slow CSS grid standing in for the depth the 3D office
+          would have given this frame. It is gradients and two keyframes — no
+          canvas and no rAF loop — which is the whole point on the devices that
+          land here. Held well back so the silhouette still reads as the subject. */}
+      <AnimatedGrid size={44} opacity={0.5} className="opacity-70" />
+
       {/* Window light */}
       <div className="absolute top-0 right-0 h-[70%] w-[62%] bg-gradient-to-bl from-[#12203a] via-[#0a1024] to-transparent opacity-80" />
 

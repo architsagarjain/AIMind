@@ -14,6 +14,10 @@
   --color-surface-glass: #0d122880;
   --color-hairline: #ffffff14;
   --color-hairline-strong: #ffffff24;
+  /* shadcn-compatible alias of `hairline-strong`. Components written against
+     the shadcn token vocabulary (`--color-border`) drop in without a fork, and
+     because it is a real theme token it re-themes under `.os-light` for free. */
+  --color-border: #ffffff24;
 
   /* --- Accent ------------------------------------------------------------- */
   --color-accent: #6ef2ff;
@@ -247,6 +251,7 @@
 
   --color-hairline: #00000014;
   --color-hairline-strong: #00000021;
+  --color-border: #00000021;
 
   /* The brand cyan is unreadable on white, so the light theme leans on the
      brand's secondary blue, which is close to the macOS system accent. */
