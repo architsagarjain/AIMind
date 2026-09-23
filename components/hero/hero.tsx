@@ -58,14 +58,20 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           variants={rise}
           initial="hidden"
           animate="show"
-          className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-hairline-strong bg-white/[0.04] py-1.5 pr-4 pl-2.5 backdrop-blur-xl"
+          className="mb-6 inline-flex max-w-[calc(100%-5.25rem)] items-center gap-2.5 rounded-full border border-hairline-strong bg-white/[0.04] py-1.5 pr-3 pl-2.5 backdrop-blur-xl sm:max-w-none sm:pr-4"
         >
-          <span className="relative flex h-2 w-2">
+          <span className="relative flex h-2 w-2 shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
           </span>
-          <span className="text-[10px] font-semibold tracking-[0.14em] text-muted uppercase">
-            {profile.currently.split(',')[0]} · {profile.alsoCurrently.split(',')[0]}
+          {/* Phones: one clause, slightly tighter tracking, and a max-width
+              that stops short of the Skip button sharing this row. Measured,
+              not guessed: this fits one line down to 360px, and below that
+              the pill wraps inside its own box instead of running under the
+              button. */}
+          <span className="text-[10px] font-semibold tracking-[0.1em] text-muted uppercase sm:tracking-[0.14em]">
+            <span className="hidden sm:inline">{profile.currently.split(',')[0]} · </span>
+            {profile.alsoCurrently.split(',')[0]}
           </span>
         </motion.div>
 

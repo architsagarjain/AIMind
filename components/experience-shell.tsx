@@ -226,9 +226,12 @@ export function ExperienceShell() {
               <button
                 onClick={() => goToDesktop()}
                 style={{ opacity: fade }}
-                className="absolute top-24 right-6 z-30 rounded-full border border-hairline-strong bg-white/5 px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-muted uppercase backdrop-blur-xl transition-colors hover:border-accent/40 hover:text-ink md:top-28 md:right-12"
+                aria-label="Skip intro"
+                // Same line as the hero's status pill at every breakpoint (the
+                // copy's pt-20 / md:pt-28), so the two read as one row.
+                className="absolute top-20 right-6 z-30 rounded-full border border-hairline-strong bg-white/5 px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-muted uppercase backdrop-blur-xl transition-colors hover:border-accent/40 hover:text-ink md:top-28 md:right-12"
               >
-                Skip intro →
+                Skip<span className="hidden sm:inline"> intro</span> →
               </button>
             )}
           </div>
