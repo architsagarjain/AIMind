@@ -31,6 +31,7 @@
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { dedup, quantize, textureCompress, weld } from '@gltf-transform/functions';
+import { enhanceCharacter } from './lib/enhance-character.mjs';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -209,6 +210,38 @@ SKELETON.forEach((b) => skin.addJoint(nodes.get(b.name)));
 skin.setSkeleton(nodes.get('hips'));
 skin.setInverseBindMatrices(doc.createAccessor().setType('MAT4').setArray(ibm));
 meshNode.setSkin(skin);
+
+// ---------------------------------------------------------------- realism
+// Per-region materials, skin tone and a face projected from the reference
+// photo; see scripts/lib/enhance-character.mjs.
+//
+// Landmarks were read off an orthographic front render of this mesh (model
+// units) and off assets/reference/head-front.png (pixels): eye centres, nose
+// tip, mouth centre, chin. Re-measure them if the source model changes. The
+// ellipse is in photo pixels and sits just inside the hairline and jaw.
+const FACE = {
+  image: 'assets/reference/head-front.png',
+  landmarks: [
+    { model: [-0.0367, 0.7885], photo: [100, 168.8] },
+    { model: [0.0311, 0.7893], photo: [168.8, 165.5] },
+    { model: [-0.0011, 0.7467], photo: [132.5, 206.3] },
+    { model: [-0.0011, 0.724], photo: [131.3, 235] },
+    { model: [0, 0.6733], photo: [137.5, 295] },
+  ],
+  ellipse: { cx: 136, cy: 220, rx: 62, ry: 90 },
+};
+
+if (!process.env.NO_ENHANCE) {
+  const report = await enhanceCharacter({
+    doc,
+    prim,
+    material: prim.getMaterial(),
+    sharp,
+    face: FACE,
+    debugDir: process.env.ENHANCE_DEBUG,
+  });
+  console.log('realism pass:', JSON.stringify(report));
+}
 
 // --------------------------------------------------- textures + geometry
 // Textures go to 2048² — higher than the earlier pass, because the head takes
