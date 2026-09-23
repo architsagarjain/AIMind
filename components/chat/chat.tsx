@@ -9,6 +9,7 @@ import { STARTER_PROMPTS } from '@/lib/ai/prompts';
 import { profile } from '@/content/profile';
 import { RichText } from './rich-text';
 import { useTelemetry } from '@/lib/hooks/use-telemetry';
+import { useChatHandoff } from '@/lib/store/chat-handoff';
 import { cn } from '@/lib/utils';
 
 /**
@@ -47,6 +48,16 @@ export function Chat({ compact = false }: { compact?: boolean }) {
     // Keep focus in the composer so a follow-up needs no click.
     requestAnimationFrame(() => inputRef.current?.focus());
   };
+
+  // A question asked from the desktop's prompt panel, before this window existed.
+  const pending = useChatHandoff((s) => s.pending);
+  useEffect(() => {
+    if (!pending || isStreaming) return;
+    const q = useChatHandoff.getState().take();
+    if (q) submit(q);
+    // submit is recreated each render; the question itself is the trigger.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pending, isStreaming]);
 
   const autoGrow = (el: HTMLTextAreaElement) => {
     el.style.height = 'auto';

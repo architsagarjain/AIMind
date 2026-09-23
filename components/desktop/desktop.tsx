@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MenuBar } from './menu-bar';
 import { Wallpaper } from './wallpaper';
+import { AskPanel } from './ask-panel';
 import { FolderGrid } from './folder-grid';
 import { Dock } from './dock';
 import { DesktopWindow } from './window';
@@ -15,7 +16,6 @@ import { ResumeWindow } from '@/components/windows/resume-window';
 import { AskWindow } from '@/components/windows/ask-window';
 import { useWindows, WINDOW_IDS } from '@/lib/store/windows';
 import type { WindowId } from '@/types';
-import { profile } from '@/content/profile';
 
 const BODIES: Record<WindowId, React.ComponentType> = {
   about: AboutWindow,
@@ -34,6 +34,8 @@ const BODIES: Record<WindowId, React.ComponentType> = {
  */
 export function Desktop({ onExit }: { onExit: () => void }) {
   const windows = useWindows((s) => s.windows);
+  // Minimised windows are out of the way, so the prompt comes back for them.
+  const anyOpen = WINDOW_IDS.some((id) => windows[id].open && !windows[id].minimized);
   const { open, close, focused } = useWindows();
 
   // Keyboard: ⌘/Ctrl+1..5 open windows, Escape closes the focused one.
@@ -69,14 +71,11 @@ export function Desktop({ onExit }: { onExit: () => void }) {
       <MenuBar onExit={onExit} />
       <FolderGrid />
 
-      {/* Wallpaper wordmark */}
-      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-        <p className="font-display text-[clamp(3rem,12vw,9rem)] leading-none font-extrabold tracking-tight text-[#0b1a33]/[0.055]">
-          ARCHIT.AI
-        </p>
-        <p className="mt-4 text-[10px] font-semibold tracking-[0.34em] text-[#0b1a33]/20 uppercase">
-          {profile.altTagline}
-        </p>
+      {/* ------------------------------------------------------------ the prompt */}
+      {/* The conversation is the point of the site, so it is what the desktop
+          opens on. It steps aside whenever a window is open. */}
+      <div className="pointer-events-none absolute inset-x-0 top-[26px] bottom-[96px] flex items-center justify-center px-3">
+        <AnimatePresence>{!anyOpen && <AskPanel key="ask-panel" />}</AnimatePresence>
       </div>
 
       {/* --------------------------------------------------------------- windows */}
