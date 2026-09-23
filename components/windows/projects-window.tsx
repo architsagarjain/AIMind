@@ -43,8 +43,8 @@ export function ProjectsWindow() {
             <SectionLabel>Selected Work</SectionLabel>
             <h2 className="mt-3 font-display text-3xl font-extrabold text-ink">Projects</h2>
             <p className="mt-2 max-w-lg text-sm text-muted">
-              Four bodies of work across consulting, marketplaces and brand. Open any one for the
-              full challenge, strategy, execution, results and lessons.
+              {projects.length} bodies of work across consulting, mobility, infrastructure and
+              brand. Open any one for the full challenge, strategy, execution, results and lessons.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
