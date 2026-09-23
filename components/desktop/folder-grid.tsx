@@ -17,7 +17,9 @@ export function FolderGrid() {
   const track = useTelemetry();
 
   return (
-    <div className="absolute top-10 left-3 z-10 grid grid-cols-1 gap-1 md:left-5">
+    // Phones: hidden. The dock opens the same five windows, and this column
+    // would sit on top of the centred prompt panel at 390px wide.
+    <div className="absolute top-10 left-3 z-10 hidden grid-cols-1 gap-1 md:left-5 md:grid">
       {WINDOW_IDS.map((id, i) => {
         const { label, Icon } = WINDOW_META[id];
         return (

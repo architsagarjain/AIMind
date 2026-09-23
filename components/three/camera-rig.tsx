@@ -39,6 +39,21 @@ const PATH = new THREE.CatmullRomCurve3([
 const FOV_START = 38;
 const FOV_END = 26;
 
+/**
+ * Portrait framing.
+ *
+ * At 38° in a phone's portrait frame the subject fills ~74% of the height,
+ * dead centre, and the hero copy (which takes the top of the screen there)
+ * lands across his chest and face. Instead the lens widens and aims higher,
+ * so he stands *below* the copy: head about 40% down, feet at the bottom
+ * edge. From his height (~1.81) at ~3.55 from the lens: half-height
+ * h = 1.86 / 1.2 = 1.55, so fov = 2·atan(1.55 / 3.55) ≈ 47°, aimed at
+ * y ≈ h - 0.05 = 1.5 (0.52 above the landscape target). Blended by aspect so
+ * tablets land between the two.
+ */
+const PORTRAIT_FOV = 47;
+const PORTRAIT_LIFT = 0.52;
+
 interface CameraRigProps {
   /** 0 → 1 scroll progress through the hero track. */
   progress: React.RefObject<number>;
@@ -48,6 +63,9 @@ interface CameraRigProps {
 
 export function CameraRig({ progress, pointer, still = false }: CameraRigProps) {
   const { camera } = useThree();
+  const aspect = useThree((s) => s.size.width / Math.max(1, s.size.height));
+  // 0 in landscape, 1 in portrait.
+  const portrait = THREE.MathUtils.smoothstep(1 - aspect, 0.1, 0.45);
   const target = useRef(new THREE.Vector3().copy(SUBJECT));
   const desired = useRef(new THREE.Vector3());
   const lookAt = useRef(new THREE.Vector3());
@@ -74,7 +92,9 @@ export function CameraRig({ progress, pointer, still = false }: CameraRigProps) 
 
     // Attention shifts from subject → laptop across the middle of the scroll.
     const shift = THREE.MathUtils.smoothstep(p, 0.32, 0.78);
-    lookAt.current.copy(SUBJECT).lerp(LAPTOP_SCREEN, shift);
+    lookAt.current.copy(SUBJECT);
+    lookAt.current.y += PORTRAIT_LIFT * portrait * (1 - shift);
+    lookAt.current.lerp(LAPTOP_SCREEN, shift);
 
     // Critically-damped follow: frame-rate independent, no overshoot.
     const damp = 1 - Math.pow(0.0015, delta);
@@ -83,7 +103,8 @@ export function CameraRig({ progress, pointer, still = false }: CameraRigProps) 
     camera.lookAt(target.current);
 
     if (camera instanceof THREE.PerspectiveCamera) {
-      const fov = THREE.MathUtils.lerp(FOV_START, FOV_END, THREE.MathUtils.smoothstep(p, 0.6, 1));
+      const start = THREE.MathUtils.lerp(FOV_START, PORTRAIT_FOV, portrait);
+      const fov = THREE.MathUtils.lerp(start, FOV_END, THREE.MathUtils.smoothstep(p, 0.6, 1));
       if (Math.abs(camera.fov - fov) > 0.01) {
         camera.fov = THREE.MathUtils.lerp(camera.fov, fov, damp);
         camera.updateProjectionMatrix();

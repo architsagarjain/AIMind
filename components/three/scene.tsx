@@ -9,7 +9,7 @@ import { Laptop } from './laptop';
 import { Office } from './office';
 import { CameraRig } from './camera-rig';
 import { useExperience } from '@/lib/store/experience';
-import { useReducedMotion } from '@/lib/hooks/use-preferences';
+import { useIsMobile, useReducedMotion } from '@/lib/hooks/use-preferences';
 
 /**
  * The hero 3D scene.
@@ -23,6 +23,7 @@ export default function Scene() {
   const progress = useRef(0);
   const pointer = useRef({ x: 0, y: 0 });
   const reduced = useReducedMotion();
+  const mobile = useIsMobile();
 
   useEffect(() => {
     progress.current = useExperience.getState().progress;
@@ -43,8 +44,10 @@ export default function Scene() {
 
   return (
     <Canvas
-      // Capped DPR: above ~1.75 the extra pixels are invisible and the cost is real.
-      dpr={[1, 1.75]}
+      // Capped DPR: above ~1.75 the extra pixels are invisible and the cost is
+      // real. Phones cap lower still: a 3x screen at 1.75 renders ~36% more
+      // pixels than at 1.5 for detail this scene does not have.
+      dpr={mobile ? [1, 1.5] : [1, 1.75]}
       shadows="soft"
       gl={{
         antialias: true,

@@ -32,6 +32,44 @@ interface HeroProps {
   fade: number;
 }
 
+interface ActionsProps {
+  onTalk: () => void;
+  onExplore: () => void;
+  className?: string;
+}
+
+function Actions({ onTalk, onExplore, className = '' }: ActionsProps) {
+  return (
+    <motion.div
+      custom={6}
+      variants={rise}
+      initial="hidden"
+      animate="show"
+      className={`pointer-events-auto items-center gap-3 md:gap-4 ${className}`}
+    >
+      <button
+        onClick={onTalk}
+        // Must hold one line at 360px: the arrow drops and padding tightens on
+        // phones, where "Talk To Archit" otherwise wrapped onto two lines.
+        className="group inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-ink px-4 text-[10px] whitespace-nowrap font-bold tracking-[0.14em] text-void uppercase transition-all duration-300 hover:bg-accent hover:shadow-[var(--shadow-glow)] active:scale-[0.98] md:h-14 md:flex-none md:gap-3 md:px-7 md:text-[11px] md:tracking-[0.16em]"
+      >
+        <MessageSquare className="h-4 w-4" strokeWidth={2.4} />
+        Talk To Archit
+        <ArrowRight className="hidden h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 sm:block" />
+      </button>
+
+      <button
+        onClick={onExplore}
+        className="group inline-flex h-12 items-center justify-center gap-2 rounded-full border border-hairline-strong bg-white/5 px-4 whitespace-nowrap sm:px-5 text-[10px] font-bold tracking-[0.14em] text-ink uppercase backdrop-blur-xl transition-all duration-300 hover:border-accent/50 hover:bg-accent/10 md:h-14 md:gap-3 md:px-7 md:text-[11px] md:tracking-[0.16em]"
+      >
+        <span className="md:hidden">Explore</span>
+        <span className="hidden md:inline">Explore My Work</span>
+        <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" />
+      </button>
+    </motion.div>
+  );
+}
+
 /** Inline emphasis for a figure inside running copy. */
 function Figure({ children }: { children: React.ReactNode }) {
   return <span className="font-semibold text-ink">{children}</span>;
@@ -117,7 +155,9 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           variants={rise}
           initial="hidden"
           animate="show"
-          className="mt-5 max-w-lg text-[13.5px] leading-relaxed text-muted sm:text-[15px] md:mt-6 md:text-base"
+          // Phones drop it: the stat row carries the same numbers, and the
+          // paragraph was what landed across the subject's face.
+          className="mt-5 hidden max-w-lg text-[13.5px] leading-relaxed text-muted sm:text-[15px] md:mt-6 md:block md:text-base"
         >
           I turn ambiguous problems into decisions, systems and outcomes.{' '}
           <Figure>₹6+ Cr</Figure> in client cost savings at PwC India, and ZenCabs from launch to a{' '}
@@ -141,30 +181,9 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
         </motion.p>
 
         {/* ---------------------------------------------------------- actions */}
-        <motion.div
-          custom={6}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className="pointer-events-auto mt-7 flex flex-wrap items-center gap-3 md:mt-9 md:gap-4"
-        >
-          <button
-            onClick={onTalk}
-            className="group inline-flex h-12 items-center gap-2.5 rounded-full bg-ink px-6 text-[10px] font-bold tracking-[0.14em] text-void uppercase transition-all duration-300 hover:bg-accent hover:shadow-[var(--shadow-glow)] active:scale-[0.98] md:h-14 md:gap-3 md:px-7 md:text-[11px] md:tracking-[0.16em]"
-          >
-            <MessageSquare className="h-4 w-4" strokeWidth={2.4} />
-            Talk To Archit
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </button>
-
-          <button
-            onClick={onExplore}
-            className="group inline-flex h-12 items-center gap-2.5 rounded-full border border-hairline-strong bg-white/5 px-6 text-[10px] font-bold tracking-[0.14em] text-ink uppercase backdrop-blur-xl transition-all duration-300 hover:border-accent/50 hover:bg-accent/10 md:h-14 md:gap-3 md:px-7 md:text-[11px] md:tracking-[0.16em]"
-          >
-            Explore My Work
-            <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" />
-          </button>
-        </motion.div>
+        {/* Desktop: under the copy. Phones get the same buttons at the bottom
+            of the frame instead (below), clear of the subject's face. */}
+        <Actions onTalk={onTalk} onExplore={onExplore} className="mt-7 hidden md:mt-9 md:flex" />
 
         <motion.p
           custom={7}
@@ -178,13 +197,16 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
       </div>
 
       {/* ------------------------------------------------------------ bottom */}
-      <div className="flex items-end justify-between gap-8">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-8">
+        <Actions onTalk={onTalk} onExplore={onExplore} className="flex md:hidden" />
         <motion.dl
           custom={8}
           variants={rise}
           initial="hidden"
           animate="show"
-          className="flex flex-wrap items-center gap-x-4 gap-y-3 sm:gap-x-9 sm:gap-y-4"
+          // Phones: one compact row of four; two rows of two ate a fifth of
+          // the screen and sat over the subject's legs and hands.
+          className="grid grid-cols-4 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-9 sm:gap-y-4"
         >
           {heroStats.map((stat, i) => (
             <div key={stat.label} className="flex items-center gap-4 sm:gap-9">

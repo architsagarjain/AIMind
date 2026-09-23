@@ -82,10 +82,14 @@ export const useWindows = create<WindowStore>((set, get) => ({
     const cascade = state.cascade % 5;
     const vw = typeof window !== 'undefined' ? window.innerWidth : 1440;
     const vh = typeof window !== 'undefined' ? window.innerHeight : 900;
-    const width = Math.min(win.width, vw - 48);
-    const height = Math.min(win.height, vh - 140);
-    const x = Math.max(24, Math.round((vw - width) / 2) + cascade * 28 - 56);
-    const y = Math.max(52, Math.round((vh - height) / 2) + cascade * 24 - 48);
+    // Phones: a window is the whole screen between the menu bar and the dock,
+    // as on any phone OS. A cascaded, margined window at 390px wide was a
+    // cramped card that could not be dragged anywhere useful.
+    const phone = vw < 640;
+    const width = phone ? vw - 12 : Math.min(win.width, vw - 48);
+    const height = phone ? vh - 32 - 92 : Math.min(win.height, vh - 140);
+    const x = phone ? 6 : Math.max(24, Math.round((vw - width) / 2) + cascade * 28 - 56);
+    const y = phone ? 32 : Math.max(52, Math.round((vh - height) / 2) + cascade * 24 - 48);
 
     set({
       focused: id,

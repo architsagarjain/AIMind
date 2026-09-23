@@ -168,15 +168,16 @@ export function ExperienceShell() {
             </div>
 
             {/* Readability scrim.
-                On phones the copy column sits directly over the subject's face,
-                so the left side needs a real gradient behind it. On wide
-                screens the copy has its own empty third and only needs a hint. */}
+                On phones the camera frames the subject below the copy, with the
+                buttons and stats over his legs, so the scrim darkens the top and
+                the bottom and leaves his head and torso clear. On wide screens
+                the copy has its own empty third and only needs a hint. */}
             <div
               className="pointer-events-none absolute inset-0 md:hidden"
               style={{
                 opacity: fade,
                 background:
-                  'linear-gradient(175deg, #050816e0 0%, #050816bf 34%, #05081680 58%, #05081626 78%, transparent 100%)',
+                  'linear-gradient(180deg, #050816eb 0%, #050816b8 24%, #05081640 40%, transparent 52%, transparent 66%, #050816b3 82%, #050816f2 100%)',
               }}
             />
             <div
@@ -210,17 +211,15 @@ export function ExperienceShell() {
               {cinematic && <ScrollCue progress={scrolled} fade={fade} />}
             </main>
 
-            {/* Screen-fill as the lens enters the laptop.
-                In the lock screen's own wallpaper tones, not a colour of its
-                own: the camera is arriving on that screen, and the unlock that
-                follows fades in over this on the same wallpaper. (It was a
-                cyan burst, between a light screen and a light desktop.) */}
+            {/* Screen-fill as the lens enters the laptop: the standby screen's
+                night blue with the reactor's cyan at its heart, so the camera
+                arrives in exactly the colours the boot then opens on. */}
             <div
               className="pointer-events-none absolute inset-0"
               style={{
                 opacity: flash,
                 background:
-                  'radial-gradient(ellipse at 55% 45%, #f6f2f7 0%, #eef1f8 42%, #dfe9f7 78%, #c9d6ee 100%)',
+                  'radial-gradient(ellipse at 50% 42%, #9ff6ff 0%, #2aa9c9 9%, #0f2140 30%, #081028 60%, #050816 100%)',
                 willChange: 'opacity',
               }}
             />
