@@ -3,6 +3,9 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { Chair } from './chair';
+import { Desk } from './desk';
+import { useNightEnvironment } from './night-environment';
 
 /**
  * The dark office set.
@@ -14,22 +17,22 @@ import * as THREE from 'three';
  *   z ≈ -4.2   window wall and the city beyond it
  *
  * The laptop itself is a loaded model; see `laptop.tsx`, which also owns the
- * camera rig's target constants.
+ * camera rig's target constants. The desk and chair are procedural and live
+ * in their own files; they share a reflection map built here.
  */
 
 export function Office({ still = false }: { still?: boolean }) {
   const cityRef = useRef<THREE.Points>(null);
+  const env = useNightEnvironment();
 
   const materials = useMemo(
     () => ({
       floor: new THREE.MeshStandardMaterial({ color: '#0a0b14', roughness: 0.72, metalness: 0.25 }),
       wall: new THREE.MeshStandardMaterial({ color: '#0c0e1a', roughness: 0.95 }),
-      desk: new THREE.MeshStandardMaterial({ color: '#4a3527', roughness: 0.5, metalness: 0.08 }),
       metal: new THREE.MeshStandardMaterial({ color: '#9aa0ab', roughness: 0.3, metalness: 0.85 }),
       // Anodised aluminium: low roughness + high metalness is what separates a
       // MacBook read from a generic grey slab.
       metalDark: new THREE.MeshStandardMaterial({ color: '#4a4f58', roughness: 0.4, metalness: 0.7 }),
-      chair: new THREE.MeshStandardMaterial({ color: '#101017', roughness: 0.88 }),
       mug: new THREE.MeshStandardMaterial({ color: '#15151d', roughness: 0.5 }),
       book: new THREE.MeshStandardMaterial({ color: '#2a2a38', roughness: 0.85 }),
       leaf: new THREE.MeshStandardMaterial({ color: '#254a37', roughness: 0.75 }),
@@ -149,19 +152,7 @@ export function Office({ still = false }: { still?: boolean }) {
 
       {/* ---------------------------------------------------------------- desk */}
       <group position={[2.6, 0, -0.35]}>
-        <mesh position={[0, 0.74, 0]} castShadow receiveShadow material={materials.desk}>
-          <boxGeometry args={[3.4, 0.07, 1.2]} />
-        </mesh>
-        {[
-          [-1.55, 0.48],
-          [1.55, 0.48],
-          [-1.55, -0.48],
-          [1.55, -0.48],
-        ].map(([x, z]) => (
-          <mesh key={`${x}-${z}`} position={[x!, 0.355, z!]} material={materials.metalDark}>
-            <boxGeometry args={[0.055, 0.71, 0.055]} />
-          </mesh>
-        ))}
+        <Desk env={env} />
       </group>
 
       {/* ----------------------------------------------------------------- mug */}
@@ -211,41 +202,19 @@ export function Office({ still = false }: { still?: boolean }) {
       </group>
 
       {/* --------------------------------------------------------------- chair */}
-      {/* Sits behind the subject; the backrest is deliberately low so it frames
-          the shoulders instead of hiding them. */}
-      <group position={[1.42, 0, -0.62]} rotation={[0, -0.8, 0]}>
-        <mesh position={[0, 1.02, -0.36]} rotation={[0.14, 0, 0]} castShadow material={materials.chair}>
-          <boxGeometry args={[0.72, 0.82, 0.1]} />
-        </mesh>
-        {/* Headrest wing */}
-        <mesh position={[0, 1.46, -0.42]} rotation={[0.2, 0, 0]} material={materials.chair}>
-          <boxGeometry args={[0.5, 0.28, 0.09]} />
-        </mesh>
-        <mesh position={[0, 0.52, 0.0]} castShadow material={materials.chair}>
-          <boxGeometry args={[0.76, 0.11, 0.66]} />
-        </mesh>
-        <mesh position={[-0.44, 0.74, 0.02]} material={materials.chair}>
-          <boxGeometry args={[0.09, 0.07, 0.46]} />
-        </mesh>
-        <mesh position={[0.44, 0.74, 0.02]} material={materials.chair}>
-          <boxGeometry args={[0.09, 0.07, 0.46]} />
-        </mesh>
-        <mesh position={[0, 0.28, 0]} material={materials.metalDark}>
-          <cylinderGeometry args={[0.05, 0.05, 0.46, 12]} />
-        </mesh>
-        {[0, 1, 2, 3, 4].map((i) => {
-          const a = (i / 5) * Math.PI * 2;
-          return (
-            <mesh
-              key={i}
-              position={[Math.cos(a) * 0.23, 0.05, Math.sin(a) * 0.23]}
-              rotation={[0, -a, 0]}
-              material={materials.chair}
-            >
-              <boxGeometry args={[0.46, 0.045, 0.06]} />
-            </mesh>
-          );
-        })}
+      {/* Behind the desk, turned toward him, as if he has just stepped round
+          from it.
+          - It must stay clear of the desk's footprint (x 0.9–4.3, z -0.95–0.25).
+            The chair used to stand inside it, with its back rising straight
+            through the top; the nearest part, an armrest, now clears the far
+            edge by ~14cm.
+          - x is set by the hero framing: at 1.42 it hid entirely behind the
+            subject, and much past 1.7 the back rises behind the laptop screen,
+            which is the camera's dive target. 1.6 lands it in the gap between
+            his arm and the laptop.
+          - The mesh back keeps it from reading as a dark mass. */}
+      <group position={[1.6, 0, -1.38]} rotation={[0, -0.55, 0]}>
+        <Chair env={env} />
       </group>
 
       {/* -------------------------------------------------------------- lights */}
