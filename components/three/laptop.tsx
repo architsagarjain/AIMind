@@ -6,7 +6,7 @@ import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { MODEL_URLS } from '@/lib/model-manifest';
 import { applyTextureQuality } from './texture-quality';
-import { createLockScreenTexture } from './lock-screen-texture';
+import { createStandbyTexture } from './standby-texture';
 
 /**
  * The MacBook on the desk, loaded from `public/models/macbook.glb`.
@@ -18,17 +18,17 @@ import { createLockScreenTexture } from './lock-screen-texture';
  * silently drifted when the geometry changed and the camera flew to where the
  * screen used to be.
  *
- * The screen shows the ARCHIT.OS lock screen, drawn live at runtime (see
- * lock-screen-texture.ts). The GLB still carries a plain wallpaper-only image
- * baked by `scripts/optimize-laptop.mjs`, used only until that first draw.
+ * The screen shows ARCHIT.OS on standby, drawn live at runtime (see
+ * standby-texture.ts). The GLB carries a plain image baked by
+ * `scripts/optimize-laptop.mjs`, used only until that first draw.
  */
 
 /**
- * Emissive strength for the lock screen. It is a light surface; the old dark
- * desktop needed 2.2 to read, and at that strength this one blows out to
- * white under ACES.
+ * Emissive strength for the standby screen. It is mostly dark with bright
+ * cyan detail, so it needs far more than a light screen did (0.62) to read
+ * as lit; much past this the cyan clips to white under ACES.
  */
-const SCREEN_GLOW = 0.62;
+const SCREEN_GLOW = 1.5;
 
 /** Content-hashed; see scripts/write-model-manifest.mjs. */
 const MODEL_URL = MODEL_URLS.macbook;
@@ -79,7 +79,7 @@ export function Laptop({ still = false }: { still?: boolean }) {
   const model = useMemo(() => scene.clone(true), [scene]);
 
   useEffect(() => {
-    const lock = createLockScreenTexture();
+    const standby = createStandbyTexture();
     model.traverse((o) => {
       if (!(o instanceof THREE.Mesh)) return;
       o.castShadow = true;
@@ -87,11 +87,11 @@ export function Laptop({ still = false }: { still?: boolean }) {
 
       const material = o.material as THREE.MeshStandardMaterial;
       if (!material) return;
-      // The screen is the only emissive surface. It gets the live lock screen,
+      // The screen is the only emissive surface. It gets the live standby screen,
       // on a clone so the cached GLTF material is left as loaded.
       if (material.emissiveIntensity > 0 && material.emissiveMap) {
         const screen = material.clone();
-        screen.emissiveMap = lock.texture;
+        screen.emissiveMap = standby.texture;
         screen.emissiveIntensity = SCREEN_GLOW;
         o.material = screen;
         return;
@@ -100,7 +100,7 @@ export function Laptop({ still = false }: { still?: boolean }) {
       material.envMapIntensity = 0.7;
     });
     applyTextureQuality(model, maxAnisotropy);
-    return () => lock.dispose();
+    return () => standby.dispose();
   }, [model, maxAnisotropy]);
 
   useFrame((state) => {
@@ -122,8 +122,8 @@ export function Laptop({ still = false }: { still?: boolean }) {
       <pointLight
         ref={glow}
         position={SCREEN_LOCAL.clone().addScaledVector(SCREEN_NORMAL_LOCAL, 1.15)}
-        // The lock screen is light and cool-neutral, not cyan.
-        color="#dfe6ff"
+        // The standby screen is night blue with cyan detail.
+        color="#8fd8ff"
         intensity={2.6}
         distance={3.6}
         decay={2}

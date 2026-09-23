@@ -34,27 +34,31 @@ you into a laptop screen, which boots into a virtual desktop where every
 ## The experience
 
 ```
-┌──────────────┐   scroll    ┌──────────────┐   flash   ┌──────────────┐   ~2.4s   ┌──────────────┐
+┌──────────────┐   scroll    ┌──────────────┐   flash   ┌──────────────┐   ~3.7s   ┌──────────────┐
 │     HERO     │ ──────────► │    DIVING    │ ────────► │   BOOTING    │ ────────► │   DESKTOP    │
-│ 3D office +  │  camera push│ lens enters  │ wallpaper │ lock screen  │           │ folders,     │
-│ live avatar  │  → laptop   │ the screen   │  wipe     │ unlocks      │           │ windows, dock│
+│ 3D office +  │  camera push│ lens enters  │ reactor   │ reactor HUD, │  iris     │ "Talk to it" │
+│ live avatar  │  → laptop   │ the screen   │  cyan     │ log, greeting│  opens    │ prompt, dock │
 └──────────────┘             └──────────────┘           └──────────────┘           └──────────────┘
 ```
 
-1. **Hero** — full-screen split. Copy on the left, a stylised 3D character
-   seated in a dark office on the right. He breathes, blinks, and turns his head
+1. **Hero** — full-screen split. Copy on the left, a 3D character of Archit
+   standing in a night office on the right. He breathes, sways, and turns his head
    toward your cursor.
 2. **Scroll** — a 3.4-screen runway drives a camera move: push in on the
    subject, swing across to the desk, then dive into the laptop screen.
-3. **Unlock** — the laptop shows the ARCHIT.OS lock screen (live clock, the
-   CV's headline figures, "Scroll to unlock"). The dive lands on that same
-   screen at full size, which unlocks and clears to the desktop on the same
-   wallpaper. The laptop's version is drawn live on a canvas from `content/`,
-   so it always matches.
-4. **Desktop** — a virtual OS. Five folders open as draggable, resizable,
-   maximisable windows: About, Projects, Timeline, Resume and Ask Archit.
+3. **Boot** — the laptop sits on standby, showing the ARCHIT.OS arc-reactor
+   mark with a live clock, the CV's headline figures and "Scroll to wake
+   Archit AI" (drawn live on a canvas from `content/`). The dive lands in that
+   reactor at full size: its rings spin up while a boot log runs, a voice
+   waveform comes up with a greeting, and the core opens like an iris onto
+   the desktop.
+4. **Desktop** — a virtual OS that opens on the conversation: a Spotlight-style
+   prompt ("Don't read my portfolio. Talk to it.") with suggested questions,
+   which starts the chat in the Ask Archit window. Five folders and a dock open
+   draggable, resizable windows: About, Projects, Timeline, Resume and Ask
+   Archit. On phones, windows fill the screen.
 
-Every step is skippable. `Skip intro` on the hero, `Skip` (or Enter) on the lock screen, and
+Every step is skippable. `Skip intro` on the hero, `Skip` (or Enter) during the boot, and
 `prefers-reduced-motion` routes straight to the desktop.
 
 ---
@@ -157,8 +161,9 @@ to start persisting conversations. Neither is required to ship.
 │
 ├── scripts/                    # build-time asset prep, never run at runtime
 │   ├── rig-character.mjs       # fits a skeleton + solves skin weights
+│   ├── lib/enhance-character.mjs # materials, skin tone, face projection
 │   ├── optimize-laptop.mjs     # repacks the MacBook + bakes its screen
-│   └── make-screen-texture.mjs # renders the laptop's fallback wallpaper PNG
+│   └── make-screen-texture.mjs # renders the laptop's fallback standby PNG
 │
 ├── assets/screen.png           # build input, deliberately not in public/
 │
@@ -209,6 +214,17 @@ static mesh with no skeleton, so `scripts/rig-character.mjs` fits a 19-bone
 humanoid skeleton to it and solves skin weights. The head then turns toward the
 cursor on its own neck, the chest breathes, and the arms sway.
 
+The same script then runs a realism pass (`scripts/lib/enhance-character.mjs`).
+It rasterises the mesh into texture space so every texel knows where it is on
+the body, splits the texture into skin, hair, suit, shirt, tie and shoes by
+colour and height, and gives each its own physical response (wool sheen, silk,
+polished leather, a warm skin rim). It matches the skin tone to the reference
+photo, and projects the reference face (`assets/reference/head-front.png`)
+onto the head, aligned by a least-squares fit on five landmarks. The eight
+reference crops in `assets/reference/` are also what to upload to an
+image-to-3D tool (Meshy's multi-image mode) for a better base mesh; the
+pipeline takes a new export as-is.
+
 That is only possible because the export is a relaxed A-pose: slicing the mesh
 horizontally shows three distinct vertex clusters (arm / torso / arm) through
 the upper body, which is the air gap a weight solver needs. An earlier export
@@ -217,7 +233,7 @@ envelope weights pinch tailored trousers at hip and knee — so the figure stand
 See `docs/ARCHITECTURE.md` §9.
 
 **Models are repacked, not shipped as exported.** The character went from
-5.62MB to **1.98MB** (2048² WebP textures, vertex quantization); the MacBook
+5.62MB to **2.55MB** (2048² WebP textures, vertex quantization); the MacBook
 from 10.11MB to **2.90MB** (welded, WebP textures, vertex quantization — no Draco, so no wasm
 decoder is fetched at runtime). Both scripts live in `scripts/`; see
 `docs/ARCHITECTURE.md` §9 and §10.
@@ -384,7 +400,7 @@ they cannot drift apart.
 > ⚠️ **On metrics.** Every hard figure in this repo comes from Archit's CV and
 > lives in `content/` (`heroStats` in `profile.ts`, `metrics` in
 > `projects.ts`). Nothing else states a number: the AI's system prompt, the
-> boot screen and the laptop's lock screen all derive theirs from these, so
+> boot screen and the laptop's standby screen all derive theirs from these, so
 > updating the content updates all of them. Case-study narratives describe
 > *approach* rather than claiming unverified outcomes, because the AI clone
 > reads these files as fact. **Any number you add to `metrics` will be
@@ -402,7 +418,7 @@ they cannot drift apart.
   frames.
 - Scroll handling is rAF-coalesced; drag/resize bypass React entirely during the
   gesture.
-- The two models (1.98MB + 2.90MB) are fetched only after the capability check
+- The two models (2.55MB + 2.89MB) are fetched only after the capability check
   passes, in parallel with the room rendering, and served `immutable` for a
   year. They are never requested on a device that would stutter on them.
 - Model URLs carry a content hash (`scripts/write-model-manifest.mjs`, run on
