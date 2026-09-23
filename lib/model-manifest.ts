@@ -8,7 +8,7 @@ export const MODEL_URLS = {
   /** archit.glb — 1.98MB */
   archit: '/models/archit.glb?v=944015f8',
   /** macbook.glb — 2.90MB */
-  macbook: '/models/macbook.glb?v=a62912b8',
+  macbook: '/models/macbook.glb?v=df2408a1',
 } as const;
 
 export type ModelKey = keyof typeof MODEL_URLS;

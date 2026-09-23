@@ -6,6 +6,7 @@ import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { MODEL_URLS } from '@/lib/model-manifest';
 import { applyTextureQuality } from './texture-quality';
+import { createLockScreenTexture } from './lock-screen-texture';
 
 /**
  * The MacBook on the desk, loaded from `public/models/macbook.glb`.
@@ -17,9 +18,17 @@ import { applyTextureQuality } from './texture-quality';
  * silently drifted when the geometry changed and the camera flew to where the
  * screen used to be.
  *
- * The screen texture is baked into the GLB by `scripts/optimize-laptop.mjs`,
- * which swaps the stock macOS wallpaper for an ARCHIT.OS desktop.
+ * The screen shows the ARCHIT.OS lock screen, drawn live at runtime (see
+ * lock-screen-texture.ts). The GLB still carries a plain wallpaper-only image
+ * baked by `scripts/optimize-laptop.mjs`, used only until that first draw.
  */
+
+/**
+ * Emissive strength for the lock screen. It is a light surface; the old dark
+ * desktop needed 2.2 to read, and at that strength this one blows out to
+ * white under ACES.
+ */
+const SCREEN_GLOW = 0.62;
 
 /** Content-hashed; see scripts/write-model-manifest.mjs. */
 const MODEL_URL = MODEL_URLS.macbook;
@@ -70,6 +79,7 @@ export function Laptop({ still = false }: { still?: boolean }) {
   const model = useMemo(() => scene.clone(true), [scene]);
 
   useEffect(() => {
+    const lock = createLockScreenTexture();
     model.traverse((o) => {
       if (!(o instanceof THREE.Mesh)) return;
       o.castShadow = true;
@@ -77,12 +87,20 @@ export function Laptop({ still = false }: { still?: boolean }) {
 
       const material = o.material as THREE.MeshStandardMaterial;
       if (!material) return;
-      // The screen is the only emissive surface; leave it alone and calm the
-      // aluminium, which otherwise mirrors a near-black room and goes flat.
-      if (material.emissiveIntensity > 0 && material.emissiveMap) return;
+      // The screen is the only emissive surface. It gets the live lock screen,
+      // on a clone so the cached GLTF material is left as loaded.
+      if (material.emissiveIntensity > 0 && material.emissiveMap) {
+        const screen = material.clone();
+        screen.emissiveMap = lock.texture;
+        screen.emissiveIntensity = SCREEN_GLOW;
+        o.material = screen;
+        return;
+      }
+      // Calm the aluminium, which otherwise mirrors a near-black room and goes flat.
       material.envMapIntensity = 0.7;
     });
     applyTextureQuality(model, maxAnisotropy);
+    return () => lock.dispose();
   }, [model, maxAnisotropy]);
 
   useFrame((state) => {
@@ -104,7 +122,8 @@ export function Laptop({ still = false }: { still?: boolean }) {
       <pointLight
         ref={glow}
         position={SCREEN_LOCAL.clone().addScaledVector(SCREEN_NORMAL_LOCAL, 1.15)}
-        color="#8fd8ff"
+        // The lock screen is light and cool-neutral, not cyan.
+        color="#dfe6ff"
         intensity={2.6}
         distance={3.6}
         decay={2}

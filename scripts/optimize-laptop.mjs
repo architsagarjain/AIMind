@@ -5,10 +5,10 @@
  * vertices and 2.8MB of PNG textures. That is fine for a turntable render and
  * far too heavy for a hero asset, so this does three things:
  *
- *  1. Swaps the macOS wallpaper on the screen for the ARCHIT.OS texture. The
- *     screen is what the scroll cinematic flies into, so it should not be a
- *     stock desktop. Baked in rather than drawn at runtime because the quad
- *     already has UVs — no extra geometry, no canvas upload, no per-frame cost.
+ *  1. Swaps the stock macOS wallpaper on the screen for the plain ARCHIT.OS
+ *     wallpaper. That is only a fallback: at runtime the screen is replaced by
+ *     the live lock screen (components/three/lock-screen-texture.ts), which
+ *     reuses this material and its UVs.
  *  2. Compresses textures (resize + WebP).
  *  3. Quantizes vertex attributes from float32 to integers.
  *
@@ -61,9 +61,11 @@ for (const mat of screenMats) {
   const flipped = await sharp(readFileSync(SCREEN)).flip().png().toBuffer();
   tex.setImage(flipped).setMimeType('image/png').setName('archit-os-screen');
 
-  // 8 blows out to pure white under ACES; this keeps the UI legible on the dive.
+  // The model ships 8, which is pure white under ACES. The screen is now a
+  // light wallpaper, so it needs far less than the old dark desktop's 2.2;
+  // this matches SCREEN_GLOW in components/three/laptop.tsx.
   const strength = mat.getExtension('KHR_materials_emissive_strength');
-  if (strength) strength.setEmissiveStrength(2.2);
+  if (strength) strength.setEmissiveStrength(0.62);
   mat.setEmissiveFactor([1, 1, 1]);
 
   // The panel ships as metal 0.9 / rough 0.1, i.e. a mirror. Against a point
@@ -71,7 +73,7 @@ for (const mat of screenMats) {
   // the camera arrives. An emissive display should not be reflective.
   mat.setMetallicFactor(0).setRoughnessFactor(0.42);
 
-  console.log(`screen material: ${mat.getName()} -> ARCHIT.OS (flipped, matte)`);
+  console.log(`screen material: ${mat.getName()} -> ARCHIT.OS wallpaper (flipped, matte)`);
 }
 
 const before = statSync(SRC).size;

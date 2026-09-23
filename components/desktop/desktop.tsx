@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MenuBar } from './menu-bar';
+import { Wallpaper } from './wallpaper';
 import { FolderGrid } from './folder-grid';
 import { Dock } from './dock';
 import { DesktopWindow } from './window';
@@ -62,24 +63,8 @@ export function Desktop({ onExit }: { onExit: () => void }) {
       className="os-light fixed inset-0 z-500 overflow-hidden bg-void"
     >
       {/* ------------------------------------------------------------ wallpaper */}
-      {/* A macOS-style desktop: a light gradient with soft colour pooling,
-          rather than the near-black used by the hero. The hero is a night
-          office; this is the laptop screen you just flew into. */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[linear-gradient(160deg,#dfe9f7_0%,#eef1f8_38%,#f6f2f7_70%,#e9eef9_100%)]" />
-        <div
-          className="absolute -top-[18%] -left-[6%] h-[46rem] w-[46rem] rounded-full blur-[110px]"
-          style={{ background: 'radial-gradient(circle,#9cc4f288 0%,transparent 70%)' }}
-        />
-        <div
-          className="absolute -right-[10%] bottom-[-22%] h-[40rem] w-[40rem] rounded-full blur-[120px]"
-          style={{ background: 'radial-gradient(circle,#c9b6ee7a 0%,transparent 70%)' }}
-        />
-        <div
-          className="absolute top-[22%] right-[18%] h-[26rem] w-[26rem] rounded-full blur-[110px]"
-          style={{ background: 'radial-gradient(circle,#a8e5e57a 0%,transparent 70%)' }}
-        />
-      </div>
+      {/* Shared with the lock screen and the laptop's screen; see wallpaper.tsx. */}
+      <Wallpaper />
 
       <MenuBar onExit={onExit} />
       <FolderGrid />

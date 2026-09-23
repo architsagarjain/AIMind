@@ -210,13 +210,17 @@ export function ExperienceShell() {
               {cinematic && <ScrollCue progress={scrolled} fade={fade} />}
             </main>
 
-            {/* Screen-fill flash as the lens enters the laptop */}
+            {/* Screen-fill as the lens enters the laptop.
+                In the lock screen's own wallpaper tones, not a colour of its
+                own: the camera is arriving on that screen, and the unlock that
+                follows fades in over this on the same wallpaper. (It was a
+                cyan burst, between a light screen and a light desktop.) */}
             <div
               className="pointer-events-none absolute inset-0"
               style={{
                 opacity: flash,
                 background:
-                  'radial-gradient(ellipse at 62% 52%, #cffaff 0%, #6ef2ff 34%, #0a1524 72%)',
+                  'radial-gradient(ellipse at 55% 45%, #f6f2f7 0%, #eef1f8 42%, #dfe9f7 78%, #c9d6ee 100%)',
                 willChange: 'opacity',
               }}
             />

@@ -36,8 +36,8 @@ you into a laptop screen, which boots into a virtual desktop where every
 ```
 ┌──────────────┐   scroll    ┌──────────────┐   flash   ┌──────────────┐   ~2.4s   ┌──────────────┐
 │     HERO     │ ──────────► │    DIVING    │ ────────► │   BOOTING    │ ────────► │   DESKTOP    │
-│ 3D office +  │  camera push│ lens enters  │  cyan     │ ARCHIT.OS    │           │ folders,     │
-│ live avatar  │  → laptop   │ the screen   │  wipe     │ boot log     │           │ windows, dock│
+│ 3D office +  │  camera push│ lens enters  │ wallpaper │ lock screen  │           │ folders,     │
+│ live avatar  │  → laptop   │ the screen   │  wipe     │ unlocks      │           │ windows, dock│
 └──────────────┘             └──────────────┘           └──────────────┘           └──────────────┘
 ```
 
@@ -46,11 +46,15 @@ you into a laptop screen, which boots into a virtual desktop where every
    toward your cursor.
 2. **Scroll** — a 3.4-screen runway drives a camera move: push in on the
    subject, swing across to the desk, then dive into the laptop screen.
-3. **Boot** — the screen fills the viewport and ARCHIT.OS boots.
+3. **Unlock** — the laptop shows the ARCHIT.OS lock screen (live clock, the
+   CV's headline figures, "Scroll to unlock"). The dive lands on that same
+   screen at full size, which unlocks and clears to the desktop on the same
+   wallpaper. The laptop's version is drawn live on a canvas from `content/`,
+   so it always matches.
 4. **Desktop** — a virtual OS. Five folders open as draggable, resizable,
    maximisable windows: About, Projects, Timeline, Resume and Ask Archit.
 
-Every step is skippable. `Skip intro` on the hero, `Skip →` during boot, and
+Every step is skippable. `Skip intro` on the hero, `Skip` (or Enter) on the lock screen, and
 `prefers-reduced-motion` routes straight to the desktop.
 
 ---
@@ -154,7 +158,7 @@ to start persisting conversations. Neither is required to ship.
 ├── scripts/                    # build-time asset prep, never run at runtime
 │   ├── rig-character.mjs       # fits a skeleton + solves skin weights
 │   ├── optimize-laptop.mjs     # repacks the MacBook + bakes its screen
-│   └── make-screen-texture.mjs # renders the ARCHIT.OS screen PNG
+│   └── make-screen-texture.mjs # renders the laptop's fallback wallpaper PNG
 │
 ├── assets/screen.png           # build input, deliberately not in public/
 │
@@ -377,10 +381,13 @@ where available.
 resume page and the AI's knowledge base all read from the same four files, so
 they cannot drift apart.
 
-> ⚠️ **On metrics.** The only hard figures in this repo are the ones supplied:
-> 20K+ ZenCabs users, 7+ Cairros clients, 1 year at PwC. Case-study narratives
-> describe *approach* rather than claiming unverified outcomes, because the AI
-> clone reads these files as fact. **Any number you add to `metrics` will be
+> ⚠️ **On metrics.** Every hard figure in this repo comes from Archit's CV and
+> lives in `content/` (`heroStats` in `profile.ts`, `metrics` in
+> `projects.ts`). Nothing else states a number: the AI's system prompt, the
+> boot screen and the laptop's lock screen all derive theirs from these, so
+> updating the content updates all of them. Case-study narratives describe
+> *approach* rather than claiming unverified outcomes, because the AI clone
+> reads these files as fact. **Any number you add to `metrics` will be
 > quoted by the clone in interviews** — only add figures you are willing to
 > defend.
 
