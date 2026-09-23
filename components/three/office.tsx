@@ -1,11 +1,13 @@
 'use client';
 
-import { useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useMemo } from 'react';
 import * as THREE from 'three';
 import { Chair } from './chair';
 import { Desk } from './desk';
+import { Books, Mug, Plant } from './desk-props';
 import { useNightEnvironment } from './night-environment';
+import { Skyline } from './skyline';
+import { Whiteboard } from './whiteboard';
 
 /**
  * The dark office set.
@@ -14,15 +16,22 @@ import { useNightEnvironment } from './night-environment';
  *   x < 0      whiteboard wall, behind and to the subject's right
  *   x ≈ 0.75   subject + chair
  *   x ≈ 2.6    desk, running off the right edge of frame
- *   z ≈ -4.2   window wall and the city beyond it
+ *   z ≈ -4.2   floor-to-ceiling glass; the floor stops here, and the city
+ *              (skyline.tsx) falls away below it
  *
  * The laptop itself is a loaded model; see `laptop.tsx`, which also owns the
- * camera rig's target constants. The desk and chair are procedural and live
- * in their own files; they share a reflection map built here.
+ * camera rig's target constants. The desk, chair and desk props are
+ * procedural and live in their own files; they share a reflection map built
+ * here.
  */
 
-export function Office({ still = false }: { still?: boolean }) {
-  const cityRef = useRef<THREE.Points>(null);
+interface OfficeProps {
+  /** Normalised pointer, -1..1, y down. Drives the skyline's interaction. */
+  pointer: React.RefObject<{ x: number; y: number }>;
+  still?: boolean;
+}
+
+export function Office({ pointer, still = false }: OfficeProps) {
   const env = useNightEnvironment();
 
   const materials = useMemo(
@@ -33,86 +42,40 @@ export function Office({ still = false }: { still?: boolean }) {
       // Anodised aluminium: low roughness + high metalness is what separates a
       // MacBook read from a generic grey slab.
       metalDark: new THREE.MeshStandardMaterial({ color: '#4a4f58', roughness: 0.4, metalness: 0.7 }),
-      mug: new THREE.MeshStandardMaterial({ color: '#15151d', roughness: 0.5 }),
-      book: new THREE.MeshStandardMaterial({ color: '#2a2a38', roughness: 0.85 }),
-      leaf: new THREE.MeshStandardMaterial({ color: '#254a37', roughness: 0.75 }),
       glass: new THREE.MeshStandardMaterial({
         color: '#060c18',
         roughness: 0.06,
         metalness: 0.5,
         transparent: true,
-        opacity: 0.4,
-      }),
-      chalk: new THREE.MeshStandardMaterial({
-        color: '#000000',
-        emissive: '#8fd8ff',
-        emissiveIntensity: 0.5,
+        // Lighter than it was: behind it is now a lit city worth seeing.
+        opacity: 0.28,
       }),
     }),
     [],
   );
 
-  /** City skyline: emissive points scattered across a far plane. */
-  const city = useMemo(() => {
-    const count = 1100;
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-    const warm = new THREE.Color('#ffd7a0');
-    const cool = new THREE.Color('#6ef2ff');
-
-    for (let i = 0; i < count; i += 1) {
-      // Weighted low so it reads as a skyline rather than a starfield.
-      const x = (Math.random() - 0.5) * 26 + 1;
-      const y = Math.pow(Math.random(), 2.3) * 3.2 - 0.1;
-      const z = -6.5 - Math.random() * 7;
-      positions.set([x, y, z], i * 3);
-
-      const c = warm.clone().lerp(cool, Math.random() * 0.5);
-      colors.set([c.r, c.g, c.b], i * 3);
-    }
-
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    return geometry;
-  }, []);
-
-  useFrame((state) => {
-    if (still) return;
-    const t = state.clock.elapsedTime;
-    if (cityRef.current) {
-      const material = cityRef.current.material as THREE.PointsMaterial;
-      material.opacity = 0.78 + Math.sin(t * 0.6) * 0.07;
-    }
-  });
-
   return (
     <group>
       {/* --------------------------------------------------------------- shell */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow material={materials.floor}>
-        <planeGeometry args={[36, 36]} />
+      {/* Ends at the glass (z = -4.2) rather than running under the city. */}
+      <mesh
+        position={[0, 0, 6.8]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        receiveShadow
+        material={materials.floor}
+      >
+        <planeGeometry args={[36, 22]} />
       </mesh>
 
-      {/* Whiteboard wall on the subject's right, carrying the handwriting glow */}
+      {/* Side wall on the subject's right, carrying the glass board */}
       <group position={[-3.1, 1.65, -1.85]} rotation={[0, 0.5, 0]}>
         <mesh material={materials.wall}>
           <planeGeometry args={[9, 7]} />
         </mesh>
-        {/* Abstract "handwriting" — short emissive strokes, legible as writing
-            at hero distance without needing a texture. */}
-        {[
-          [-1.2, 1.1, 1.5],
-          [-1.1, 0.82, 1.15],
-          [-1.25, 0.54, 1.35],
-          [-1.15, 0.26, 0.95],
-          [1.05, 0.95, 1.1],
-          [1.15, 0.67, 1.45],
-          [0.95, 0.39, 0.85],
-        ].map(([x, y, w], i) => (
-          <mesh key={i} position={[x!, y!, 0.02]} rotation={[0, 0, -0.04]} material={materials.chalk}>
-            <boxGeometry args={[w!, 0.035, 0.005]} />
-          </mesh>
-        ))}
+        {/* Where the strokes used to be; see whiteboard.tsx. */}
+        <group position={[0, 0.62, 0.03]}>
+          <Whiteboard env={env} />
+        </group>
       </group>
 
       {/* ------------------------------------------------------- window + city */}
@@ -130,24 +93,16 @@ export function Office({ still = false }: { still?: boolean }) {
         </mesh>
       </group>
 
-      <points ref={cityRef} geometry={city}>
-        <pointsMaterial
-          size={0.06}
-          sizeAttenuation
-          vertexColors
-          transparent
-          opacity={0.82}
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </points>
+      <Skyline pointer={pointer} still={still} />
 
-      {/* Distant ridgeline so the skyline has a horizon */}
-      <mesh position={[-1, 0.3, -12]} rotation={[0, 0.6, 0]} material={materials.wall}>
-        <coneGeometry args={[7, 2.6, 4]} />
+      {/* Room shell around the glass. With a black clear colour the set could
+          stop at the window's edges; with a sky behind it, the gap past the
+          right end and above the head showed straight out of the building. */}
+      <mesh position={[7.9, 3, 1.8]} rotation={[0, -Math.PI / 2, 0]} material={materials.wall}>
+        <planeGeometry args={[12, 6]} />
       </mesh>
-      <mesh position={[5, 0.2, -13]} rotation={[0, 0.3, 0]} material={materials.wall}>
-        <coneGeometry args={[6, 2, 4]} />
+      <mesh position={[1.4, 7, -4.2]} material={materials.wall}>
+        <planeGeometry args={[16, 4.2]} />
       </mesh>
 
       {/* ---------------------------------------------------------------- desk */}
@@ -155,50 +110,16 @@ export function Office({ still = false }: { still?: boolean }) {
         <Desk env={env} />
       </group>
 
-      {/* ----------------------------------------------------------------- mug */}
+      {/* ------------------------------------------------------------- props */}
+      {/* Same spots as before; each prop's origin is its footprint on the top. */}
       <group position={[2.78, 0.775, 0.16]}>
-        <mesh material={materials.mug} castShadow>
-          <cylinderGeometry args={[0.078, 0.064, 0.145, 20]} />
-        </mesh>
-        <mesh position={[0.095, 0, 0]} rotation={[Math.PI / 2, 0, 0]} material={materials.mug}>
-          <torusGeometry args={[0.042, 0.011, 8, 16]} />
-        </mesh>
+        <Mug env={env} still={still} />
       </group>
-
-      {/* --------------------------------------------------------------- books */}
-      <group position={[3.12, 0.775, -0.34]}>
-        {[0, 1, 2, 3, 4].map((i) => (
-          <mesh
-            key={i}
-            position={[0, 0.027 + i * 0.052, 0]}
-            rotation={[0, i * 0.06 - 0.12, 0]}
-            material={materials.book}
-            castShadow
-          >
-            <boxGeometry args={[0.48, 0.048, 0.33]} />
-          </mesh>
-        ))}
+      <group position={[3.12, 0.775, -0.34]} rotation={[0, -0.12, 0]}>
+        <Books env={env} />
       </group>
-
-      {/* --------------------------------------------------------------- plant */}
       <group position={[3.62, 0.775, 0.3]}>
-        <mesh material={materials.mug}>
-          <cylinderGeometry args={[0.11, 0.08, 0.19, 14]} />
-        </mesh>
-        {[0, 1, 2, 3, 4, 5].map((i) => {
-          const a = (i / 6) * Math.PI * 2;
-          return (
-            <mesh
-              key={i}
-              position={[Math.cos(a) * 0.1, 0.22 + (i % 3) * 0.08, Math.sin(a) * 0.1]}
-              rotation={[Math.cos(a) * 0.45, a, Math.sin(a) * 0.45]}
-              material={materials.leaf}
-              scale={[1, 2.6, 0.35]}
-            >
-              <sphereGeometry args={[0.075, 8, 6]} />
-            </mesh>
-          );
-        })}
+        <Plant env={env} />
       </group>
 
       {/* --------------------------------------------------------------- chair */}
@@ -244,8 +165,12 @@ export function Office({ still = false }: { still?: boolean }) {
       {/* Second rim, camera-right, so the far shoulder catches an edge */}
       <pointLight position={[3.0, 2.0, 1.2]} intensity={9} color="#8fd0ff" distance={7} decay={2} />
 
-      {/* Warm practical bouncing off the desk */}
-      <pointLight position={[2.65, 1.2, 0.8]} intensity={10} color="#ffb070" distance={4.6} decay={2} />
+      {/* Warm practical over the desk.
+          Raised and pulled back from where it was (2.65, 1.2, 0.8): that sat
+          0.74 from the mug and put ~18 units of light on it against ~2.6 on
+          the subject's face, which blew out every prop on the desk. Here the
+          mug gets ~4 and the face stays within ~5% of what it had. */}
+      <pointLight position={[2.55, 1.95, 1.35]} intensity={11} color="#ffb070" distance={4.6} decay={2} />
 
       {/* Low warm bounce on the desk itself. Kept short-range: at a longer
           distance it washed the charcoal suit brown. */}

@@ -61,7 +61,7 @@ export default function Scene() {
         scene.fog = new THREE.FogExp2('#0a1024', 0.042);
       }}
     >
-      <Office still={reduced} />
+      <Office pointer={pointer} still={reduced} />
       {/* The model streams separately from the rest of the scene, so the room
           and lighting render immediately rather than blocking on it. */}
       <Suspense fallback={null}>

@@ -59,14 +59,17 @@ export function roundedBox(
  * Merges parts into one geometry. Inputs are consumed (disposed).
  *
  * Indexed and non-indexed geometries cannot be merged together, and three's
- * primitives are a mix of both, so everything is flattened first.
+ * primitives are a mix of both, so everything is flattened first. A vertex
+ * `color` attribute survives only if every part has one (see `tint`).
  */
 export function merge(parts: THREE.BufferGeometry[]): THREE.BufferGeometry {
+  const keepColor = parts.every((g) => g.attributes.color);
   const flat = parts.map((g) => {
     const out = g.index ? g.toNonIndexed() : g;
     // Only the attributes every part shares survive a merge.
     for (const name of Object.keys(out.attributes)) {
-      if (name !== 'position' && name !== 'normal' && name !== 'uv') out.deleteAttribute(name);
+      const shared = name === 'position' || name === 'normal' || name === 'uv';
+      if (!shared && !(name === 'color' && keepColor)) out.deleteAttribute(name);
     }
     if (out !== g) g.dispose();
     return out;
@@ -107,5 +110,19 @@ export function planarUV(
     );
   }
   uv.needsUpdate = true;
+  return geometry;
+}
+
+/**
+ * Paints a whole geometry one colour via a vertex `color` attribute, so parts
+ * of different colours can still merge into a single draw call. The material
+ * needs `vertexColors: true`; the colour is given in sRGB and stored linear.
+ */
+export function tint<G extends THREE.BufferGeometry>(geometry: G, color: THREE.ColorRepresentation): G {
+  const c = new THREE.Color(color);
+  const count = geometry.attributes.position!.count;
+  const data = new Float32Array(count * 3);
+  for (let i = 0; i < count; i += 1) data.set([c.r, c.g, c.b], i * 3);
+  geometry.setAttribute('color', new THREE.BufferAttribute(data, 3));
   return geometry;
 }
