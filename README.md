@@ -73,7 +73,7 @@ Every step is skippable. `Skip intro` on the hero, `Skip` (or Enter) during the 
 | Animation | Framer Motion (UI), GSAP-free scroll rig (see note) |
 | 3D | React Three Fiber 9 + three.js |
 | State | Zustand (two small stores) |
-| AI | OpenAI Chat Completions, streamed |
+| AI | OpenRouter, **free models only**, streamed (via the OpenAI-compatible SDK) |
 | Data | Supabase (Postgres + RLS) |
 | Hosting | Vercel |
 
@@ -106,7 +106,8 @@ Open <http://localhost:3000>.
 - and the chat answers from a hand-written offline responder
   (`lib/ai/fallback.ts`) built from the same content files the real model reads.
 
-Add `OPENAI_API_KEY` to switch the chat to the live clone. Add the Supabase keys
+Add `OPENROUTER_API_KEY` to switch the chat to the live clone, on free models
+only (see [The live clone](#the-live-clone-free-models-only)). Add the Supabase keys
 to start persisting conversations. Neither is required to ship.
 
 | Script | Does |
@@ -285,8 +286,9 @@ lib/ai/system-prompt.ts ──► persona contract + the corpus
        ▼
 app/api/chat/route.ts ──► rate limit → validate → stream → persist
        │
-       ├── OPENAI_API_KEY set?  → OpenAI, streamed
-       └── not set / API error? → lib/ai/fallback.ts, streamed identically
+       ├── OPENROUTER_API_KEY set? → free models on OpenRouter, streamed,
+       │                             falling back model to model on error
+       └── not set / all failed?   → lib/ai/fallback.ts, streamed identically
 ```
 
 **Why full context instead of RAG.** The whole corpus is a few thousand tokens.
@@ -300,7 +302,7 @@ quote are the ones in `content/`. Anything it does not know, it says it does not
 know.
 
 **Graceful degradation is the design, not a fallback.** If the key is missing or
-OpenAI errors, the route streams the offline responder through the identical
+every free model fails, the route streams the offline responder through the identical
 response shape — the client cannot tell the difference except via the `X-AI-Mode`
 header, which the UI surfaces honestly in the composer footer.
 
@@ -460,8 +462,8 @@ Set these in **Project → Settings → Environment Variables**:
 
 | Variable | Scope | Required |
 | --- | --- | --- |
-| `OPENAI_API_KEY` | Production, Preview | No — falls back to offline mode |
-| `OPENAI_MODEL` | All | No — defaults to `gpt-4o-mini` |
+| `OPENROUTER_API_KEY` | Production, Preview | No — falls back to offline mode |
+| `OPENROUTER_MODELS` | All | No — comma-separated preference order; only `:free` IDs are accepted |
 | `NEXT_PUBLIC_SUPABASE_URL` | All | No |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | All | No |
 | `SUPABASE_SERVICE_ROLE_KEY` | Production, Preview | No — **never** prefix with `NEXT_PUBLIC_` |
@@ -488,7 +490,39 @@ npm start          # defaults to :3000
 ```
 
 The chat route runs on the Node runtime (`runtime = 'nodejs'`) because the
-OpenAI SDK and the Supabase service client both need it.
+OpenAI-compatible SDK (pointed at OpenRouter) and the Supabase service client
+both need it, with `maxDuration = 60`, because free models can be slow to start
+and the route may try more than one.
+
+### The live clone: free models only
+
+The clone runs on OpenRouter's free models, and "free only" is enforced in
+layers so that no single mistake can route a request to a paid model:
+
+1. **Only `:free` model IDs are ever sent.** Anything else is dropped,
+   including anything set through `OPENROUTER_MODELS`, so a typo in an env var
+   cannot turn billing on. The route checks again just before each request
+   leaves.
+2. **Checked against OpenRouter's live catalogue.** The public `/models` list is
+   fetched hourly (no key needed), and a model is used only if it is priced at
+   exactly zero for both prompt and completion. Free models come and go often,
+   so the preference list in `lib/ai/openrouter.ts` is an ordering hint; other
+   currently free models fill in behind it.
+3. **Explicit model lists.** Each request names its models in OpenRouter's
+   `models` array, and OpenRouter only routes to models you name.
+
+**Fallback.** Within a request, OpenRouter tries its three named models in
+order. Across requests, the route moves to the next group when a model errors,
+is rate-limited, takes more than 12s to start or returns nothing. If a model
+fails before writing anything, the next one takes over unseen. If every free
+model fails, the visitor gets the pre-written answer, labelled as such.
+
+**Limits.** Free models are rate-limited by OpenRouter, per minute and per day,
+and the daily cap is much higher once the account has bought credits. When the
+limits are hit, the chat degrades to pre-written answers rather than failing.
+
+**Checking it.** `GET /api/chat` reports whether the key is configured and
+which free models it would use, in order, plus any it skipped and why.
 
 ---
 

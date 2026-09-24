@@ -196,7 +196,7 @@ export function Chat({ compact = false }: { compact?: boolean }) {
             <p className="text-[10px] text-faint">
               {mode === 'live'
                 ? `AI clone of ${profile.name}. It can be wrong — verify anything that matters.`
-                : 'Responses come from a fixed script until an OpenAI key is configured.'}
+                : 'Pre-written answers for now: the live clone is offline or at capacity.'}
             </p>
             {messages.length > 0 && (
               <button

@@ -3,8 +3,8 @@ import { profile } from '@/content/profile';
 /**
  * Deterministic offline responder.
  *
- * Used when OPENAI_API_KEY is absent, and as the safety net when a live call
- * fails mid-request, so a fresh clone still demos end to end instead of
+ * Used when OPENROUTER_API_KEY is absent, and as the safety net when every
+ * free model fails or is at capacity, so the chat always answers instead of
  * erroring. Answers are hand-written from the same CV the model reads, so
  * nothing here claims anything the live clone could not.
  *
@@ -149,10 +149,18 @@ const DEFAULT_ANSWER = `I don't have a good answer to that one from what's in he
 
 What I can talk about properly: taking ZenCabs from launch to 25,000+ users and ₹3 Cr annualised, the fifteen months at PwC India and the ₹6+ Cr in client savings, building Cairros to seven figures while at college, the work at Equip9, MCCS Infra and Shaadi Mangalam, or what I'm doing at Masters' Union now. Ask me about any of those.`;
 
-const OFFLINE_NOTE =
-  '— Offline mode: no OpenAI key is configured, so this is a pre-written answer rather than the live clone.';
+/** Why the answer is pre-written; the note says so honestly either way. */
+export type OfflineReason = 'unconfigured' | 'unavailable';
 
-export function fallbackAnswer(question: string): string {
+const OFFLINE_NOTE: Record<OfflineReason, string> = {
+  unconfigured:
+    "— Offline mode: the live clone isn't connected yet, so this is a pre-written answer.",
+  // Free models are rate-limited and sometimes all busy at once.
+  unavailable:
+    '— The live clone is at capacity right now, so this is a pre-written answer. Ask again in a minute for the live one.',
+};
+
+export function fallbackAnswer(question: string, reason: OfflineReason = 'unconfigured'): string {
   const q = question.toLowerCase();
 
   let best: { entry: FallbackEntry; score: number } | null = null;
@@ -162,12 +170,15 @@ export function fallbackAnswer(question: string): string {
     if (score > 0 && (!best || score > best.score)) best = { entry, score };
   }
 
-  return `${best?.entry.answer ?? DEFAULT_ANSWER}\n\n${OFFLINE_NOTE}`;
+  return `${best?.entry.answer ?? DEFAULT_ANSWER}\n\n${OFFLINE_NOTE[reason]}`;
 }
 
 /** Streams the fallback in word chunks so the UI path is identical to the real one. */
-export function fallbackStream(question: string): ReadableStream<Uint8Array> {
-  const words = fallbackAnswer(question).split(/(\s+)/);
+export function fallbackStream(
+  question: string,
+  reason: OfflineReason = 'unconfigured',
+): ReadableStream<Uint8Array> {
+  const words = fallbackAnswer(question, reason).split(/(\s+)/);
   const encoder = new TextEncoder();
   let i = 0;
 

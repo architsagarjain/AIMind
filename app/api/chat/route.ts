@@ -1,12 +1,21 @@
 import { NextResponse } from 'next/server';
-import { CHAT_MODEL, getOpenAI } from '@/lib/ai/openai';
+import type OpenAI from 'openai';
+import { attemptGroups, freeCandidates, getOpenRouter, isAIConfigured, isFreeModelId } from '@/lib/ai/openrouter';
 import { buildSystemPrompt } from '@/lib/ai/system-prompt';
-import { fallbackStream } from '@/lib/ai/fallback';
+import { fallbackAnswer, fallbackStream } from '@/lib/ai/fallback';
 import { rateLimit } from '@/lib/ai/rate-limit';
 import { insertMessage, upsertConversation } from '@/lib/supabase/queries';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+/**
+ * Free models can be slow to start and the route may try more than one, so it
+ * needs longer than Vercel Hobby's 10s default. 60s is the Hobby ceiling.
+ */
+export const maxDuration = 60;
+
+/** Per attempt: how long a free model gets to start answering before the next is tried. */
+const FIRST_RESPONSE_MS = 12_000;
 
 /** Keep the request bounded — this is a portfolio chat, not a document tool. */
 const MAX_MESSAGE_CHARS = 1_500;
@@ -87,65 +96,149 @@ export async function POST(req: Request) {
   };
 
   // --- Offline mode ---------------------------------------------------------
-  const openai = getOpenAI();
-  if (!openai) {
-    return new Response(fallbackStream(latest.content), {
+  const client = getOpenRouter();
+  if (!client) {
+    return new Response(fallbackStream(latest.content, 'unconfigured'), {
       headers: { ...responseHeaders, 'X-AI-Mode': 'offline' },
     });
   }
 
-  // --- Live clone -----------------------------------------------------------
+  // --- Live clone, free models only -----------------------------------------
   const startedAt = Date.now();
+  const { models } = await freeCandidates();
+  const groups = attemptGroups(models);
+  const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+    { role: 'system', content: buildSystemPrompt() },
+    ...history,
+  ];
 
-  try {
-    const completion = await openai.chat.completions.create({
-      model: CHAT_MODEL,
-      stream: true,
-      temperature: 0.7,
-      max_tokens: 700,
-      // A low presence penalty keeps the voice consistent across a session.
-      presence_penalty: 0.1,
-      messages: [{ role: 'system', content: buildSystemPrompt() }, ...history],
-    });
+  type Stream = AsyncIterable<OpenAI.Chat.ChatCompletionChunk>;
+  let next = 0;
 
-    const encoder = new TextEncoder();
-    let full = '';
+  /**
+   * Opens a completion on the next group of free models that accepts one.
+   * Within a group OpenRouter falls back itself (its `models` list); across
+   * groups this loop does. Null once every group has failed.
+   */
+  const openNext = async (): Promise<{ stream: Stream; group: string[] } | null> => {
+    while (next < groups.length) {
+      const group = groups[next++]!;
+      // Belt and braces: freeCandidates only returns :free IDs, but this is
+      // the last point before a request leaves, so check again here.
+      if (!group.every(isFreeModelId)) {
+        console.error('[chat] refused a non-free model group:', group);
+        continue;
+      }
+      try {
+        const params = {
+          model: group[0]!,
+          models: group, // OpenRouter extension: fallback models, tried in order
+          stream: true as const,
+          temperature: 0.7,
+          max_tokens: 700,
+          messages,
+        } as OpenAI.Chat.ChatCompletionCreateParamsStreaming & { models: string[] };
+        const stream = await client.chat.completions.create(params, { timeout: FIRST_RESPONSE_MS });
+        return { stream, group };
+      } catch (err) {
+        console.warn(`[chat] free models ${group.join(', ')} failed:`, describe(err));
+      }
+    }
+    return null;
+  };
 
-    const stream = new ReadableStream<Uint8Array>({
-      async start(controller) {
-        try {
-          for await (const chunk of completion) {
-            const delta = chunk.choices[0]?.delta?.content;
-            if (!delta) continue;
-            full += delta;
-            controller.enqueue(encoder.encode(delta));
-          }
-        } catch (err) {
-          console.error('[chat] stream failed:', err);
-          controller.enqueue(
-            encoder.encode('\n\nSomething broke on my end. Try that again in a moment.'),
-          );
-        } finally {
-          controller.close();
-          void insertMessage({
-            conversationId,
-            role: 'assistant',
-            content: full,
-            model: CHAT_MODEL,
-            latencyMs: Date.now() - startedAt,
-          });
-        }
-      },
-    });
-
-    return new Response(stream, {
-      headers: { ...responseHeaders, 'X-AI-Mode': 'live' },
-    });
-  } catch (err) {
-    console.error('[chat] completion failed:', err);
-    // Degrade to the offline responder rather than showing the user an error.
-    return new Response(fallbackStream(latest.content), {
+  // Find a model that accepts the request before committing to a response,
+  // so the mode header is honest in the common case.
+  const first = await openNext();
+  if (!first) {
+    return new Response(fallbackStream(latest.content, 'unavailable'), {
       headers: { ...responseHeaders, 'X-AI-Mode': 'offline-fallback' },
     });
   }
+
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      let current: { stream: Stream; group: string[] } | null = first;
+      let full = '';
+      let model = first.group[0]!;
+
+      while (current) {
+        let wrote = false;
+        try {
+          for await (const chunk of current.stream) {
+            if (chunk.model) model = chunk.model;
+            const delta = chunk.choices[0]?.delta?.content;
+            if (!delta) continue;
+            wrote = true;
+            full += delta;
+            controller.enqueue(encoder.encode(delta));
+          }
+          // Free models occasionally close a stream having said nothing.
+          if (!wrote) throw new Error('empty response');
+          break;
+        } catch (err) {
+          console.warn(`[chat] ${model} failed mid-stream:`, describe(err));
+          if (wrote) {
+            // Words already on screen cannot be taken back; say so briefly.
+            const note = '\n\nI lost my train of thought there. Ask me that again?';
+            full += note;
+            controller.enqueue(encoder.encode(note));
+            break;
+          }
+          // Nothing shown yet, so the next free model can take over unseen.
+          current = await openNext();
+          if (!current) {
+            full = fallbackAnswer(latest.content, 'unavailable');
+            model = 'offline';
+            controller.enqueue(encoder.encode(full));
+          }
+        }
+      }
+
+      controller.close();
+      void insertMessage({
+        conversationId,
+        role: 'assistant',
+        content: full,
+        model,
+        latencyMs: Date.now() - startedAt,
+      });
+    },
+  });
+
+  return new Response(stream, {
+    headers: { ...responseHeaders, 'X-AI-Mode': 'live' },
+  });
+
+}
+
+/** Error summary for logs: status and message, never the request. */
+function describe(err: unknown): string {
+  if (err && typeof err === 'object') {
+    const e = err as { status?: number; message?: string };
+    return [e.status, e.message].filter(Boolean).join(' ') || String(err);
+  }
+  return String(err);
+}
+
+/**
+ * Diagnostics: whether the clone is live and which free models it would use,
+ * in order. Safe to expose; it reveals configuration, never the key.
+ */
+export async function GET() {
+  if (!isAIConfigured()) {
+    return NextResponse.json({
+      configured: false,
+      hint: 'Set OPENROUTER_API_KEY in the deployment environment and redeploy.',
+    });
+  }
+  const report = await freeCandidates();
+  return NextResponse.json({
+    configured: true,
+    freeOnly: true,
+    candidates: report.models,
+    source: report.source,
+    ...(report.dropped.length ? { skipped: report.dropped } : {}),
+  });
 }

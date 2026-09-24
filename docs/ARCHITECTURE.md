@@ -50,9 +50,10 @@ covering the questions the starter prompts ask, streamed through the identical
 response path as the real model.
 
 It exists because a portfolio whose headline feature 500s on a fresh clone —
-or when a key expires, or when OpenAI has an incident — is worse than one that
-degrades. The route catches both the missing-key case and a mid-request API
-failure and falls through to it.
+or when a key expires, or when every free model is at capacity — is worse
+than one that degrades. The route catches the missing-key case, and falls
+through to it once every free model on OpenRouter has failed (see the README's
+"The live clone: free models only").
 
 It is honest about itself: every offline answer ends with a line saying so, the
 response carries `X-AI-Mode: offline`, and the composer footer changes text.

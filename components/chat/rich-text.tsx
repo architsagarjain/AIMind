@@ -15,7 +15,7 @@ import { Fragment } from 'react';
 /**
  * Code spans come first so a backticked identifier is never re-parsed, and the
  * italic arm requires non-word characters on both sides — otherwise a token
- * like OPENAI_API_KEY reads as emphasis.
+ * like OPENROUTER_API_KEY reads as emphasis.
  */
 const INLINE =
   /(`[^`]+`|\*\*[^*]+\*\*|(?<![A-Za-z0-9_])_[^_\n]+_(?![A-Za-z0-9_]))/g;
