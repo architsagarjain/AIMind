@@ -511,18 +511,27 @@ layers so that no single mistake can route a request to a paid model:
 3. **Explicit model lists.** Each request names its models in OpenRouter's
    `models` array, and OpenRouter only routes to models you name.
 
-**Fallback.** Within a request, OpenRouter tries its three named models in
+**Fallback.** Within a request, OpenRouter tries its two named models in
 order. Across requests, the route moves to the next group when a model errors,
 is rate-limited, is not accepted within 10s, shows no visible word within 15s
 (reasoning models thinking silently), goes quiet for 15s mid-answer, or returns
 nothing. If a model fails before writing anything, the next one takes over
-unseen. The response starts immediately and the whole attempt runs inside a
+unseen.
+
+**Hedging.** A slow free model should cost seconds, not a timeout. If the
+model being tried has not produced a verified opening within 4s, the next group
+starts alongside it (two requests at most), and whichever passes the guard
+first answers; the other is cancelled, so only one model's words ever reach the
+visitor. The catalogue is cached across server instances, so a cold start does
+not fetch it before the first answer, and the knowledge base drops timeline and
+resume lines that its case studies already state, which keeps the prompt about
+a fifth smaller. The response starts immediately and the whole attempt runs inside a
 40s budget, so it always finishes well within Vercel's limit. If every free
 model fails, the visitor gets the pre-written answer, labelled as such.
 
 **No leaked reasoning.** Some free models are reasoning models that write their
 thinking into the answer. `lib/ai/answer-guard.ts` strips `<think>` blocks and
-holds back the first 120 characters of every answer. If they read as reasoning
+holds back the first 80 characters of every answer. If they read as reasoning
 ("here's a thinking process…", "the user is asking…", or any mention of the
 knowledge base or system prompt), that model is dropped for the next one before
 the visitor sees a word. Reasoning models are also ranked last, and every

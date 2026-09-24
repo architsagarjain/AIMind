@@ -1,4 +1,6 @@
 import 'server-only';
+import { createHash } from 'crypto';
+import { unstable_cache } from 'next/cache';
 
 /**
  * ElevenLabs text-to-speech for the AI clone.
@@ -15,6 +17,13 @@ import 'server-only';
  * to an ID. Voice IDs are account-specific and a wrong one fails with an opaque
  * 400; looking it up means the route works with whatever library the key has.
  * `ELEVENLABS_VOICE_ID` short-circuits it.
+ *
+ * LATENCY
+ * The first sound is what a visitor feels. So: the Flash model first (the
+ * lowest-latency one), a 64kbps stream (half the bytes of the default, and
+ * indistinguishable for speech), and a voice lookup cached across server
+ * instances instead of repeated on every cold start. The client asks for one
+ * sentence at a time, so all of this applies to a short first chunk.
  */
 
 const API = 'https://api.elevenlabs.io/v1';
@@ -23,11 +32,19 @@ const API = 'https://api.elevenlabs.io/v1';
 const PREFERRED_MALE = ['adam', 'brian', 'daniel', 'george', 'liam', 'will', 'chris', 'callum'];
 
 /**
- * `eleven_multilingual_v2` is the most broadly available model across plans.
- * Turbo/Flash are cheaper and faster but are not on every tier, and a model the
- * plan lacks returns a 422 that reads like a bad request.
+ * Models in order: Flash v2.5 is the lowest-latency model, several times
+ * faster to first audio than Multilingual v2, which was the default and made
+ * a long answer sit in silence for seconds. If the account's plan rejects a
+ * model, the next is tried and the one that works is remembered.
+ * ELEVENLABS_MODEL pins a single model instead.
  */
-export const TTS_MODEL = process.env.ELEVENLABS_MODEL ?? 'eleven_multilingual_v2';
+const MODELS = process.env.ELEVENLABS_MODEL?.trim()
+  ? [process.env.ELEVENLABS_MODEL.trim()]
+  : ['eleven_flash_v2_5', 'eleven_multilingual_v2'];
+let workingModel: string | null = null;
+
+/** Half the default bitrate: plenty for a speaking voice, and half the bytes to wait for. */
+const OUTPUT_FORMAT = 'mp3_44100_64';
 
 export const isVoiceConfigured = () => Boolean(process.env.ELEVENLABS_API_KEY?.trim());
 
@@ -45,7 +62,7 @@ export interface VoiceResolution {
   error?: string;
 }
 
-/** Cached for the instance; a voice library rarely changes mid-deploy. */
+/** Cached for the instance, and across instances below. */
 let cached: VoiceResolution | null = null;
 
 /** Reads the upstream error body, which is where the real reason lives. */
@@ -72,31 +89,41 @@ export async function resolveVoice(force = false): Promise<VoiceResolution> {
   if (cached && !force) return cached;
 
   try {
+    // Cached across server instances, keyed by a hash of the API key (never
+    // the key itself), so a rotated key looks its voice up afresh. Failures
+    // throw and are not cached: the key may just have been added.
+    const found = force
+      ? await lookupVoice()
+      : await unstable_cache(lookupVoice, ['elevenlabs-voice', keyTag(apiKey)], { revalidate: 86_400 })();
+    cached = { ok: true, voiceId: found.voiceId, voiceName: found.voiceName, source: 'lookup' };
+    return cached;
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+}
+
+const keyTag = (key: string) => createHash('sha256').update(key).digest('hex').slice(0, 12);
+
+/** Picks a male voice from the account's library. Throws with the reason on failure. */
+async function lookupVoice(): Promise<{ voiceId: string; voiceName: string }> {
+  const apiKey = process.env.ELEVENLABS_API_KEY?.trim() ?? '';
+  {
     const res = await fetch(`${API}/voices`, {
       headers: { 'xi-api-key': apiKey },
       cache: 'no-store',
     });
 
-    if (!res.ok) {
-      // Don't cache a failure — the key may simply have been added late.
-      return { ok: false, error: `Voice lookup failed — ${await upstreamError(res)}` };
-    }
+    if (!res.ok) throw new Error(`Voice lookup failed — ${await upstreamError(res)}`);
 
     const { voices } = (await res.json()) as { voices?: ElevenVoice[] };
-    if (!voices?.length) {
-      return { ok: false, error: 'The account has no voices available.' };
-    }
+    if (!voices?.length) throw new Error('The account has no voices available.');
 
     const byName = new Map(voices.map((v) => [v.name.toLowerCase(), v]));
     const preferred = PREFERRED_MALE.map((n) => byName.get(n)).find(Boolean);
     const anyMale = voices.find((v) => v.labels?.gender?.toLowerCase() === 'male');
     const chosen = preferred ?? anyMale ?? voices[0];
-    if (!chosen) return { ok: false, error: 'No usable voice found.' };
-
-    cached = { ok: true, voiceId: chosen.voice_id, voiceName: chosen.name, source: 'lookup' };
-    return cached;
-  } catch (err) {
-    return { ok: false, error: `Voice lookup threw: ${(err as Error).message}` };
+    if (!chosen) throw new Error('No usable voice found.');
+    return { voiceId: chosen.voice_id, voiceName: chosen.name };
   }
 }
 
@@ -113,8 +140,30 @@ export async function synthesize(text: string): Promise<SynthesisResult> {
   const voice = await resolveVoice();
   if (!voice.ok || !voice.voiceId) return { error: voice.error ?? 'Could not resolve a voice.' };
 
+  const models = workingModel ? [workingModel, ...MODELS.filter((m) => m !== workingModel)] : MODELS;
+  let lastError = 'No model accepted the request.';
+  for (const model of models) {
+    const result = await synthesizeWith(apiKey, voice.voiceId, model, text);
+    if (result.stream) {
+      workingModel = model;
+      return result;
+    }
+    lastError = result.error ?? lastError;
+    // Only a model the plan does not allow is worth another try; a bad key or
+    // spent quota fails the same way on every model.
+    if (!result.modelRejected) break;
+  }
+  return { error: lastError };
+}
+
+async function synthesizeWith(
+  apiKey: string,
+  voiceId: string,
+  model: string,
+  text: string,
+): Promise<SynthesisResult & { modelRejected?: boolean }> {
   try {
-    const res = await fetch(`${API}/text-to-speech/${voice.voiceId}/stream`, {
+    const res = await fetch(`${API}/text-to-speech/${voiceId}/stream?output_format=${OUTPUT_FORMAT}`, {
       method: 'POST',
       headers: {
         'xi-api-key': apiKey,
@@ -124,7 +173,7 @@ export async function synthesize(text: string): Promise<SynthesisResult> {
       cache: 'no-store',
       body: JSON.stringify({
         text,
-        model_id: TTS_MODEL,
+        model_id: model,
         voice_settings: {
           // Stability up, style down: this is someone answering a question about
           // their own career, not performing.
@@ -137,7 +186,8 @@ export async function synthesize(text: string): Promise<SynthesisResult> {
     });
 
     if (!res.ok || !res.body) {
-      return { error: `Synthesis failed — ${await upstreamError(res)}` };
+      const error = `Synthesis failed (${model}) — ${await upstreamError(res)}`;
+      return { error, modelRejected: res.status < 500 && /model/i.test(error) };
     }
     return { stream: res.body };
   } catch (err) {
@@ -158,8 +208,10 @@ export async function voiceDiagnostics() {
   const voice = await resolveVoice(true);
   return {
     configured: true,
-    keyPreview: `${key.slice(0, 6)}…${key.slice(-4)}`,
-    model: TTS_MODEL,
+    // Enough to tell two keys apart, not enough to help anyone use one.
+    keyPreview: `…${key.slice(-4)}`,
+    models: MODELS,
+    workingModel,
     voice: voice.ok
       ? { id: voice.voiceId, name: voice.voiceName ?? '(from ELEVENLABS_VOICE_ID)', source: voice.source }
       : null,

@@ -1,4 +1,5 @@
 import 'server-only';
+import { unstable_cache } from 'next/cache';
 import OpenAI from 'openai';
 
 /**
@@ -47,8 +48,12 @@ const PREFERRED: readonly string[] = [
   'deepseek/deepseek-chat-v3-0324:free',
 ];
 
-/** How many models a single request carries in its `models` fallback list. */
-const PER_REQUEST = 3;
+/**
+ * How many models a single request carries in its `models` fallback list.
+ * Small groups, because the route hedges across groups: a slow model is
+ * covered by the next group starting alongside it, not by waiting it out.
+ */
+const PER_REQUEST = 2;
 /** Total candidates tried across all attempts before giving up. */
 const MAX_CANDIDATES = 6;
 const CATALOGUE_TTL_MS = 60 * 60 * 1000;
@@ -114,17 +119,37 @@ function isTextChat(m: CatalogueModel): boolean {
   return (m.architecture?.modality ?? 'text->text').endsWith('->text');
 }
 
+/** Fetches the free text models from the catalogue. Throws on failure, so failures are not cached. */
+async function fetchFreeCatalogue(): Promise<CatalogueModel[]> {
+  const res = await fetch(`${BASE_URL}/models`, {
+    signal: AbortSignal.timeout(CATALOGUE_TIMEOUT_MS),
+    headers: { Accept: 'application/json' },
+    cache: 'no-store',
+  });
+  if (!res.ok) throw new Error(`catalogue ${res.status}`);
+  const body = (await res.json()) as { data?: CatalogueModel[] };
+  return (
+    (body.data ?? [])
+      .filter((m) => isFreeModelId(m.id) && priceIsZero(m) && isTextChat(m))
+      // Only what ranking needs: the full catalogue is far larger than it is useful.
+      .map(({ id, context_length, supported_parameters }) => ({ id, context_length, supported_parameters }))
+  );
+}
+
+/**
+ * Shared across server instances for an hour. Every cold start used to fetch
+ * the catalogue before the first model could be asked, which put a network
+ * round trip in front of the first answer.
+ */
+const sharedCatalogue = unstable_cache(fetchFreeCatalogue, ['openrouter-free-catalogue', BASE_URL], {
+  revalidate: CATALOGUE_TTL_MS / 1000,
+});
+
 /** The catalogue's currently free text models, cached for an hour. Public; needs no key. */
 async function freeCatalogue(): Promise<CatalogueModel[] | null> {
   if (catalogue && Date.now() - catalogue.at < CATALOGUE_TTL_MS) return catalogue.free;
   try {
-    const res = await fetch(`${BASE_URL}/models`, {
-      signal: AbortSignal.timeout(CATALOGUE_TIMEOUT_MS),
-      headers: { Accept: 'application/json' },
-    });
-    if (!res.ok) throw new Error(`catalogue ${res.status}`);
-    const body = (await res.json()) as { data?: CatalogueModel[] };
-    const free = (body.data ?? []).filter((m) => isFreeModelId(m.id) && priceIsZero(m) && isTextChat(m));
+    const free = await sharedCatalogue();
     catalogue = { at: Date.now(), free };
     return free;
   } catch (err) {

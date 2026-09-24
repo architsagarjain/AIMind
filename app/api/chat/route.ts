@@ -28,6 +28,15 @@ const CONNECT_MS = 10_000;
 const FIRST_TOKEN_MS = 15_000;
 /** Longest silence tolerated once an answer is under way. */
 const IDLE_MS = 15_000;
+/**
+ * Hedging. If the model being tried has not produced a verified opening
+ * within this long, the next group starts alongside it and whichever answers
+ * first is kept; the other is cancelled. A slow free model then costs a few
+ * seconds instead of the full first-token timeout.
+ */
+const HEDGE_MS = 4_000;
+/** At most this many requests in flight, so hedging cannot fan out. */
+const MAX_PARALLEL = 2;
 
 const TIMEOUT = Symbol('timeout');
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | typeof TIMEOUT> {
@@ -147,20 +156,38 @@ export async function POST(req: Request) {
       };
 
       /**
+       * The attempt whose answer is being shown. Attempts run side by side
+       * only until one passes the guard; that one claims the response and the
+       * rest are cancelled, so only one model's words ever reach the visitor.
+       */
+      let winner: number | null = null;
+      const inFlight = new Map<number, AbortController>();
+      const claim = (id: number) => {
+        if (winner !== null) return winner === id;
+        winner = id;
+        for (const [other, c] of inFlight) if (other !== id) c.abort();
+        return true;
+      };
+      const lost = (id: number) => winner !== null && winner !== id;
+
+      /**
        * Streams one group of free models into the response.
        *   'done'     an answer was written
-       *   'failed'   nothing was shown: error, timeout, empty or reasoning,
-       *              so the next group can take over unseen
+       *   'failed'   nothing was shown: error, timeout, empty, reasoning, or
+       *              another attempt answered first
        *   'cut'      it failed part-way through a visible answer
        */
-      const tryGroup = async (group: string[]): Promise<'done' | 'failed' | 'cut'> => {
+      const tryGroup = async (group: string[], id: number): Promise<'done' | 'failed' | 'cut'> => {
         // Belt and braces: freeCandidates only returns :free IDs, but this is
         // the last point before a request leaves, so check again here.
         if (!group.every(isFreeModelId)) {
           console.error('[chat] refused a non-free model group:', group);
           return 'failed';
         }
+        let name = group[0]!;
         let upstream: AsyncIterable<OpenAI.Chat.ChatCompletionChunk> & { controller: AbortController };
+        const pending = new AbortController();
+        inFlight.set(id, pending);
         try {
           const params = {
             model: group[0]!,
@@ -174,11 +201,16 @@ export async function POST(req: Request) {
           } as OpenAI.Chat.ChatCompletionCreateParamsStreaming & { models: string[]; reasoning: object };
           upstream = await client.chat.completions.create(params, {
             timeout: Math.min(CONNECT_MS, left()),
+            signal: pending.signal,
           });
         } catch (err) {
-          console.warn(`[chat] ${group.join(', ')}: request failed:`, describe(err));
+          inFlight.delete(id);
+          if (!lost(id)) console.warn(`[chat] ${group.join(', ')}: request failed:`, describe(err));
           return 'failed';
         }
+        // From here the stream's own controller is what cancels it.
+        inFlight.set(id, upstream.controller);
+        if (lost(id)) upstream.controller.abort();
 
         const strip = createThinkStripper();
         const it = upstream[Symbol.asyncIterator]();
@@ -188,16 +220,20 @@ export async function POST(req: Request) {
 
         try {
           for (;;) {
+            if (lost(id)) {
+              abort();
+              return 'failed';
+            }
             const wait = Math.min(shown ? IDLE_MS : FIRST_TOKEN_MS, left());
             const step = await withTimeout(it.next(), wait);
             if (step === TIMEOUT) {
               abort();
-              console.warn(`[chat] ${model}: timed out ${shown ? 'mid-answer' : 'before answering'}`);
+              console.warn(`[chat] ${name}: timed out ${shown ? 'mid-answer' : 'before answering'}`);
               return shown ? 'cut' : 'failed';
             }
             if (step.done) break;
             const chunk = step.value;
-            if (chunk.model) model = chunk.model;
+            if (chunk.model) name = chunk.model;
             const text = strip.push(chunk.choices[0]?.delta?.content ?? '');
             if (!text) continue;
             if (shown) {
@@ -209,23 +245,34 @@ export async function POST(req: Request) {
             if (held.trimStart().length < GUARD_CHARS) continue;
             if (looksLikeReasoning(held)) {
               abort();
-              console.warn(`[chat] ${model}: wrote its reasoning into the answer; next model`);
+              console.warn(`[chat] ${name}: wrote its reasoning into the answer; next model`);
               return 'failed';
             }
+            if (!claim(id)) {
+              abort();
+              return 'failed';
+            }
+            model = name;
             emit(held.trimStart());
             shown = true;
           }
         } catch (err) {
-          console.warn(`[chat] ${model}: stream failed:`, describe(err));
-          if (shown) return 'cut';
+          if (shown) {
+            console.warn(`[chat] ${name}: stream failed:`, describe(err));
+            return 'cut';
+          }
+          if (!lost(id)) console.warn(`[chat] ${name}: stream failed:`, describe(err));
           return 'failed';
+        } finally {
+          inFlight.delete(id);
         }
 
         // A short answer may never reach GUARD_CHARS; judge what there is.
         held += strip.flush();
         if (!shown) {
           const answer = held.trim();
-          if (!answer || looksLikeReasoning(answer)) return 'failed';
+          if (!answer || looksLikeReasoning(answer) || !claim(id)) return 'failed';
+          model = name;
           emit(answer);
         }
         return 'done';
@@ -234,13 +281,38 @@ export async function POST(req: Request) {
       let outcome: 'done' | 'failed' | 'cut' = 'failed';
       try {
         const { models } = await freeCandidates();
-        for (const group of attemptGroups(models)) {
-          if (left() < 3_000) break;
-          outcome = await tryGroup(group);
-          if (outcome !== 'failed') break;
+        const groups = attemptGroups(models);
+        const running = new Map<number, Promise<{ id: number; result: 'done' | 'failed' | 'cut' }>>();
+        let next = 0;
+        const canLaunch = () => winner === null && next < groups.length && left() >= 3_000;
+        const launch = () => {
+          const id = next++;
+          running.set(id, tryGroup(groups[id]!, id).then((result) => ({ id, result })));
+        };
+
+        if (canLaunch()) launch();
+        while (running.size) {
+          const race = Promise.race(running.values());
+          // Waiting on a model that has not answered yet: give it HEDGE_MS,
+          // then start the next group alongside it.
+          const hedge = canLaunch() && running.size < MAX_PARALLEL;
+          const settled = hedge ? await withTimeout(race, HEDGE_MS) : await race;
+          if (settled === TIMEOUT) {
+            launch();
+            continue;
+          }
+          running.delete(settled.id);
+          if (settled.result !== 'failed') {
+            outcome = settled.result;
+            break;
+          }
+          // That one failed outright: replace it now rather than at the next hedge.
+          if (canLaunch() && running.size < MAX_PARALLEL) launch();
         }
       } catch (err) {
         console.error('[chat] live clone failed:', describe(err));
+      } finally {
+        for (const c of inFlight.values()) c.abort();
       }
 
       if (outcome === 'cut') {

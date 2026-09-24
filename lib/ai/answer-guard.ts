@@ -14,8 +14,12 @@
  *    and the next free model answers instead, so the visitor never sees it.
  */
 
-/** How much of an answer to hold back before showing any of it. */
-export const GUARD_CHARS = 120;
+/**
+ * How much of an answer to hold back before showing any of it. Every opener
+ * below is anchored to the start, so 80 characters is enough to judge, and
+ * shorter means the first words appear sooner.
+ */
+export const GUARD_CHARS = 80;
 
 const REASONING_OPENERS: RegExp[] = [
   /^\s*<think>/i,

@@ -33,7 +33,9 @@ export async function POST(req: Request) {
 
   const forwarded = req.headers.get('x-forwarded-for');
   const key = forwarded?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'anonymous';
-  const limit = rateLimit(`speak:${key}`);
+  // The client speaks a reply sentence by sentence, so one answer is several
+  // small requests; the limit is per chunk, not per answer.
+  const limit = rateLimit(`speak:${key}`, 60);
   if (!limit.ok) {
     return NextResponse.json(
       { error: 'Too many requests. Give it a moment.' },

@@ -18,11 +18,12 @@ export interface RateLimitResult {
   retryAfterSeconds: number;
 }
 
-export function rateLimit(key: string): RateLimitResult {
+/** `max` per minute; 12 by default. */
+export function rateLimit(key: string, max = MAX_REQUESTS): RateLimitResult {
   const now = Date.now();
   const recent = (hits.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
 
-  if (recent.length >= MAX_REQUESTS) {
+  if (recent.length >= max) {
     const oldest = recent[0] ?? now;
     return {
       ok: false,
@@ -41,5 +42,5 @@ export function rateLimit(key: string): RateLimitResult {
     }
   }
 
-  return { ok: true, remaining: MAX_REQUESTS - recent.length, retryAfterSeconds: 0 };
+  return { ok: true, remaining: max - recent.length, retryAfterSeconds: 0 };
 }
