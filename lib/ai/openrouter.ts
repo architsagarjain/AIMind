@@ -29,17 +29,22 @@ const BASE_URL =
   'https://openrouter.ai/api/v1';
 
 /**
- * Preferred order: strong instruction-followers that hold a persona well.
- * Only used where the live catalogue confirms they are still free; anything
- * missing is skipped, and other currently free models fill in behind them.
+ * Preferred order: plain instruction-followers that hold a persona well and
+ * answer straight away. Only used where the live catalogue confirms they are
+ * still free; anything missing is skipped, and other currently free models
+ * fill in behind them.
+ *
+ * Deliberately no reasoning ("thinking") models up front. They spend long
+ * stretches thinking before they write a word, which ran one request into
+ * Vercel's time limit, and some write that thinking into the answer itself.
+ * One did, reciting the persona's rules back to a visitor.
  */
 const PREFERRED: readonly string[] = [
   'meta-llama/llama-3.3-70b-instruct:free',
-  'deepseek/deepseek-chat-v3-0324:free',
-  'qwen/qwen-2.5-72b-instruct:free',
   'mistralai/mistral-small-3.2-24b-instruct:free',
   'google/gemma-3-27b-it:free',
-  'google/gemini-2.0-flash-exp:free',
+  'qwen/qwen-2.5-72b-instruct:free',
+  'deepseek/deepseek-chat-v3-0324:free',
 ];
 
 /** How many models a single request carries in its `models` fallback list. */
@@ -82,6 +87,7 @@ export const isAIConfigured = () => Boolean(process.env.OPENROUTER_API_KEY?.trim
 interface CatalogueModel {
   id: string;
   context_length?: number;
+  supported_parameters?: string[];
   pricing?: { prompt?: string; completion?: string; request?: string };
   architecture?: { input_modalities?: string[]; output_modalities?: string[]; modality?: string };
 }
@@ -128,6 +134,20 @@ async function freeCatalogue(): Promise<CatalogueModel[] | null> {
   }
 }
 
+/**
+ * Reasoning models, by the catalogue's own metadata or, failing that, by
+ * name. They are not excluded (some are the best free models there are) but
+ * they go to the back of the queue.
+ */
+function isReasoning(m: CatalogueModel): boolean {
+  const params = m.supported_parameters ?? [];
+  return (
+    params.includes('reasoning') ||
+    params.includes('include_reasoning') ||
+    /(^|[-/])(r1|qwq)([-:]|$)|think|reason/i.test(m.id)
+  );
+}
+
 export interface CandidateReport {
   models: string[];
   source: 'catalogue' | 'preferred';
@@ -155,9 +175,14 @@ export async function freeCandidates(): Promise<CandidateReport> {
 
   const liveIds = new Set(live.map((m) => m.id));
   const confirmed = preferred.filter((id) => liveIds.has(id));
+  // Behind the preferred models: plain models first, then reasoning ones,
+  // each by context length.
   const rest = live
     .filter((m) => !confirmed.includes(m.id) && (m.context_length ?? 0) >= 16_000)
-    .sort((a, b) => (b.context_length ?? 0) - (a.context_length ?? 0))
+    .sort(
+      (a, b) =>
+        Number(isReasoning(a)) - Number(isReasoning(b)) || (b.context_length ?? 0) - (a.context_length ?? 0),
+    )
     .map((m) => m.id);
   const notFree = preferred.filter((id) => !liveIds.has(id));
   return {

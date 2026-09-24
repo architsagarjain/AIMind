@@ -513,9 +513,20 @@ layers so that no single mistake can route a request to a paid model:
 
 **Fallback.** Within a request, OpenRouter tries its three named models in
 order. Across requests, the route moves to the next group when a model errors,
-is rate-limited, takes more than 12s to start or returns nothing. If a model
-fails before writing anything, the next one takes over unseen. If every free
+is rate-limited, is not accepted within 10s, shows no visible word within 15s
+(reasoning models thinking silently), goes quiet for 15s mid-answer, or returns
+nothing. If a model fails before writing anything, the next one takes over
+unseen. The response starts immediately and the whole attempt runs inside a
+40s budget, so it always finishes well within Vercel's limit. If every free
 model fails, the visitor gets the pre-written answer, labelled as such.
+
+**No leaked reasoning.** Some free models are reasoning models that write their
+thinking into the answer. `lib/ai/answer-guard.ts` strips `<think>` blocks and
+holds back the first 120 characters of every answer. If they read as reasoning
+("here's a thinking process…", "the user is asking…", or any mention of the
+knowledge base or system prompt), that model is dropped for the next one before
+the visitor sees a word. Reasoning models are also ranked last, and every
+request asks OpenRouter to leave reasoning out.
 
 **Limits.** Free models are rate-limited by OpenRouter, per minute and per day,
 and the daily cap is much higher once the account has bought credits. When the

@@ -3,6 +3,7 @@ import type OpenAI from 'openai';
 import { attemptGroups, freeCandidates, getOpenRouter, isAIConfigured, isFreeModelId } from '@/lib/ai/openrouter';
 import { buildSystemPrompt } from '@/lib/ai/system-prompt';
 import { fallbackAnswer, fallbackStream } from '@/lib/ai/fallback';
+import { GUARD_CHARS, createThinkStripper, looksLikeReasoning } from '@/lib/ai/answer-guard';
 import { rateLimit } from '@/lib/ai/rate-limit';
 import { insertMessage, upsertConversation } from '@/lib/supabase/queries';
 
@@ -14,8 +15,30 @@ export const dynamic = 'force-dynamic';
  */
 export const maxDuration = 60;
 
-/** Per attempt: how long a free model gets to start answering before the next is tried. */
-const FIRST_RESPONSE_MS = 12_000;
+/**
+ * Time budget. The response starts immediately and every model is tried
+ * inside it, so there is always something on the wire well before Vercel's
+ * limit. Waiting for a model to start before responding at all is what
+ * produced a 504: a free reasoning model thought silently past the limit.
+ */
+const TOTAL_BUDGET_MS = 40_000;
+/** Per attempt: time for OpenRouter to accept the request. */
+const CONNECT_MS = 10_000;
+/** Per attempt: time to the first visible word. Reasoning models fail this. */
+const FIRST_TOKEN_MS = 15_000;
+/** Longest silence tolerated once an answer is under way. */
+const IDLE_MS = 15_000;
+
+const TIMEOUT = Symbol('timeout');
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | typeof TIMEOUT> {
+  let timer: ReturnType<typeof setTimeout>;
+  return Promise.race([
+    promise.finally(() => clearTimeout(timer)),
+    new Promise<typeof TIMEOUT>((resolve) => {
+      timer = setTimeout(() => resolve(TIMEOUT), Math.max(0, ms));
+    }),
+  ]);
+}
 
 /** Keep the request bounded — this is a portfolio chat, not a document tool. */
 const MAX_MESSAGE_CHARS = 1_500;
@@ -105,95 +128,127 @@ export async function POST(req: Request) {
 
   // --- Live clone, free models only -----------------------------------------
   const startedAt = Date.now();
-  const { models } = await freeCandidates();
-  const groups = attemptGroups(models);
+  const deadline = startedAt + TOTAL_BUDGET_MS;
+  const left = () => deadline - Date.now();
   const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
     { role: 'system', content: buildSystemPrompt() },
     ...history,
   ];
-
-  type Stream = AsyncIterable<OpenAI.Chat.ChatCompletionChunk>;
-  let next = 0;
-
-  /**
-   * Opens a completion on the next group of free models that accepts one.
-   * Within a group OpenRouter falls back itself (its `models` list); across
-   * groups this loop does. Null once every group has failed.
-   */
-  const openNext = async (): Promise<{ stream: Stream; group: string[] } | null> => {
-    while (next < groups.length) {
-      const group = groups[next++]!;
-      // Belt and braces: freeCandidates only returns :free IDs, but this is
-      // the last point before a request leaves, so check again here.
-      if (!group.every(isFreeModelId)) {
-        console.error('[chat] refused a non-free model group:', group);
-        continue;
-      }
-      try {
-        const params = {
-          model: group[0]!,
-          models: group, // OpenRouter extension: fallback models, tried in order
-          stream: true as const,
-          temperature: 0.7,
-          max_tokens: 700,
-          messages,
-        } as OpenAI.Chat.ChatCompletionCreateParamsStreaming & { models: string[] };
-        const stream = await client.chat.completions.create(params, { timeout: FIRST_RESPONSE_MS });
-        return { stream, group };
-      } catch (err) {
-        console.warn(`[chat] free models ${group.join(', ')} failed:`, describe(err));
-      }
-    }
-    return null;
-  };
-
-  // Find a model that accepts the request before committing to a response,
-  // so the mode header is honest in the common case.
-  const first = await openNext();
-  if (!first) {
-    return new Response(fallbackStream(latest.content, 'unavailable'), {
-      headers: { ...responseHeaders, 'X-AI-Mode': 'offline-fallback' },
-    });
-  }
-
   const encoder = new TextEncoder();
+
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      let current: { stream: Stream; group: string[] } | null = first;
       let full = '';
-      let model = first.group[0]!;
+      let model = 'offline';
+      const emit = (text: string) => {
+        if (!text) return;
+        full += text;
+        controller.enqueue(encoder.encode(text));
+      };
 
-      while (current) {
-        let wrote = false;
-        try {
-          for await (const chunk of current.stream) {
-            if (chunk.model) model = chunk.model;
-            const delta = chunk.choices[0]?.delta?.content;
-            if (!delta) continue;
-            wrote = true;
-            full += delta;
-            controller.enqueue(encoder.encode(delta));
-          }
-          // Free models occasionally close a stream having said nothing.
-          if (!wrote) throw new Error('empty response');
-          break;
-        } catch (err) {
-          console.warn(`[chat] ${model} failed mid-stream:`, describe(err));
-          if (wrote) {
-            // Words already on screen cannot be taken back; say so briefly.
-            const note = '\n\nI lost my train of thought there. Ask me that again?';
-            full += note;
-            controller.enqueue(encoder.encode(note));
-            break;
-          }
-          // Nothing shown yet, so the next free model can take over unseen.
-          current = await openNext();
-          if (!current) {
-            full = fallbackAnswer(latest.content, 'unavailable');
-            model = 'offline';
-            controller.enqueue(encoder.encode(full));
-          }
+      /**
+       * Streams one group of free models into the response.
+       *   'done'     an answer was written
+       *   'failed'   nothing was shown: error, timeout, empty or reasoning,
+       *              so the next group can take over unseen
+       *   'cut'      it failed part-way through a visible answer
+       */
+      const tryGroup = async (group: string[]): Promise<'done' | 'failed' | 'cut'> => {
+        // Belt and braces: freeCandidates only returns :free IDs, but this is
+        // the last point before a request leaves, so check again here.
+        if (!group.every(isFreeModelId)) {
+          console.error('[chat] refused a non-free model group:', group);
+          return 'failed';
         }
+        let upstream: AsyncIterable<OpenAI.Chat.ChatCompletionChunk> & { controller: AbortController };
+        try {
+          const params = {
+            model: group[0]!,
+            models: group, // OpenRouter extension: fallback models, tried in order
+            stream: true as const,
+            temperature: 0.7,
+            max_tokens: 700,
+            // OpenRouter extension: leave any reasoning out of the response.
+            reasoning: { exclude: true },
+            messages,
+          } as OpenAI.Chat.ChatCompletionCreateParamsStreaming & { models: string[]; reasoning: object };
+          upstream = await client.chat.completions.create(params, {
+            timeout: Math.min(CONNECT_MS, left()),
+          });
+        } catch (err) {
+          console.warn(`[chat] ${group.join(', ')}: request failed:`, describe(err));
+          return 'failed';
+        }
+
+        const strip = createThinkStripper();
+        const it = upstream[Symbol.asyncIterator]();
+        let held = '';
+        let shown = false;
+        const abort = () => upstream.controller.abort();
+
+        try {
+          for (;;) {
+            const wait = Math.min(shown ? IDLE_MS : FIRST_TOKEN_MS, left());
+            const step = await withTimeout(it.next(), wait);
+            if (step === TIMEOUT) {
+              abort();
+              console.warn(`[chat] ${model}: timed out ${shown ? 'mid-answer' : 'before answering'}`);
+              return shown ? 'cut' : 'failed';
+            }
+            if (step.done) break;
+            const chunk = step.value;
+            if (chunk.model) model = chunk.model;
+            const text = strip.push(chunk.choices[0]?.delta?.content ?? '');
+            if (!text) continue;
+            if (shown) {
+              emit(text);
+              continue;
+            }
+            // Hold the opening back until it can be judged.
+            held += text;
+            if (held.trimStart().length < GUARD_CHARS) continue;
+            if (looksLikeReasoning(held)) {
+              abort();
+              console.warn(`[chat] ${model}: wrote its reasoning into the answer; next model`);
+              return 'failed';
+            }
+            emit(held.trimStart());
+            shown = true;
+          }
+        } catch (err) {
+          console.warn(`[chat] ${model}: stream failed:`, describe(err));
+          if (shown) return 'cut';
+          return 'failed';
+        }
+
+        // A short answer may never reach GUARD_CHARS; judge what there is.
+        held += strip.flush();
+        if (!shown) {
+          const answer = held.trim();
+          if (!answer || looksLikeReasoning(answer)) return 'failed';
+          emit(answer);
+        }
+        return 'done';
+      };
+
+      let outcome: 'done' | 'failed' | 'cut' = 'failed';
+      try {
+        const { models } = await freeCandidates();
+        for (const group of attemptGroups(models)) {
+          if (left() < 3_000) break;
+          outcome = await tryGroup(group);
+          if (outcome !== 'failed') break;
+        }
+      } catch (err) {
+        console.error('[chat] live clone failed:', describe(err));
+      }
+
+      if (outcome === 'cut') {
+        emit('\n\nI lost my train of thought there. Ask me that again?');
+      } else if (outcome === 'failed') {
+        // Every free model failed, timed out or only produced reasoning.
+        model = 'offline';
+        emit(full ? '' : fallbackAnswer(latest.content, 'unavailable'));
       }
 
       controller.close();
@@ -207,10 +262,12 @@ export async function POST(req: Request) {
     },
   });
 
+  // Answered before any model is tried, so the visitor never meets a gateway
+  // timeout. The mode is "live" because a key is set; if every free model
+  // fails, the pre-written answer says so in its own last line.
   return new Response(stream, {
     headers: { ...responseHeaders, 'X-AI-Mode': 'live' },
   });
-
 }
 
 /** Error summary for logs: status and message, never the request. */
