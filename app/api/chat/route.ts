@@ -22,6 +22,12 @@ export const maxDuration = 60;
  * produced a 504: a free reasoning model thought silently past the limit.
  */
 const TOTAL_BUDGET_MS = 40_000;
+/**
+ * Once an answer is showing, it may keep streaming past the budget above, up
+ * to here. The budget is for finding a model; cutting off an answer that is
+ * already on screen was what made long replies stop mid-sentence.
+ */
+const ANSWER_DEADLINE_MS = 56_000;
 /** Per attempt: time for OpenRouter to accept the request. */
 const CONNECT_MS = 10_000;
 /** Per attempt: time to the first visible word. Reasoning models fail this. */
@@ -48,6 +54,12 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | typeof TIM
     }),
   ]);
 }
+
+/**
+ * Room for a "go deep" answer. The persona asks for about 350 words at most,
+ * so this is headroom, not a target.
+ */
+const MAX_TOKENS = 1_200;
 
 /** Keep the request bounded — this is a portfolio chat, not a document tool. */
 const MAX_MESSAGE_CHARS = 1_500;
@@ -139,6 +151,7 @@ export async function POST(req: Request) {
   const startedAt = Date.now();
   const deadline = startedAt + TOTAL_BUDGET_MS;
   const left = () => deadline - Date.now();
+  const answerLeft = () => startedAt + ANSWER_DEADLINE_MS - Date.now();
   const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
     { role: 'system', content: buildSystemPrompt() },
     ...history,
@@ -176,8 +189,9 @@ export async function POST(req: Request) {
        *   'failed'   nothing was shown: error, timeout, empty, reasoning, or
        *              another attempt answered first
        *   'cut'      it failed part-way through a visible answer
+       *   'long'     it ran into the token cap mid-answer
        */
-      const tryGroup = async (group: string[], id: number): Promise<'done' | 'failed' | 'cut'> => {
+      const tryGroup = async (group: string[], id: number): Promise<'done' | 'failed' | 'cut' | 'long'> => {
         // Belt and braces: freeCandidates only returns :free IDs, but this is
         // the last point before a request leaves, so check again here.
         if (!group.every(isFreeModelId)) {
@@ -194,7 +208,7 @@ export async function POST(req: Request) {
             models: group, // OpenRouter extension: fallback models, tried in order
             stream: true as const,
             temperature: 0.7,
-            max_tokens: 700,
+            max_tokens: MAX_TOKENS,
             // OpenRouter extension: leave any reasoning out of the response.
             reasoning: { exclude: true },
             messages,
@@ -216,6 +230,7 @@ export async function POST(req: Request) {
         const it = upstream[Symbol.asyncIterator]();
         let held = '';
         let shown = false;
+        let finish: string | null | undefined;
         const abort = () => upstream.controller.abort();
 
         try {
@@ -224,16 +239,18 @@ export async function POST(req: Request) {
               abort();
               return 'failed';
             }
-            const wait = Math.min(shown ? IDLE_MS : FIRST_TOKEN_MS, left());
+            const wait = shown ? Math.min(IDLE_MS, answerLeft()) : Math.min(FIRST_TOKEN_MS, left());
             const step = await withTimeout(it.next(), wait);
             if (step === TIMEOUT) {
               abort();
+              if (shown && answerLeft() <= 0) return 'long';
               console.warn(`[chat] ${name}: timed out ${shown ? 'mid-answer' : 'before answering'}`);
               return shown ? 'cut' : 'failed';
             }
             if (step.done) break;
             const chunk = step.value;
             if (chunk.model) name = chunk.model;
+            finish = chunk.choices[0]?.finish_reason ?? finish;
             const text = strip.push(chunk.choices[0]?.delta?.content ?? '');
             if (!text) continue;
             if (shown) {
@@ -267,22 +284,29 @@ export async function POST(req: Request) {
           inFlight.delete(id);
         }
 
-        // A short answer may never reach GUARD_CHARS; judge what there is.
-        held += strip.flush();
-        if (!shown) {
-          const answer = held.trim();
+        // The stripper holds the last few characters back in case they start a
+        // <think> tag; release them. Dropping this tail is what cut the last
+        // word off every answer.
+        const tail = strip.flush();
+        if (shown) {
+          emit(tail);
+        } else {
+          // A short answer may never reach GUARD_CHARS; judge what there is.
+          const answer = (held + tail).trim();
           if (!answer || looksLikeReasoning(answer) || !claim(id)) return 'failed';
           model = name;
           emit(answer);
         }
+        // Hit the token cap: say so, rather than stopping mid-sentence.
+        if (finish === 'length') return 'long';
         return 'done';
       };
 
-      let outcome: 'done' | 'failed' | 'cut' = 'failed';
+      let outcome: 'done' | 'failed' | 'cut' | 'long' = 'failed';
       try {
         const { models } = await freeCandidates();
         const groups = attemptGroups(models);
-        const running = new Map<number, Promise<{ id: number; result: 'done' | 'failed' | 'cut' }>>();
+        const running = new Map<number, Promise<{ id: number; result: 'done' | 'failed' | 'cut' | 'long' }>>();
         let next = 0;
         const canLaunch = () => winner === null && next < groups.length && left() >= 3_000;
         const launch = () => {
@@ -315,7 +339,9 @@ export async function POST(req: Request) {
         for (const c of inFlight.values()) c.abort();
       }
 
-      if (outcome === 'cut') {
+      if (outcome === 'long') {
+        emit('…\n\nI will stop there. Say "go on" and I will pick it up.');
+      } else if (outcome === 'cut') {
         emit('\n\nI lost my train of thought there. Ask me that again?');
       } else if (outcome === 'failed') {
         // Every free model failed, timed out or only produced reasoning.

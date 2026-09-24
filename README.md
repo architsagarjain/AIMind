@@ -526,12 +526,12 @@ visitor. The catalogue is cached across server instances, so a cold start does
 not fetch it before the first answer, and the knowledge base drops timeline and
 resume lines that its case studies already state, which keeps the prompt about
 a fifth smaller. The response starts immediately and the whole attempt runs inside a
-40s budget, so it always finishes well within Vercel's limit. If every free
+40s budget for finding a model; an answer already on screen may stream on to 56s, so long replies are not cut mid-sentence, and it still finishes within Vercel's 60s limit. If an answer reaches the token cap, it says so and offers to continue. If every free
 model fails, the visitor gets the pre-written answer, labelled as such.
 
 **No leaked reasoning.** Some free models are reasoning models that write their
 thinking into the answer. `lib/ai/answer-guard.ts` strips `<think>` blocks and
-holds back the first 80 characters of every answer. If they read as reasoning
+holds back the first 80 characters of every answer (and releases every character at the end). If they read as reasoning
 ("here's a thinking process…", "the user is asking…", or any mention of the
 knowledge base or system prompt), that model is dropped for the next one before
 the visitor sees a word. Reasoning models are also ranked last, and every
