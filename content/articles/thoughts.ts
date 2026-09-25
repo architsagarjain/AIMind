@@ -423,3 +423,55 @@ export const reliabilityStrategy: Article = {
     },
   ],
 };
+
+export const numbersICanDefend: Article = {
+  slug: 'numbers-i-can-defend',
+  title: 'Why every number on this site is one I can defend',
+  seoTitle: 'Credible Numbers: How This Portfolio Handles Every Figure',
+  description:
+    'The rules behind every figure on this site: only CV numbers about my work, sources for every industry figure, working shown for derived numbers, and a clone that cannot invent.',
+  excerpt: `A portfolio full of numbers is only useful if the reader can trust each one. The rules I hold every figure on this site to, and why a recruiter should expect them from anyone.`,
+  category: 'Thought Piece',
+  keywords: ['portfolio credibility', 'resume metrics', 'personal website numbers', 'hiring due diligence', 'honest metrics', 'AI clone accuracy'],
+  published: '2026-09-27',
+  blocks: [
+    {
+      type: 'p',
+      text: `This site states a lot of numbers: ₹6+ Cr in client savings, 25,000+ users, a ₹3 Cr run-rate, cancellations from 40% to 6%. A reader has no way to check most of them on the spot, which makes the rules behind them part of what I am offering. These are the rules.`,
+    },
+    { type: 'h2', text: 'Figures about my work come from one place' },
+    {
+      type: 'p',
+      text: `Every figure about my own work comes from my CV, stored in one set of content files that feed the site, the resume and the AI clone. Nothing states a number about my work that is not in those files. If a figure changes, it changes everywhere at once, so the site cannot say one thing and the resume another.`,
+    },
+    { type: 'h2', text: 'Run-rates come with the months behind them' },
+    {
+      type: 'p',
+      text: `A run-rate is a fair measure of momentum and an easy one to inflate. So wherever I cite ZenCabs' ₹3 Cr annualised run-rate, I also show the monthly GMV of ₹25L+ and the 7,500+ rides behind it, and the arithmetic that links them. I apply the same test to other people's numbers in [marketplace metrics that flatter](/articles/marketplace-metrics-due-diligence).`,
+    },
+    { type: 'h2', text: 'Industry numbers carry a source' },
+    {
+      type: 'p',
+      text: `Every article that uses an industry figure lists its sources at the end, and when I derive a number I show the working. Doing this changes what I write. The logistics piece started from the widely repeated claim that logistics costs India 13% to 14% of GDP; the government-commissioned study puts it at 7.97%, and the article follows the study. That is in [India's logistics cost is 7.97% of GDP](/articles/india-logistics-cost-gdp).`,
+    },
+    { type: 'h2', text: 'Unconfirmed details stay unconfirmed' },
+    {
+      type: 'p',
+      text: `When I cannot confirm something, the site says less. The press coverage of my work is listed by its source, with a descriptive title, until I have the exact published headline and date. A precise-looking detail that turns out to be wrong costs more trust than a plain one.`,
+    },
+    { type: 'h2', text: 'The clone is held to the same rule' },
+    {
+      type: 'p',
+      text: `The AI clone on this site may only state figures that are in its knowledge base, which is compiled from the same content files. It is told to say it does not know when a question goes beyond them, and to point people to me. The engineering behind that is in [what building an AI clone of myself taught me](/articles/building-an-ai-clone-of-myself).`,
+    },
+    { type: 'h2', text: 'What I would ask of any candidate' },
+    {
+      type: 'p',
+      text: `The same rules make a useful interview test. Ask a candidate where a number on their CV comes from, how it was measured and what it was measured against. Someone who ran the thing answers at once and usually adds the caveat themselves. It is the fastest check I know of whether a person did the work or stood near it.`,
+    },
+  ],
+  faq: [
+    { q: 'How can you tell if metrics on a CV are credible?', a: 'Ask where each number comes from, how it was measured and what it was compared against. People who did the work answer quickly and usually volunteer the caveats.' },
+    { q: 'Where do the figures on this site come from?', a: "Figures about Archit's work come from his CV, stored in one set of content files used by the site, resume and AI clone. Industry figures are cited with sources in each article, and derived numbers show their working." },
+  ],
+};

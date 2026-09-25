@@ -2,20 +2,41 @@ import type { Article, ArticleBlock } from '@/types';
 import { pushAndAbsorb } from './push-and-absorb';
 import {
   aiInInternalAudit,
+  bikeTaxis,
   constructionEquipment,
   evAdoption,
+  evCharging,
+  gccIndia,
+  logisticsCost,
   evCabEconomics,
   quickCommerce,
   religiousTourism,
   restaurantEconomics,
+  upiPayments,
   weddingIndustry,
 } from './sectors';
-import { citySizing, marginLeaks, pricingPlaybook, weeklyOperatingReview } from './operating';
-import { appliedAiThesis, marketplaceMetrics, openNetworks, tier2Thesis, vcFunding2025 } from './theses';
+import {
+  citySizing,
+  marginLeaks,
+  monthlyUpdate,
+  pricingPlaybook,
+  vocLoops,
+  weeklyOperatingReview,
+} from './operating';
+import {
+  appliedAiThesis,
+  blinkitMemo,
+  byjusLessons,
+  marketplaceMetrics,
+  openNetworks,
+  tier2Thesis,
+  vcFunding2025,
+} from './theses';
 import {
   agencyInCollege,
   buildingTheClone,
   leavingBigFour,
+  numbersICanDefend,
   reliabilityStrategy,
   zeroCommissionChairs,
 } from './thoughts';
@@ -45,6 +66,16 @@ export const articles: Article[] = [
   leavingBigFour,
   agencyInCollege,
   reliabilityStrategy,
+  upiPayments,
+  logisticsCost,
+  gccIndia,
+  bikeTaxis,
+  evCharging,
+  byjusLessons,
+  blinkitMemo,
+  vocLoops,
+  monthlyUpdate,
+  numbersICanDefend,
 ];
 
 export { RETIRED_SLUGS } from './retired';

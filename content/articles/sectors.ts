@@ -982,3 +982,343 @@ export const religiousTourism: Article = {
     },
   ],
 };
+
+export const upiPayments: Article = {
+  slug: 'upi-payments-india-economics',
+  title: 'UPI moved ₹300 lakh crore in 2025. Who makes money from it?',
+  seoTitle: 'UPI in India: Volumes, Economics and Who Earns',
+  description:
+    'UPI processed 228 billion payments worth ₹299.7 lakh crore in 2025 at an average of about ₹1,300. What that scale means for merchants, fintechs and investors.',
+  excerpt: `UPI handled 228 billion payments in 2025, about ₹1,300 each on average. It is the most successful piece of public infrastructure in Indian commerce, and it makes almost no one money directly.`,
+  category: 'Sector Breakdown',
+  keywords: ['UPI transactions 2025', 'UPI statistics', 'digital payments India', 'NPCI', 'fintech business model India', 'merchant payments'],
+  published: '2026-09-27',
+  blocks: [
+    {
+      type: 'p',
+      text: `Almost every business in India now takes money through UPI, and the numbers have become so large that it is easy to stop noticing them. They are worth reading closely, because they explain why payments stopped being a business model in India and became a feature.`,
+    },
+    { type: 'h2', text: 'The scale' },
+    {
+      type: 'p',
+      text: `UPI processed 228.3 billion transactions worth ₹299.7 lakh crore in 2025, up from 172.2 billion in 2024. Volume grew 29% and value 20%. December 2025 was the largest month on record, at 21.63 billion transactions worth ₹27.97 lakh crore.`,
+    },
+    {
+      type: 'table',
+      head: ['Measure', '2025', 'Working'],
+      rows: [
+        ['Transactions', '228.3 billion', 'Up 29% on 2024'],
+        ['Value', '₹299.7 lakh crore', 'Up 20% on 2024'],
+        ['Average payment', 'About ₹1,313', '₹299.7 lakh crore ÷ 228.3 billion'],
+        ['Payments a day', 'About 62.5 crore', '228.3 billion ÷ 365'],
+      ],
+      caption: 'Totals as reported for 2025; the average and daily figures are my arithmetic.',
+    },
+    {
+      type: 'p',
+      text: `Value growing more slowly than volume means the average payment is getting smaller. UPI is moving from bills and transfers into everyday spending: tea, groceries, auto fares. That is what full penetration looks like.`,
+    },
+    { type: 'h2', text: 'Why it earns so little directly' },
+    {
+      type: 'p',
+      text: `Most UPI payments carry no merchant fee, so a payment company that only moves money earns almost nothing on the transaction itself. The apps with the most UPI volume make their money elsewhere: lending, merchant services such as soundboxes and point-of-sale devices, insurance and distribution. Payments became the way to acquire a customer cheaply, and the money comes from what is sold to that customer next.`,
+    },
+    {
+      type: 'p',
+      text: `This is the same shift I describe in ride-hailing, where zero-commission apps turned a percentage fee into a subscription, in [open networks worked first in mobility](/articles/open-networks-mobility-namma-yatri). When a public rail makes the core transaction free, value moves to the services around it.`,
+    },
+    { type: 'h2', text: 'What it changed for small businesses' },
+    {
+      type: 'p',
+      text: `For a small merchant, UPI removed the cost and delay of cash handling and card fees at once, and it created a transaction record where there was none. That record is what lenders use to underwrite credit for businesses that never had a formal financial history. For operators, it means a new business can accept payment from day one with nothing more than a QR code, which lowers the cost of starting almost anything.`,
+    },
+    { type: 'h2', text: 'What I would look for as an investor' },
+    {
+      type: 'ul',
+      items: [
+        'Revenue per user from products other than payments, and how fast it is growing.',
+        'Credit losses on loans underwritten from payment data, by vintage.',
+        'Merchant retention on paid devices and services.',
+        'Dependence on any regulatory change to fees or market-share caps.',
+      ],
+    },
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[Elets BFSI: UPI records 21.6 billion transactions in December 2025](https://bfsi.eletsonline.com/upi-smashes-records-with-21-6-billion-transactions-in-december-2025/)',
+        '[Business Standard: UPI transactions hit a record 19.47 billion in July 2025](https://www.business-standard.com/markets/capital-market-news/upi-transactions-hit-record-19-47-billion-in-july-2025-cross-rs-25-lakh-crore-in-value-125080200723_1.html)',
+        '[PIB: UPI completes 10 years](https://www.pib.gov.in/PressReleasePage.aspx?PRID=2257087&reg=3&lang=2)',
+      ],
+    },
+  ],
+  faq: [
+    { q: 'How many UPI transactions happened in 2025?', a: 'About 228.3 billion transactions worth ₹299.7 lakh crore, up from 172.2 billion in 2024. December 2025 was the record month, with 21.63 billion transactions.' },
+    { q: 'How do UPI apps make money?', a: 'Most UPI payments carry no merchant fee, so the apps earn from what they sell alongside payments: lending, merchant devices and services, insurance and distribution.' },
+  ],
+};
+
+export const logisticsCost: Article = {
+  slug: 'india-logistics-cost-gdp',
+  title: "India's logistics cost is 7.97% of GDP. The old 14% figure was wrong",
+  seoTitle: 'India Logistics Cost as a Share of GDP: What It Means',
+  description:
+    "The DPIIT-NCAER study put India's logistics cost at 7.97% of GDP in FY24, in line with advanced economies. What the number hides, and where the opportunity sits.",
+  excerpt: `For years the accepted figure was that logistics cost India 13% to 14% of GDP. A government-commissioned study now puts it at 7.97%, close to the US and Germany. The average hides where the real costs are.`,
+  category: 'Sector Breakdown',
+  keywords: ['logistics cost India GDP', 'NCAER logistics report', 'DPIIT logistics', 'supply chain India', 'freight cost', 'logistics startups India'],
+  published: '2026-09-27',
+  blocks: [
+    {
+      type: 'p',
+      text: `Pitches for logistics startups in India have long opened with the same line: logistics costs the country 13% to 14% of GDP, twice what developed economies pay. The official number has since changed, and it changes the argument.`,
+    },
+    { type: 'h2', text: 'What the study found' },
+    {
+      type: 'p',
+      text: `A study by NCAER for the Department for Promotion of Industry and Internal Trade estimated India's logistics cost in FY24 at 7.97% of GDP, or ₹24.01 lakh crore. It combined secondary data with surveys of more than 500 industry users and 3,000 service providers. An earlier NCAER estimate for FY22 was 7.8% to 8.9%. For comparison the study cites the US at 8.8%, Germany at 8% and Australia at 8.6%.`,
+    },
+    {
+      type: 'p',
+      text: `The 13% to 14% figure was never measured this way, and the new estimate puts India in the same range as advanced economies. For anyone building or investing in logistics, the story of a country paying double is gone.`,
+    },
+    { type: 'h2', text: 'What the average hides' },
+    {
+      type: 'p',
+      text: `A national average across every industry says little about any single one. Heavy, low-value goods such as cement, sand and steel spend a far larger share of their value on moving them than electronics or pharmaceuticals do. Construction, the sector I worked in at MCCS Infra and sold to at Equip9, sits at the expensive end, because freight is a large share of the value of what it moves.`,
+    },
+    {
+      type: 'p',
+      text: `The same is true by geography. A corridor between two large cities with good roads and full return loads is cheap per tonne-kilometre. A route into a smaller city, where trucks come back empty, is not.`,
+    },
+    { type: 'h2', text: 'Where the opportunity moved' },
+    {
+      type: 'p',
+      text: `If the national number is already reasonable, the opportunity is in specific segments and specific frictions: empty return trips, waiting time at loading points, fragmented truck ownership, and the coordination between the owner of a load and the owner of a vehicle. Those are marketplace and utilisation problems, the same kind I describe in [construction equipment rental](/articles/construction-equipment-rental-india) and in [the unit economics of an electric cab fleet](/articles/ev-cab-fleet-unit-economics-tier-2-india).`,
+    },
+    { type: 'h2', text: 'What I would ask a logistics startup' },
+    {
+      type: 'ul',
+      items: [
+        'Which segment and which corridor, and what logistics costs as a share of the goods moved there.',
+        'Empty running before and after the product, measured in kilometres.',
+        'Utilisation of the trucks or warehouses on the platform.',
+        'Whether the pitch still relies on the 13% to 14% figure.',
+      ],
+    },
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[DPIIT: Assessment of Logistics Cost in India (PDF)](https://www.dpiit.gov.in/static/uploads/2025/07/b6c9db15ce083fd10caa9787bf8a281f.pdf)',
+        "[Maritime Gateway: India's logistics costs at 7.97% of GDP in FY24](https://www.maritimegateway.com/indias-logistics-costs-fall-to-7-97-of-gdp-in-fy-2023-24-dpiit/)",
+        '[Business Standard: Logistics cost 7.8% to 8.9% of GDP in FY22, NCAER](https://www.business-standard.com/amp/economy/news/india-s-logistics-cost-between-7-8-and-8-9-of-gdp-in-fy22-ncaer-123121401099_1.html)',
+      ],
+    },
+  ],
+  faq: [
+    { q: "What is India's logistics cost as a share of GDP?", a: 'A DPIIT-NCAER study estimated it at 7.97% of GDP in FY24, or ₹24.01 lakh crore, close to the US at 8.8% and Germany at 8%. The widely quoted 13% to 14% figure was not based on this kind of measurement.' },
+    { q: 'Where are logistics costs highest in India?', a: 'For heavy, low-value goods such as construction materials, and on routes where trucks return empty. The national average hides large differences by industry and corridor.' },
+  ],
+};
+
+export const gccIndia: Article = {
+  slug: 'global-capability-centres-india',
+  title: 'Global capability centres are now where multinationals run strategy in India',
+  seoTitle: 'Global Capability Centres in India: Scale and What They Do',
+  description:
+    'India hosts over 2,100 global capability centres employing about 2.36 million people. How GCCs moved from back office to strategy and AI, and what it means for talent.',
+  excerpt: `India hosts more than 2,100 global capability centres employing about 2.36 million people. They started as back offices. Many now run strategy, analytics and AI for their parent companies, and they compete for the same talent as startups.`,
+  category: 'Sector Breakdown',
+  keywords: ['global capability centres India', 'GCC India', 'Zinnov nasscom GCC report', 'GCC jobs', 'captive centres', 'India talent market'],
+  published: '2026-09-27',
+  blocks: [
+    {
+      type: 'p',
+      text: `Most discussion of careers in Indian business still centres on Indian companies and startups. A fast-growing part of the market for strategy and operations talent is the Indian arms of global companies, and the numbers show how large it has become.`,
+    },
+    { type: 'h2', text: 'The scale' },
+    {
+      type: 'p',
+      text: `Zinnov and nasscom counted more than 1,700 GCCs in India in FY24, generating about $64.6 billion in revenue and employing more than 1.9 million people. Their FY26 count is 2,117 GCCs across 3,728 units, employing about 2.36 million people, with the number of GCCs up 32% since FY21. About 506 of the Forbes Global 2000 companies now run operations from India. Mid-market firms account for a growing share: more than 480 centres with over 210,000 professionals, 27% of all GCCs in India.`,
+    },
+    {
+      type: 'table',
+      head: ['Measure', 'Figure'],
+      rows: [
+        ['GCCs in India (FY26)', '2,117, across 3,728 units'],
+        ['People employed (FY26)', 'About 2.36 million'],
+        ['Revenue (FY24)', 'About $64.6 billion'],
+        ['Forbes Global 2000 companies with a GCC in India', 'About 506'],
+        ['Growth in number of GCCs since FY21', '32%'],
+      ],
+    },
+    { type: 'h2', text: 'From back office to strategy' },
+    {
+      type: 'p',
+      text: `The early centres handled processing, support and maintenance work that was cheaper to do in India. Zinnov and nasscom now describe Indian GCCs as increasingly leading AI mandates for their parent companies. The work has moved up to product, analytics, risk and strategy, which means these centres hire the same people startups and consulting firms want: people who can frame a problem, size it and make something happen across teams.`,
+    },
+    { type: 'h2', text: 'What it means for startups and consulting' },
+    {
+      type: 'p',
+      text: `For startups, GCCs are both a competitor for talent and a customer. They pay well and offer stability, which raises the bar a startup's offer has to clear. They also buy software and services, and an Indian startup that sells into GCCs gets a buyer that already works in the Indian context.`,
+    },
+    {
+      type: 'p',
+      text: `For consulting firms, GCCs are clients that increasingly do in-house what they once bought. The work that remains is the kind that needs an outside view: transformation, controls and the design of how the centre itself operates. That is close to the process and decision-rights work I describe in [where margin leaks in Indian companies](/articles/where-margin-leaks-indian-companies).`,
+    },
+    { type: 'h2', text: 'What I would watch' },
+    {
+      type: 'ul',
+      items: [
+        'Whether GCC hiring keeps moving toward strategy and AI roles, or pauses with global budgets.',
+        'Growth in cities beyond Bengaluru, Hyderabad and Pune, which would widen the talent market.',
+        'How many startups are founded by people leaving GCCs, a new source of experienced founders.',
+      ],
+    },
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[Zinnov: India GCC landscape report 2026](https://zinnov.com/centers-of-excellence/zinnov-nasscom-india-gcc-landscape-2026-report/)',
+        '[Zinnov: Mid-market GCCs report 2025](https://zinnov.com/centers-of-excellence/zinnov-nasscom-mid-market-global-capability-centers-gccs-2025-report/)',
+        '[nasscom: India GCC landscape report, the five-year journey](https://nasscom.in/knowledge-center/publications/india-gcc-landscape-report-5-year-journey)',
+        "[Yahoo Finance: India's GCCs increasingly leading the AI mandate, nasscom-Zinnov](https://finance.yahoo.com/technology/ai/articles/india-gccs-increasingly-leading-ai-055700455.html)",
+      ],
+    },
+  ],
+  faq: [
+    { q: 'How many global capability centres are there in India?', a: 'Zinnov and nasscom counted 2,117 GCCs across 3,728 units in FY26, employing about 2.36 million people, up from more than 1,700 GCCs and 1.9 million people in FY24.' },
+    { q: 'What do GCCs in India do?', a: 'They began with processing and support work and now increasingly run product, analytics, risk, strategy and AI work for their parent companies.' },
+  ],
+};
+
+export const bikeTaxis: Article = {
+  slug: 'bike-taxis-india-regulation',
+  title: "Bike taxis and the Karnataka ban: regulation as a business risk",
+  seoTitle: 'Bike Taxis in India: The Karnataka Ban and Its Lessons',
+  description:
+    'Karnataka banned bike taxis in 2025 and its High Court lifted the ban in January 2026. What the episode shows about regulatory risk in Indian mobility.',
+  excerpt: `In June 2025 Rapido, Uber and Ola had to stop bike taxis across Karnataka. In January 2026 the High Court lifted the ban. For anyone in Indian mobility, the episode is a clear case study in regulatory risk.`,
+  category: 'Sector Breakdown',
+  keywords: ['bike taxi ban Karnataka', 'bike taxi India', 'Rapido bike taxi', 'mobility regulation India', 'regulatory risk startups', 'Motor Vehicles Act'],
+  published: '2026-09-27',
+  blocks: [
+    {
+      type: 'p',
+      text: `Running strategy for a cab service means paying attention to regulation as closely as to competitors, because a rule can remove a product overnight. The Karnataka bike-taxi case is the clearest recent example in Indian mobility.`,
+    },
+    { type: 'h2', text: 'What happened' },
+    {
+      type: 'table',
+      head: ['Date', 'Event'],
+      rows: [
+        ['2 April 2025', 'A single bench of the Karnataka High Court rules that Rapido, Ola and Uber cannot run bike taxis until the state notifies guidelines and frames rules under the Motor Vehicles Act'],
+        ['16 June 2025', 'The ban takes effect after the court declines to extend relief'],
+        ['June to late 2025', 'Some platforms offer bike parcel or courier services; the state argues in court that a motorcycle cannot be a transport vehicle'],
+        ['January 2026', 'A division bench lifts the ban and asks operators to apply to register two-wheelers as transport vehicles'],
+      ],
+    },
+    { type: 'h2', text: 'Why bike taxis exist at all' },
+    {
+      type: 'p',
+      text: `A bike taxi is the cheapest motorised way to move one person through a congested city, and it gives two-wheeler owners a way to earn from a vehicle they already have. For platforms it adds supply quickly without anyone buying a car. Those are strong economics, and they are exactly why the category draws pushback from the taxi and auto trades it competes with.`,
+    },
+    { type: 'h2', text: 'Reading it with Push and Absorb' },
+    {
+      type: 'p',
+      text: `For the platforms, the ban arrived as somebody else's decision, which puts it in the Absorb half of my [Push and Absorb framework](/articles/push-and-absorb-framework). It was fast, and at the time nobody could tell whether it would pass or be permanent. The framework says to state the assumption out loud and set a trigger that tells you when it was wrong. The platforms' posture, pivoting the same riders and bikes to parcel delivery, was adapt while they appealed.`,
+    },
+    {
+      type: 'p',
+      text: `Tracing back to a lever is the step that matters for anyone building in a regulated category. The layer the platforms could act on was the legal basis of the service: registration of the vehicles as transport vehicles. The January 2026 order points back to exactly that.`,
+    },
+    { type: 'h2', text: 'What it means for anyone building in mobility' },
+    {
+      type: 'ul',
+      items: [
+        'Know the legal basis of every product line, and which rule or court order could remove it.',
+        'Keep a second use for the same supply, as the platforms did with parcels.',
+        'Model a regional ban as a scenario in the financial plan, with its revenue impact and a response written in advance.',
+        'Treat compliance that makes a product legally durable, such as proper vehicle registration, as part of the moat.',
+      ],
+    },
+    {
+      type: 'p',
+      text: `The other big change in the sector came from competition, and I cover it in [the zero-commission shift, seen from every chair](/articles/zero-commission-shift-push-and-absorb).`,
+    },
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[LiveLaw: Karnataka High Court revokes the bike taxi ban](https://www.livelaw.in/amp/high-court/karnataka-high-court/karnataka-high-court-bike-taxi-ban-set-aside-520439)',
+        '[Inc42: Relief for Rapido and Uber as Karnataka HC lifts the bike taxi ban](https://inc42.com/buzz/relief-for-rapido-uber-karnataka-hc-lifts-bike-taxi-ban/)',
+        '[MediaNama: Karnataka defends the bike taxi ban](https://www.medianama.com/2025/11/223-karnataka-bike-taxi-ban-hc-motorcycles-passengers/)',
+        '[Wikipedia: Motorcycle taxis in India](https://en.wikipedia.org/wiki/Motorcycle_taxis_in_India)',
+      ],
+    },
+  ],
+  faq: [
+    { q: 'Are bike taxis legal in Karnataka?', a: 'A single bench of the Karnataka High Court stopped bike taxis from 16 June 2025. In January 2026 a division bench lifted the ban and asked operators to apply to register two-wheelers as transport vehicles.' },
+    { q: 'How should startups handle regulatory risk?', a: 'Know the legal basis of each product, model a ban as a scenario with a written response, keep an alternative use for the same supply, and invest in the compliance that makes a product durable.' },
+  ],
+};
+
+export const evCharging: Article = {
+  slug: 'ev-charging-infrastructure-india',
+  title: 'India has 29,000 public EV chargers. The question is where they are',
+  seoTitle: 'EV Charging Infrastructure in India: Numbers and Gaps',
+  description:
+    'Public EV charging in India grew from 5,151 stations in 2022 to about 29,300 in 2025. Why location and utilisation matter more than the count, especially for fleets.',
+  excerpt: `Public EV charging stations in India grew more than fivefold in under three years, to about 29,300. For fleets, the count matters less than where the chargers sit and how busy they are.`,
+  category: 'Sector Breakdown',
+  keywords: ['EV charging stations India', 'public charging infrastructure', 'charge point operators India', 'EV fleet charging', 'PM E-DRIVE charging', 'BEE'],
+  published: '2026-09-27',
+  blocks: [
+    {
+      type: 'p',
+      text: `For an electric fleet, charging sits behind every expansion decision. The national numbers have grown fast, and they still leave the questions a fleet operator actually has to answer.`,
+    },
+    { type: 'h2', text: 'The numbers' },
+    {
+      type: 'p',
+      text: `The Ministry of Power reported 29,277 public charging stations run by 83 charge point operators as of 2025. The count grew from 5,151 in December 2022 to 25,202 in December 2024 and about 29,300 by August 2025. The PM E-DRIVE scheme set aside ₹2,000 crore for public charging, and the Bureau of Energy Efficiency is the central agency for the rollout.`,
+    },
+    {
+      type: 'p',
+      text: `That is more than five times as many stations in under three years. Set against India's EV sales, which I cover in [India's EV transition is running on three wheels](/articles/india-ev-adoption-two-three-wheelers), it is still a thin network, and most electric two- and three-wheelers charge at home or at the owner's base.`,
+    },
+    { type: 'h2', text: 'Why location beats count' },
+    {
+      type: 'p',
+      text: `A commercial vehicle charges where it rests: at a depot, a driver's home or a stand between shifts. A public charger on a highway or in a mall car park helps a private car on a long trip and does little for a cab that needs to charge between rides in the city. For fleets, the useful network is the one near where the vehicles already stop.`,
+    },
+    {
+      type: 'p',
+      text: `Chargers also have their own utilisation problem. A charger is a fixed asset that earns only when a vehicle is plugged in, the same economics as a dark store or a cab. A charger in the wrong place stays idle and loses money, which is why operators cluster them where demand already exists.`,
+    },
+    { type: 'h2', text: 'What it means for an electric fleet' },
+    {
+      type: 'ul',
+      items: [
+        'Plan charging around where the vehicles rest, and treat public charging as backup.',
+        'Count charging time as lost earning time, so it enters the utilisation calculation.',
+        'Model electricity cost per kilometre at depot rates and at public rates separately.',
+        'In a smaller city, expect to build or arrange most charging yourself.',
+      ],
+    },
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[EVINDIA: India gets 27,000+ EV charging stations in 2025](https://evindia.online/news/india-gets-27000-ev-charging-stations-in-2025-report)',
+        "[ORF: Charging infrastructure, the missing link in India's EV transition](https://www.orfonline.org/research/charging-infrastructure-the-missing-link-in-india-s-evs-transition)",
+        '[Ministry of Heavy Industries: PM E-DRIVE operational guidelines for public charging (PDF)](https://pmedrive.heavyindustries.gov.in/docs/policy_document/EV%20PCS%20operational%20guidelines_F.pdf)',
+      ],
+    },
+  ],
+  faq: [
+    { q: 'How many public EV charging stations are there in India?', a: 'About 29,300 as of August 2025, run by 83 charge point operators according to the Ministry of Power, up from 5,151 in December 2022.' },
+    { q: 'How should an EV fleet plan charging?', a: 'Around where the vehicles rest, such as depots and driver homes, with public charging as backup, and with charging time counted as lost earning time in the utilisation model.' },
+  ],
+};

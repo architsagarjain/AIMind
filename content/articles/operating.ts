@@ -488,3 +488,128 @@ export const pricingPlaybook: Article = {
     },
   ],
 };
+
+export const vocLoops: Article = {
+  slug: 'voice-of-customer-loops-retention',
+  title: 'Voice-of-customer loops: how 27% of our users became monthly riders',
+  seoTitle: 'Voice of Customer Loops That Improve Retention',
+  description:
+    'How to run a voice-of-customer loop that changes decisions: collecting feedback, tagging it, owning each cause and closing the loop, from retention work at ZenCabs.',
+  excerpt: `At ZenCabs, voice-of-customer loops and retention plays turned 27% of the user base into 6,679 monthly active riders. A loop only works if the feedback reaches a decision. How to build one that does.`,
+  category: 'Operating Playbook',
+  keywords: ['voice of customer', 'customer feedback loop', 'customer retention strategy', 'churn reduction', 'retention playbook', 'customer research'],
+  published: '2026-09-27',
+  blocks: [
+    {
+      type: 'p',
+      text: `At ZenCabs, 27% of the user base became monthly active riders, 6,679 people, through voice-of-customer loops and retention plays. Most companies collect feedback. Far fewer have a loop, where each piece of feedback reaches a person who can change something and the customer later sees the change. This is how I would set one up.`,
+    },
+    { type: 'h2', text: 'Step 1: collect from the moments that matter' },
+    {
+      type: 'p',
+      text: `The richest feedback comes at the points where something went wrong or nearly did: a cancellation, a complaint, a low rating, a customer who stopped using the service. In a two-sided business the supply side counts too, because a driver or vendor sees problems a customer never does. Ask one short question at each of those moments, and read the answers yourself for the first few weeks.`,
+    },
+    { type: 'h2', text: 'Step 2: tag every piece by cause' },
+    {
+      type: 'p',
+      text: `Raw feedback is noise until it is grouped. Give each item one cause from a short, fixed list, for example no car available, driver late, price confusion, app problem. Keep the list short enough that anyone tagging it agrees on the category, and review the list only when a new cause keeps appearing.`,
+    },
+    { type: 'h2', text: 'Step 3: count causes every week' },
+    {
+      type: 'p',
+      text: `The weekly count by cause is the loop's output. It shows which few causes explain most of the complaints, which is where the effort goes. The count belongs in the same weekly review as the growth numbers, as I describe in [the weekly review that took cancellations from 40% to 6%](/articles/weekly-operating-review-kpi-cadence).`,
+    },
+    { type: 'h2', text: 'Step 4: give each cause an owner and a fix' },
+    {
+      type: 'p',
+      text: `A cause without an owner never gets fixed. For each of the top causes, name one person, agree the change they will make and the number that should move, and set the date you will check it. At ZenCabs the fixes for cancellations became 10+ standard operating procedures across onboarding and dispatch.`,
+    },
+    { type: 'h2', text: 'Step 5: close the loop with the customer' },
+    {
+      type: 'p',
+      text: `Tell the people who complained what changed. A customer who sees their complaint turn into a fix has a reason to stay that a customer who heard nothing back does not, and that is a retention play in itself. It also keeps feedback coming, because people keep telling you things when they see it matters.`,
+    },
+    { type: 'h2', text: 'What makes a loop fail' },
+    {
+      type: 'ul',
+      items: [
+        'Feedback collected into a dashboard that no meeting reviews.',
+        'A cause list so long that every complaint is its own category.',
+        'Surveys sent at random times, when nothing notable has happened.',
+        'Fixes that nobody checks, so the same cause returns next month.',
+      ],
+    },
+    {
+      type: 'p',
+      text: `Most of the causes a loop surfaces turn out to be reliability failures, which is why I argue in [reliability is the growth strategy Indian businesses underprice](/articles/reliability-as-growth-strategy) that fixing them is the retention strategy.`,
+    },
+  ],
+  faq: [
+    { q: 'What is a voice-of-customer loop?', a: 'A process that collects feedback at the moments that matter, tags each item by cause, counts causes weekly, assigns each top cause an owner and a fix, and tells customers what changed.' },
+    { q: 'How do voice-of-customer loops improve retention?', a: 'They find the few causes behind most complaints and get them fixed. At ZenCabs, voice-of-customer loops and retention plays turned 27% of the user base into 6,679 monthly active riders.' },
+  ],
+};
+
+export const monthlyUpdate: Article = {
+  slug: 'one-page-monthly-update',
+  title: 'The one-page monthly update for a founder, board or investors',
+  seoTitle: 'How to Write a Monthly Investor or Board Update',
+  description:
+    'A template for a one-page monthly update to a founder, board or investors: numbers against plan, what went wrong, decisions needed and asks, with the reasoning behind each part.',
+  excerpt: `The most useful document a Chief of Staff or strategy lead writes is short. A one-page monthly update, in the same shape every month, with the bad news near the top.`,
+  category: 'Operating Playbook',
+  keywords: ['monthly investor update template', 'board update', 'startup reporting', 'chief of staff', 'founder office', 'leadership reporting'],
+  published: '2026-09-27',
+  blocks: [
+    {
+      type: 'p',
+      text: `At PwC India I ran structured leadership reporting and business reviews and secured CXO buy-in on 20+ recommendations. At ZenCabs the equivalent was a weekly KPI review with the founder. Both taught me that a short document with a fixed shape does more work than a long one. This is the monthly version, for a founder, a board or investors.`,
+    },
+    { type: 'h2', text: 'The template' },
+    {
+      type: 'ol',
+      items: [
+        'Headline: one sentence on the month, the way you would say it to someone in a lift.',
+        'Numbers against plan: the five or six numbers the business runs on, with this month, last month, plan and a short note on each miss.',
+        'What went wrong: the two or three problems, with the cause and what is being done.',
+        'What went well: the two or three wins, with the reason, so it can be repeated.',
+        'Decisions needed: anything the reader has to decide, with a recommendation.',
+        'Asks: specific help, such as an introduction, a hire or a customer.',
+        'Next month: the three things that will be different in thirty days.',
+      ],
+    },
+    { type: 'h2', text: 'Why bad news goes near the top' },
+    {
+      type: 'p',
+      text: `A reader who finds a problem buried on page three stops trusting the rest of the page. Put what went wrong before what went well, with the cause and the plan. It is also self-protection: problems reported early are problems the reader shares, and problems found late are problems the writer owns alone.`,
+    },
+    { type: 'h2', text: 'Why the same shape every month' },
+    {
+      type: 'p',
+      text: `When the layout never changes, the reader can compare months at a glance and spot the one number that moved. Every redesign costs them a month of relearning where to look. The discipline is the same as the one-page sheet in a weekly review.`,
+    },
+    { type: 'h2', text: 'Decisions and asks make the update useful' },
+    {
+      type: 'p',
+      text: `An update that only reports is read and filed. One that asks for a decision, with a recommendation and a deadline, gets a response. A recommendation that arrives with a number, an owner and a first step is easier to approve, because the conversation can be about when to start.`,
+    },
+    { type: 'h2', text: 'What to leave out' },
+    {
+      type: 'ul',
+      items: [
+        'Activity lists. What the team did matters less than what changed.',
+        'Numbers without a comparison to plan or last month.',
+        'Every metric the business tracks. The detail lives elsewhere; link to it.',
+        'Good news without a reason, which cannot be repeated.',
+      ],
+    },
+    {
+      type: 'p',
+      text: `The weekly version of this discipline is in [the weekly review that took cancellations from 40% to 6%](/articles/weekly-operating-review-kpi-cadence).`,
+    },
+  ],
+  faq: [
+    { q: 'What should a monthly investor update include?', a: 'A one-line headline, the main numbers against plan, what went wrong and what is being done, what went well, decisions needed with a recommendation, specific asks, and the plan for next month.' },
+    { q: 'How long should a board update be?', a: 'One page, in the same shape every month, with the detail linked elsewhere. Consistency lets the reader compare months and see what changed.' },
+  ],
+};

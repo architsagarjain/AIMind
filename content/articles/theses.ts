@@ -461,7 +461,7 @@ export const vcFunding2025: Article = {
     { type: 'h2', text: 'What would change my reading' },
     {
       type: 'p',
-      text: `If late-stage funding recovers sharply in 2026 without a matching improvement in the profitability of the companies raising it, then 2025 was a pause and not a change in what investors pay for. If the IPO window narrows, early-stage investors will need other exits, and seed and Series A would likely tighten next. I would check both against the next annual report, the way my [Push and Absorb framework](/articles/push-and-absorb-framework) suggests checking any assumption: decide in advance what evidence would change your mind.`,
+      text: `If late-stage funding recovers sharply in 2026 without a matching improvement in the profitability of the companies raising it, then 2025 was only a pause, and what investors pay for has not changed. If the IPO window narrows, early-stage investors will need other exits, and seed and Series A would likely tighten next. I would check both against the next annual report, the way my [Push and Absorb framework](/articles/push-and-absorb-framework) suggests checking any assumption: decide in advance what evidence would change your mind.`,
     },
 
     { type: 'h2', text: 'Sources' },
@@ -594,5 +594,167 @@ export const openNetworks: Article = {
       q: 'Why did open networks work in mobility first?',
       a: 'A ride is a simple transaction between two parties, and drivers gain the most from removing the commission, so supply joins without a subsidy. Retail needs catalogues, inventory, payments and returns to work across apps, and much of its early use depended on incentives.',
     },
+  ],
+};
+
+export const byjusLessons: Article = {
+  slug: 'byjus-lessons-for-investors',
+  title: "What Byju's teaches about backing a fast grower",
+  seoTitle: "Byju's Collapse: Lessons for Investors and Operators",
+  description:
+    "Byju's went from a $22 billion valuation to a rights issue at about $225 million. The warning signs, read through a diligence checklist and the Push and Absorb framework.",
+  excerpt: `Byju's was valued at $22 billion in 2022 and raised money at about $225 million two years later. The warning signs were visible well before the collapse, and they are the same ones I look for in any fast-growing company.`,
+  category: 'Investment Thesis',
+  keywords: ["Byju's collapse", 'edtech India', 'startup due diligence', 'governance red flags', 'venture capital lessons', 'startup insolvency'],
+  published: '2026-09-27',
+  blocks: [
+    {
+      type: 'p',
+      text: `Every generation of investors gets one company that teaches the whole market what to check. For Indian venture capital, Byju's is that company. The story has been told many times; this is the checklist I take from it.`,
+    },
+    { type: 'h2', text: 'What happened, briefly' },
+    {
+      type: 'table',
+      head: ['When', 'What'],
+      rows: [
+        ['Before the pandemic', 'Valued at about $5 billion'],
+        ['2021', 'Raised a $1.2 billion US term loan'],
+        ['2022', 'Peak valuation of about $22 billion'],
+        ['October 2023 onward', 'Senior departures, including the CFO; later board advisers'],
+        ['2024', 'Rights issue at a valuation of about $225 million, a discount of about 99%'],
+        ['July 2024', 'NCLT admits insolvency proceedings over unpaid dues of about ₹159 crore to the BCCI'],
+        ['October 2024', 'The Supreme Court reinstates the insolvency process after a settlement was challenged'],
+      ],
+      caption: "Reported timeline. The lenders' claims below are allegations made in litigation.",
+    },
+    {
+      type: 'p',
+      text: `The term loan was the turning point. Lenders accused the company of breaching its covenants, delaying financial disclosures and moving about $533 million of the proceeds beyond their reach. Prosus later wrote off its 9.6% stake.`,
+    },
+    { type: 'h2', text: 'A temporary force mistaken for a permanent one' },
+    {
+      type: 'p',
+      text: `The Absorb half of my [Push and Absorb framework](/articles/push-and-absorb-framework) starts by classifying a change: did it arrive fast or slowly, and will it pass or is it permanent? The pandemic surge in online learning arrived fast. The mistake available to any company in that position is to treat a spike as the new normal and rebuild the business around it, with acquisitions, hiring and debt sized to demand that might not last. The framework's advice for a fast force that will pass is to cushion it and not rebuild the firm around it.`,
+    },
+    { type: 'h2', text: 'The signals I would check in any fast grower' },
+    {
+      type: 'ul',
+      items: [
+        'Audited accounts filed late. A company that cannot close its books on time usually has a reason.',
+        'Senior finance and board departures, especially in a cluster.',
+        'Debt raised to fund growth, with covenants the business can breach if growth slows.',
+        'Acquisitions large enough to change the shape of the company every year.',
+        'Revenue recognised in ways that differ from cash collected.',
+        'Control concentrated so that no one on the board can say no.',
+      ],
+    },
+    {
+      type: 'p',
+      text: `None of these proves wrongdoing on its own. Together they are the pattern, and BluSmart, which I cover in [the unit economics of an electric cab fleet](/articles/ev-cab-fleet-unit-economics-tier-2-india), showed a version of it in mobility: borrowed money, related-party structures and an alleged diversion of loans that ended a working service.`,
+    },
+    { type: 'h2', text: 'What it means for operators' },
+    {
+      type: 'p',
+      text: `The lesson is also for the people running companies. Growth that depends on debt or on a temporary surge needs a written plan for when the surge ends. And the dull disciplines, closing the books on time and reporting bad news early, are what keep a company financeable when things go wrong. I describe the reporting side of that in [the one-page monthly update](/articles/one-page-monthly-update).`,
+    },
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        "[Entrackr: Creditors may take over Byju's as NCLT admits insolvency resolution (July 2024)](https://entrackr.com/2024/07/creditors-may-take-over-byjus-as-nclt-admits-insolvency-resolution/)",
+        "[TechCrunch: India's top court clears way for Byju's insolvency proceedings](https://techcrunch.com/2024/08/14/indias-top-court-clears-way-for-byjus-insolvency-proceedings)",
+        "[The Week: Supreme Court strikes down the order in Byju's insolvency case (October 2024)](https://www.theweek.in/news/biz-tech/2024/10/24/byjus-insolvency-proceedings-supreme-court-strikes-down-nclt-order-bcci-new-challenges-edutech.html)",
+        "[Dealroom: The rise and fall of Byju's](https://app.dealroom.co/news/note/the-rise-and-fall-of-byju-s-and-where-it-stands-now)",
+      ],
+    },
+  ],
+  faq: [
+    { q: "What happened to Byju's?", a: "Byju's reached a valuation of about $22 billion in 2022. After disputes with lenders over a $1.2 billion term loan and missed payments, including about ₹159 crore owed to the BCCI, the NCLT admitted insolvency proceedings in July 2024. A 2024 rights issue valued the company at about $225 million." },
+    { q: 'What are red flags in a fast-growing startup?', a: 'Late audited accounts, clusters of senior finance and board departures, growth funded by debt with tight covenants, large annual acquisitions, revenue that differs from cash collected, and a board that cannot say no.' },
+  ],
+};
+
+export const blinkitMemo: Article = {
+  slug: 'investment-memo-blinkit-public-data',
+  title: 'A worked investment memo: Blinkit, from public numbers',
+  seoTitle: 'Investment Memo Example: Blinkit From Public Data',
+  description:
+    'A worked investment memo on Blinkit using only public figures: the business, unit economics, what has to be true, the risks and what would make me walk away.',
+  excerpt: `An investment memo is judgement written down. Here is one on Blinkit, built only from published numbers, in the format I would send a partner: what it is, why now, what has to be true, and what would make me walk away.`,
+  category: 'Investment Thesis',
+  keywords: ['investment memo example', 'how to write an investment memo', 'Blinkit analysis', 'quick commerce investment', 'venture capital memo', 'equity research India'],
+  published: '2026-09-27',
+  blocks: [
+    {
+      type: 'p',
+      text: `This is an exercise in the format, written from public figures only. Blinkit is part of Eternal, a listed company, so nobody invests in it on its own, and nothing here is investment advice. The point is to show how I structure a memo: every claim tied to a number, and a written condition for changing my mind.`,
+    },
+    { type: 'h2', text: 'The business in one sentence' },
+    {
+      type: 'p',
+      text: `Blinkit delivers groceries and everyday goods in minutes from a network of small urban warehouses, called dark stores, placed close to where customers live.`,
+    },
+    { type: 'h2', text: 'The numbers' },
+    {
+      type: 'table',
+      head: ['Measure', 'Figure', 'Period'],
+      rows: [
+        ['Dark stores', '2,243', 'End of the March 2026 quarter'],
+        ['Net order value', '₹14,386 crore', 'March 2026 quarter'],
+        ['Adjusted EBITDA', '₹37 crore', 'March 2026 quarter'],
+        ['Monthly transacting users', 'About 27.2 million', 'March 2026 quarter'],
+        ['Average order value', '₹525', 'March 2026 quarter'],
+        ['Orders', 'About 274 million', 'March 2026 quarter'],
+      ],
+      caption: "As reported from Eternal's shareholder letter. Details and working are in my quick commerce breakdown.",
+    },
+    {
+      type: 'p',
+      text: `Derived: an adjusted EBITDA margin of about 0.26% of order value, about ₹1.35 per order, and roughly 1,350 orders per store per day. The working is in [quick commerce in India](/articles/quick-commerce-india-economics).`,
+    },
+    { type: 'h2', text: 'Why now' },
+    {
+      type: 'p',
+      text: `The business has just crossed from losses to adjusted profit at a network of over 2,000 stores, which is the first evidence that the model works at scale. Its nearest competitor, Zepto, reported a FY25 loss of ₹3,367 crore, so the leader has reached profitability while a rival is still spending heavily.`,
+    },
+    { type: 'h2', text: 'What has to be true' },
+    {
+      type: 'ol',
+      items: [
+        'Store density keeps rising, so newer stores reach the order volume of established ones.',
+        'Average order value grows as the range widens beyond daily essentials.',
+        'Advertising sold to brands becomes a meaningful second income per order.',
+        'Competitors pull back on discounting, so the category stops paying customers to switch.',
+        'Delivery cost per order holds or falls as density rises.',
+      ],
+    },
+    { type: 'h2', text: 'The risks' },
+    {
+      type: 'ul',
+      items: [
+        'Margin. At about ₹1.35 per order, a small rise in cost or fall in order value returns the business to loss.',
+        'Competition. A well-funded rival can keep discounts high for longer than the leader would like.',
+        'Expansion. New stores in thinner areas start far below average density and pull the network margin down.',
+        'Regulation. Rules on dark stores, pricing or labour could raise costs across the category.',
+      ],
+    },
+    { type: 'h2', text: 'What would make me walk away' },
+    {
+      type: 'p',
+      text: `If adjusted EBITDA per order turns negative for two consecutive quarters while order volume keeps growing, the profitability was temporary. If average order value falls, the category is growing by adding small, low-margin orders. Either would change my view, and writing that down before the next results is the investing version of the stop rule in my [Push and Absorb framework](/articles/push-and-absorb-framework).`,
+    },
+    { type: 'h2', text: 'The view' },
+    {
+      type: 'p',
+      text: `The bull case is a dense, profitable network that earns more per order over time from range and advertising. The bear case is a business that is profitable only at its current density, in a category where competitors can buy share. On public numbers the model has proved it can work; it has not yet proved how much it can earn per order.`,
+    },
+    {
+      type: 'p',
+      text: `The same format, applied to marketplaces generally, is in [marketplace metrics that flatter](/articles/marketplace-metrics-due-diligence).`,
+    },
+  ],
+  faq: [
+    { q: 'What should an investment memo include?', a: 'A one-sentence description, the main numbers, why now, what has to be true for the investment to work, the main risks, and the evidence that would make you walk away, written before the next results arrive.' },
+    { q: 'Is Blinkit profitable?', a: 'Eternal reported Blinkit at adjusted EBITDA of ₹37 crore on ₹14,386 crore of net order value in the March 2026 quarter, a margin of about 0.26%.' },
   ],
 };
