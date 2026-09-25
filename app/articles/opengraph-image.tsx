@@ -7,8 +7,8 @@ export const contentType = 'image/png';
 
 export default function Image() {
   return ogCard({
-    kicker: 'Articles',
-    title: 'Founder’s Office, Chief of Staff and venture capital, from an operator',
+    kicker: 'Writing',
+    title: 'How Indian businesses actually work, from someone running them',
     footer: `By ${profile.name}`,
   });
 }

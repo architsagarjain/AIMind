@@ -422,8 +422,18 @@ page. The desktop's **Writing** app lists the same articles.
 | --- | --- |
 | `content/articles/*.ts` | The articles, as typed blocks (headings, paragraphs, lists, tables, quotes, figures) plus an FAQ. Text supports `**bold**` and `[label](/path)` |
 | `content/articles/index.ts` | The registry: order, reading time, related articles |
+| `content/articles/categories.ts` | Frameworks, sector breakdowns, operating playbooks, investment theses |
+| `content/articles/retired.ts` | Replaced articles; each old URL redirects permanently to its successor |
 | `content/press.ts` | Coverage elsewhere. `featured: true` leads the "Featured in" strip; the strip hides itself while the list is empty |
 | `content/apps.ts` | Apps you have built (Nexus AI), shown in Projects and on the hub |
+
+**What the articles are for.** They are work samples for Founder's Office,
+Chief of Staff and venture capital recruiters: sector breakdowns, operating
+playbooks and investment theses. The house rules:
+
+- Figures about Archit come only from `content/projects.ts` and `content/resume.ts`.
+- Industry figures carry a linked source in the article's Sources section, and derived numbers show their working.
+- The style is plain: no em or en dashes, no "not X but Y" contrasts, no one-line closers, no bold labels. The live clone is held to the same style, and `tidyDashes` in `lib/ai/answer-guard.ts` normalises any dashes it streams.
 
 **To add an article:** write a new `Article` in `content/articles/`, add it to
 the array in `content/articles/index.ts`, and build. The page, sitemap entry,

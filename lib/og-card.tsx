@@ -8,6 +8,9 @@ import { ImageResponse } from 'next/og';
 export const OG_SIZE = { width: 1200, height: 630 };
 
 export function ogCard({ kicker, title, footer }: { kicker: string; title: string; footer: string }) {
+  // The renderer's bundled font has no rupee glyph and would fetch one over
+  // the network at build time; "Rs" keeps the card self-contained.
+  title = title.replace(/₹\s?/g, 'Rs ');
   const size = title.length > 55 ? 58 : title.length > 40 ? 66 : 76;
   return new ImageResponse(
     (

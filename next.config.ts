@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { RETIRED_SLUGS } from './content/articles/retired';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -7,6 +8,13 @@ const nextConfig: NextConfig = {
   transpilePackages: ['three'],
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion', '@react-three/drei'],
+  },
+  async redirects() {
+    return Object.entries(RETIRED_SLUGS).map(([from, to]) => ({
+      source: `/articles/${from}`,
+      destination: `/articles/${to}`,
+      permanent: true,
+    }));
   },
   async headers() {
     return [

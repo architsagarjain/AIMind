@@ -26,8 +26,8 @@ export function WritingWindow() {
         <SectionLabel>Writing</SectionLabel>
         <h2 className="mt-3 font-display text-3xl font-extrabold text-ink">Articles & frameworks</h2>
         <p className="mt-2 max-w-lg text-sm text-muted">
-          Founder’s Office, Chief of Staff and venture capital roles, from the operating side, plus the Push and
-          Absorb framework I use to make decisions.
+          Sector breakdowns, operating playbooks and investment theses from the businesses I have run, plus the
+          Push and Absorb framework I use to make decisions.
         </p>
 
         {press.length > 0 && (
@@ -60,7 +60,7 @@ export function WritingWindow() {
           if (!list.length) return null;
           return (
             <div key={category.name} className="mt-8">
-              <SectionLabel>{category.name}</SectionLabel>
+              <SectionLabel>{category.label}</SectionLabel>
               <ul className="mt-3 space-y-2">
                 {list.map((a, i) => (
                   <motion.li

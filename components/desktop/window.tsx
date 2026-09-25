@@ -197,7 +197,7 @@ export function DesktopWindow({ id, title, subtitle, icon, children }: DesktopWi
           {icon}
           <p className="truncate text-[13px] font-semibold text-ink">{title}</p>
           {subtitle && (
-            <p className="hidden truncate text-[12px] text-faint sm:block">— {subtitle}</p>
+            <p className="hidden truncate text-[12px] text-faint sm:block">· {subtitle}</p>
           )}
         </div>
       </div>

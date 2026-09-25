@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowUp, RotateCcw, Sparkles, Square, Volume2, VolumeX } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowUp, RotateCcw, Square, Volume2, VolumeX } from 'lucide-react';
 import { useChat } from '@/lib/hooks/use-chat';
 import { useSpeech } from '@/lib/hooks/use-speech';
 import { STARTER_PROMPTS } from '@/lib/ai/prompts';
+import { INITIALS } from '@/lib/boot-content';
 import { profile } from '@/content/profile';
 import { RichText } from './rich-text';
 import { useTelemetry } from '@/lib/hooks/use-telemetry';
@@ -13,12 +14,25 @@ import { useChatHandoff } from '@/lib/store/chat-handoff';
 import { cn } from '@/lib/utils';
 
 /**
- * The Ask Archit chat.
+ * Ask Archit, as a native ARCHIT.OS app.
  *
- * Shared by the desktop window and the standalone `/ask` route, so it takes its
- * chrome from props rather than assuming either context.
+ * WHY IT LOOKS LIKE MESSAGES
+ * The desktop opens on a prompt panel with Archit's avatar, an Online badge
+ * and a rounded input. The conversation that follows used to open as a
+ * generic chatbot page, and /ask was a third, dark design. One conversation
+ * wore three faces. This is one app in one theme wherever it appears: the
+ * same identity as the panel, the platform's own messaging conventions
+ * (grey bubbles in, blue bubbles out, suggested replies above a pill
+ * composer), and the light OS tokens even on the standalone route.
  */
-export function Chat({ compact = false }: { compact?: boolean }) {
+
+/** iMessage blue and incoming grey: the two colours people already read as a chat. */
+const OUTGOING = 'bg-[#0a84ff] text-white';
+const INCOMING = 'bg-[#e9e9eb] text-[#1d1d1f]';
+
+const GREETING = `Hi, I'm ${profile.firstName}'s AI clone. I answer from his real work at ZenCabs, PwC India, Cairros and Masters' Union, so ask me anything you would ask him in an interview.`;
+
+export function Chat() {
   const { messages, isStreaming, error, mode, send, stop, reset } = useChat();
   const speech = useSpeech();
   const [input, setInput] = useState('');
@@ -27,8 +41,8 @@ export function Chat({ compact = false }: { compact?: boolean }) {
   const track = useTelemetry();
   const started = useRef(false);
 
-  // Follow the stream, but only while the user is already near the bottom —
-  // yanking them down mid-scroll while reading an earlier answer is hostile.
+  // Follow the stream, but only while the reader is already near the bottom:
+  // pulling them down while they read an earlier answer is hostile.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -44,6 +58,7 @@ export function Chat({ compact = false }: { compact?: boolean }) {
       track('chat_started');
     }
     setInput('');
+    if (inputRef.current) inputRef.current.style.height = 'auto';
     void send(value);
     // Keep focus in the composer so a follow-up needs no click.
     requestAnimationFrame(() => inputRef.current?.focus());
@@ -61,220 +76,202 @@ export function Chat({ compact = false }: { compact?: boolean }) {
 
   const autoGrow = (el: HTMLTextAreaElement) => {
     el.style.height = 'auto';
-    el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
+    el.style.height = `${Math.min(el.scrollHeight, 132)}px`;
   };
 
+  const live = mode === 'live';
+  const lastId = messages.at(-1)?.id;
+
   return (
-    <div className="flex h-full flex-col">
-      {/* ------------------------------------------------------------- stream */}
-      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
-        {messages.length === 0 ? (
-          <EmptyState compact={compact} onPick={submit} />
-        ) : (
-          <div className="mx-auto max-w-2xl space-y-6">
-            {messages.map((message) => (
+    <div className="os-light flex h-full flex-col bg-white font-sans text-ink">
+      {/* ------------------------------------------------------ contact header */}
+      <header className="flex shrink-0 items-center gap-3 border-b border-hairline bg-[#f6f6f8]/90 px-4 py-2.5 backdrop-blur-xl">
+        <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#1d9bf0,#5e5ce6)]">
+          <span className="font-display text-[13px] font-bold text-white">{INITIALS}</span>
+          <span
+            className={cn(
+              'absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-[#f6f6f8]',
+              live ? 'bg-[#34c759]' : 'bg-[#ff9f0a]',
+            )}
+            aria-hidden
+          />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[14px] leading-tight font-semibold text-ink">Archit AI</p>
+          <p className="truncate text-[12px] leading-tight text-faint">
+            {live ? 'Online · answers from his real work' : 'Away · replying with pre-written answers'}
+          </p>
+        </div>
+        {messages.length > 0 && (
+          <button
+            onClick={reset}
+            aria-label="New conversation"
+            title="New conversation"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-faint transition-colors hover:bg-black/5 hover:text-ink"
+          >
+            <RotateCcw className="h-4 w-4" />
+          </button>
+        )}
+      </header>
+
+      {/* ------------------------------------------------------------- thread */}
+      <div
+        ref={scrollRef}
+        className="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-5"
+        role="log"
+        aria-live="polite"
+        aria-label="Conversation with Archit AI"
+      >
+        <div className="mx-auto flex max-w-2xl flex-col gap-1.5">
+          <p className="mb-2 text-center text-[11px] font-medium text-faint">Today</p>
+
+          <Bubble role="assistant">{GREETING}</Bubble>
+
+          {messages.map((message) => {
+            const mine = message.role === 'user';
+            const speaking = speech.speakingId === message.id;
+            return (
               <motion.div
                 key={message.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className={cn('flex gap-3', message.role === 'user' && 'justify-end')}
+                initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                className={cn('flex flex-col', mine ? 'items-end' : 'items-start', 'mt-1.5')}
               >
-                {message.role === 'assistant' && (
-                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-accent/10">
-                    <Sparkles className="h-3.5 w-3.5 text-accent" />
-                  </span>
+                <Bubble role={message.role}>
+                  {message.content ? <RichText content={message.content} /> : <TypingDots />}
+                </Bubble>
+
+                {/* Read aloud. Hidden entirely when the deployment has no
+                    ElevenLabs key, so it never offers something that 503s. */}
+                {!mine && message.content && !(isStreaming && message.id === lastId) && speech.available && (
+                  <button
+                    onClick={() => void speech.speak(message.id, message.content)}
+                    aria-label={speaking ? 'Stop playback' : 'Read aloud'}
+                    className="mt-1 ml-2 inline-flex items-center gap-1 text-[11px] font-medium text-faint transition-colors hover:text-[#0a84ff]"
+                  >
+                    {speaking ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+                    {speaking ? 'Stop' : 'Listen'}
+                  </button>
                 )}
-
-                <div
-                  className={cn(
-                    'text-[14px] leading-relaxed',
-                    message.role === 'user'
-                      ? // iMessage-style: the sender's bubble is the accent colour.
-                        'max-w-[85%] rounded-2xl rounded-br-md bg-accent-2 px-4 py-2.5 text-white'
-                      : 'max-w-[92%] text-muted',
-                  )}
-                >
-                  {message.content ? (
-                    <RichText content={message.content} />
-                  ) : (
-                    <ThinkingDots />
-                  )}
-
-                  {/* Read aloud. Hidden entirely when the deployment has no
-                      ElevenLabs key, so it never offers something that 503s. */}
-                  {message.role === 'assistant' && message.content && !isStreaming && speech.available && (
-                    <button
-                      onClick={() => void speech.speak(message.id, message.content)}
-                      aria-label={speech.speakingId === message.id ? 'Stop playback' : 'Read aloud'}
-                      className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-hairline-strong px-2.5 py-1 text-[11px] font-medium text-faint transition-colors hover:border-accent/40 hover:text-accent"
-                    >
-                      {speech.speakingId === message.id ? (
-                        <>
-                          <VolumeX className="h-3.5 w-3.5" />
-                          Stop
-                        </>
-                      ) : (
-                        <>
-                          <Volume2 className="h-3.5 w-3.5" />
-                          Listen
-                        </>
-                      )}
-                    </button>
-                  )}
-
-                  {/* A voice failure names its cause — wrong key, missing model
-                      and spent quota are very different fixes. */}
-                  {message.role === 'assistant' && speech.error && (
-                    <p className="mt-2 text-[11px] text-red-400/90">{speech.error}</p>
-                  )}
-                </div>
+                {!mine && speech.error && message.id === lastId && (
+                  <p className="mt-1 ml-2 text-[11px] text-[#d70015]">{speech.error}</p>
+                )}
               </motion.div>
-            ))}
-          </div>
-        )}
+            );
+          })}
 
-        {error && (
-          <p className="mx-auto mt-4 max-w-2xl rounded-lg border border-red-500/25 bg-red-500/10 px-4 py-2.5 text-xs text-red-300">
-            {error}
-          </p>
-        )}
+          {error && <p className="my-2 text-center text-[12px] text-[#d70015]">{error}</p>}
+        </div>
       </div>
 
-      {/* ---------------------------------------------------------- composer */}
-      <div className="shrink-0 border-t border-hairline bg-surface/60 px-6 py-4 backdrop-blur-xl">
-        <div className="mx-auto max-w-2xl">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              submit(input);
-            }}
-            className="flex items-end gap-2 rounded-2xl border border-hairline-strong surface-2 p-2 transition-colors focus-within:border-accent/40"
+      {/* ----------------------------------------------------------- composer */}
+      <div className="shrink-0 border-t border-hairline bg-[#f6f6f8]/90 backdrop-blur-xl">
+        {messages.length === 0 && (
+          <ul
+            className="flex gap-2 overflow-x-auto px-3 pt-3 [scrollbar-width:none] sm:flex-wrap sm:px-5 [&::-webkit-scrollbar]:hidden"
+            aria-label="Suggested questions"
           >
-            <textarea
-              ref={inputRef}
-              value={input}
-              rows={1}
-              onChange={(e) => {
-                setInput(e.target.value);
-                autoGrow(e.target);
-              }}
-              onKeyDown={(e) => {
-                // Enter sends; Shift+Enter is a newline.
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  submit(input);
-                }
-              }}
-              placeholder={`Ask ${profile.firstName} anything…`}
-              aria-label="Your message"
-              className="max-h-40 min-h-[2.5rem] flex-1 resize-none bg-transparent px-3 py-2.5 text-[14px] text-ink placeholder:text-faint focus:outline-none"
-            />
+            {/* Phones scroll through all of them; wider screens show the
+                first four in one row, as the desktop prompt panel does. */}
+            {STARTER_PROMPTS.map((prompt, i) => (
+              <li key={prompt.label} className={cn('shrink-0', i >= 4 && 'sm:hidden')}>
+                <button
+                  onClick={() => submit(prompt.label)}
+                  className="rounded-full border border-[#0a84ff]/30 bg-white px-3.5 py-1.5 text-[13px] whitespace-nowrap text-[#0a84ff] transition-colors hover:bg-[#0a84ff] hover:text-white"
+                >
+                  {prompt.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
 
-            {isStreaming ? (
-              <button
-                type="button"
-                onClick={stop}
-                aria-label="Stop generating"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-hairline-strong surface-2 text-muted transition-colors hover:text-ink"
-              >
-                <Square className="h-3.5 w-3.5 fill-current" />
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={!input.trim()}
-                aria-label="Send message"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ink text-void transition-all duration-300 hover:bg-accent disabled:opacity-25 disabled:hover:bg-ink"
-              >
-                <ArrowUp className="h-4 w-4" strokeWidth={2.5} />
-              </button>
-            )}
-          </form>
-
-          <div className="mt-2.5 flex items-center justify-between px-1">
-            <p className="text-[10px] text-faint">
-              {mode === 'live'
-                ? `AI clone of ${profile.name}. It can be wrong — verify anything that matters.`
-                : 'Pre-written answers for now: the live clone is offline or at capacity.'}
-            </p>
-            {messages.length > 0 && (
-              <button
-                onClick={reset}
-                className="flex items-center gap-1.5 text-[10px] text-faint transition-colors hover:text-accent"
-              >
-                <RotateCcw className="h-3 w-3" />
-                New chat
-              </button>
-            )}
-          </div>
-        </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            submit(input);
+          }}
+          className="mx-auto flex max-w-2xl items-end gap-2 px-3 py-3 sm:px-5"
+        >
+          <textarea
+            ref={inputRef}
+            value={input}
+            rows={1}
+            onChange={(e) => {
+              setInput(e.target.value);
+              autoGrow(e.target);
+            }}
+            onKeyDown={(e) => {
+              // Enter sends; Shift+Enter is a newline.
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                submit(input);
+              }
+            }}
+            placeholder="Message Archit AI"
+            aria-label="Your message"
+            className="max-h-[132px] min-h-[38px] flex-1 resize-none rounded-[19px] border border-black/15 bg-white px-4 py-2 text-[15px] leading-[1.35] text-ink placeholder:text-faint focus:border-[#0a84ff]/60 focus:outline-none"
+          />
+          {isStreaming ? (
+            <button
+              type="button"
+              onClick={stop}
+              aria-label="Stop generating"
+              className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-black/10 text-ink transition-colors hover:bg-black/15"
+            >
+              <Square className="h-3.5 w-3.5 fill-current" />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={!input.trim()}
+              aria-label="Send message"
+              className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-[#0a84ff] text-white transition-opacity disabled:opacity-30"
+            >
+              <ArrowUp className="h-[18px] w-[18px]" strokeWidth={2.6} />
+            </button>
+          )}
+        </form>
+        <p className="-mt-1 pb-2.5 text-center text-[10.5px] text-faint">
+          AI clone of {profile.name}. It can be wrong, so check anything that matters with him.
+        </p>
       </div>
     </div>
   );
 }
 
-function ThinkingDots() {
+function Bubble({ role, children }: { role: 'user' | 'assistant'; children: React.ReactNode }) {
+  const mine = role === 'user';
   return (
-    <span className="flex items-center gap-1.5 py-2" aria-label="Thinking">
+    <div
+      className={cn(
+        'max-w-[85%] px-3.5 py-2 text-[15px] leading-[1.45] sm:max-w-[75%]',
+        'rounded-[18px]',
+        mine
+          ? `${OUTGOING} self-end rounded-br-[6px] [&_a]:text-white`
+          : `${INCOMING} self-start rounded-bl-[6px]`,
+        // Model text is formatted by RichText; its muted greys are for the
+        // dark theme, so bubbles pin their own text colour.
+        '[&_strong]:text-inherit',
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+function TypingDots() {
+  return (
+    <span className="flex items-center gap-1 py-1" aria-label="Archit AI is typing">
       {[0, 1, 2].map((i) => (
         <motion.span
           key={i}
-          className="h-1.5 w-1.5 rounded-full bg-accent"
-          animate={{ opacity: [0.25, 1, 0.25], y: [0, -2, 0] }}
+          className="h-2 w-2 rounded-full bg-[#8e8e93]"
+          animate={{ opacity: [0.35, 1, 0.35], y: [0, -2, 0] }}
           transition={{ duration: 1.1, repeat: Infinity, delay: i * 0.16 }}
         />
       ))}
     </span>
-  );
-}
-
-function EmptyState({ compact, onPick }: { compact: boolean; onPick: (text: string) => void }) {
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="mx-auto flex h-full max-w-2xl flex-col justify-center py-4"
-      >
-        <div className="relative">
-          <div className="bloom top-[-4rem] left-1/2 h-56 w-56 -translate-x-1/2" />
-
-          <div className="relative text-center">
-            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10">
-              <Sparkles className="h-5 w-5 text-accent" />
-            </span>
-            <h2
-              className={cn(
-                'mt-5 font-display font-extrabold text-ink',
-                compact ? 'text-2xl' : 'text-3xl',
-              )}
-            >
-              Ask Archit
-            </h2>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-muted">
-              {profile.altTagline} This is a digital version of me — trained on my real work at PwC,
-              ZenCabs, Cairros and Masters&apos; Union.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-2 sm:grid-cols-2">
-          {STARTER_PROMPTS.map((prompt, i) => (
-            <motion.button
-              key={prompt.label}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.12 + i * 0.05, duration: 0.5 }}
-              onClick={() => onPick(prompt.label)}
-              className="group rounded-xl border border-hairline-strong surface-1 px-4 py-3 text-left text-[13px] text-muted transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:surface-2 hover:text-ink"
-            >
-              {prompt.label}
-            </motion.button>
-          ))}
-        </div>
-      </motion.div>
-    </AnimatePresence>
   );
 }

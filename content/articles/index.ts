@@ -1,30 +1,23 @@
 import type { Article, ArticleBlock } from '@/types';
 import { pushAndAbsorb } from './push-and-absorb';
-import {
-  first90DaysFoundersOffice,
-  foundersOfficeVsChiefOfStaff,
-  howToGetFoundersOfficeJob,
-  weeklyOperatingCadence,
-  whatIsFoundersOffice,
-} from './founders-office';
-import {
-  breakIntoVentureCapital,
-  foundersOfficeOrVentureCapital,
-  marketplaceDueDiligence,
-} from './venture-capital';
+import { aiInInternalAudit, constructionEquipment, evCabEconomics, weddingIndustry } from './sectors';
+import { marginLeaks, weeklyOperatingReview } from './operating';
+import { marketplaceMetrics, tier2Thesis } from './theses';
 
 /** Every article, in the order the hub lists them within a category. */
 export const articles: Article[] = [
   pushAndAbsorb,
-  whatIsFoundersOffice,
-  foundersOfficeVsChiefOfStaff,
-  howToGetFoundersOfficeJob,
-  weeklyOperatingCadence,
-  first90DaysFoundersOffice,
-  breakIntoVentureCapital,
-  foundersOfficeOrVentureCapital,
-  marketplaceDueDiligence,
+  evCabEconomics,
+  weddingIndustry,
+  constructionEquipment,
+  aiInInternalAudit,
+  weeklyOperatingReview,
+  marginLeaks,
+  tier2Thesis,
+  marketplaceMetrics,
 ];
+
+export { RETIRED_SLUGS } from './retired';
 
 export { CATEGORIES } from './categories';
 

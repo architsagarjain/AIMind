@@ -3,7 +3,7 @@ import type OpenAI from 'openai';
 import { attemptGroups, freeCandidates, getOpenRouter, isAIConfigured, isFreeModelId } from '@/lib/ai/openrouter';
 import { buildSystemPrompt } from '@/lib/ai/system-prompt';
 import { fallbackAnswer, fallbackStream } from '@/lib/ai/fallback';
-import { GUARD_CHARS, createThinkStripper, looksLikeReasoning } from '@/lib/ai/answer-guard';
+import { GUARD_CHARS, createThinkStripper, looksLikeReasoning, tidyDashes } from '@/lib/ai/answer-guard';
 import { rateLimit } from '@/lib/ai/rate-limit';
 import { insertMessage, upsertConversation } from '@/lib/supabase/queries';
 
@@ -162,7 +162,8 @@ export async function POST(req: Request) {
     async start(controller) {
       let full = '';
       let model = 'offline';
-      const emit = (text: string) => {
+      const emit = (raw: string) => {
+        const text = tidyDashes(raw);
         if (!text) return;
         full += text;
         controller.enqueue(encoder.encode(text));

@@ -85,7 +85,7 @@ export interface ChatMessage {
 
 // ------------------------------------------------------------------ articles
 
-export type ArticleCategory = 'Framework' | 'Founder’s Office' | 'Venture Capital';
+export type ArticleCategory = 'Framework' | 'Sector Breakdown' | 'Operating Playbook' | 'Investment Thesis';
 
 /** Figures built from HTML, so their text is real, indexable, and reflows on phones. */
 export type ArticleFigure = 'lever' | 'bridges' | 'chain';
@@ -137,8 +137,8 @@ export interface PressMention {
   outlet: string;
   title: string;
   url: string;
-  /** ISO date. */
-  date: string;
+  /** ISO date. Optional: left out until the published date is confirmed. */
+  date?: string;
   summary?: string;
   featured?: boolean;
 }

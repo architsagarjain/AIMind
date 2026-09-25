@@ -10,9 +10,9 @@ import { articleUrl, breadcrumbSchema, graph, PERSON_ID, absolute } from '@/lib/
 import type { Article } from '@/types';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Articles on Founder’s Office, Chief of Staff and VC Roles | Archit Sagar Jain' },
+  title: { absolute: 'Sector Breakdowns, Playbooks and Theses | Archit Sagar Jain' },
   description:
-    'Articles by Archit Sagar Jain on Founder’s Office and Chief of Staff roles, breaking into venture capital, and the Push and Absorb framework for handling change.',
+    'Writing by Archit Sagar Jain: sector breakdowns of Indian mobility, weddings, construction and audit, operating playbooks, investment theses and the Push and Absorb framework.',
   alternates: {
     canonical: '/articles',
     types: { 'application/rss+xml': [{ url: '/articles/rss.xml', title: `${profile.name}: Articles` }] },
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: '/articles',
-    title: `Articles by ${profile.name}`,
-    description: 'Founder’s Office, Chief of Staff and venture capital roles, from an operator.',
+    title: `Writing by ${profile.name}`,
+    description: 'Sector breakdowns, operating playbooks and investment theses from an operator.',
   },
 };
 
@@ -63,7 +63,7 @@ export default function ArticlesPage() {
           {
             '@type': 'CollectionPage',
             '@id': `${absolute('/articles')}#page`,
-            name: `Articles by ${profile.name}`,
+            name: `Writing by ${profile.name}`,
             url: absolute('/articles'),
             author: { '@id': PERSON_ID },
             mainEntity: {
@@ -86,11 +86,12 @@ export default function ArticlesPage() {
       <header className="max-w-3xl">
         <p className="text-[11px] font-bold tracking-[0.22em] text-accent uppercase">Writing</p>
         <h1 className="mt-3 font-display text-[2.2rem] leading-[1.1] font-extrabold tracking-tight text-balance text-ink md:text-5xl">
-          Founder’s Office, Chief of Staff and venture capital, from an operator
+          How Indian businesses actually work, from someone running them
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-muted">
-          What these roles really involve, how to get into them, and the frameworks I use to make decisions. Written
-          from the operating side: PwC India, Cairros, and running strategy and growth at ZenCabs.
+          Sector breakdowns built from public data and my own operating numbers, playbooks for the work that moved
+          them, and the theses I would invest against. Drawn from ZenCabs, Shaadi Mangalam, PwC India, Equip9, MCCS
+          Infra and Cairros.
         </p>
       </header>
 
@@ -111,7 +112,13 @@ export default function ArticlesPage() {
                   className="group flex h-full flex-col rounded-2xl border border-accent/25 bg-accent-soft/40 p-5 transition-colors hover:border-accent/60"
                 >
                   <span className="text-[11px] font-bold tracking-[0.18em] text-accent uppercase">
-                    {p.outlet} · <time dateTime={p.date}>{formatDate(p.date)}</time>
+                    {p.outlet}
+                    {p.date && (
+                      <>
+                        {' · '}
+                        <time dateTime={p.date}>{formatDate(p.date)}</time>
+                      </>
+                    )}
                   </span>
                   <span className="mt-2 flex items-start justify-between gap-3 font-display text-lg leading-snug font-bold text-ink">
                     {p.title}
@@ -153,9 +160,9 @@ export default function ArticlesPage() {
         const list = sorted.filter((a) => a.category === category.name && !a.featured);
         if (!list.length) return null;
         return (
-          <section key={category.name} aria-labelledby={category.name} className="mt-16">
-            <h2 id={category.name} className="font-display text-2xl font-extrabold text-ink">
-              {category.name === 'Founder’s Office' ? 'Founder’s Office and Chief of Staff' : category.name}
+          <section key={category.name} aria-labelledby={category.name.replace(/\s/g, '-')} className="mt-16">
+            <h2 id={category.name.replace(/\s/g, '-')} className="font-display text-2xl font-extrabold text-ink">
+              {category.label}
             </h2>
             <p className="mt-2 max-w-2xl text-[15px] text-muted">{category.blurb}</p>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

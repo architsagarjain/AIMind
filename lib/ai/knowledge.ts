@@ -163,7 +163,7 @@ export function buildKnowledgeBase(): string {
   const press = pressByPriority();
   if (press.length) {
     sections.push(
-      ['## PRESS COVERAGE', ...press.map((p) => `- ${p.outlet}, ${p.date}: “${p.title}” ${p.url}`)].join('\n'),
+      ['## PRESS COVERAGE', ...press.map((p) => `- ${p.outlet}${p.date ? `, ${p.date}` : ''}: ${p.title}. ${p.summary ?? ''} ${p.url}`)].join('\n'),
     );
   }
 

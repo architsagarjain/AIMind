@@ -42,7 +42,7 @@ export function personSchema() {
             '@type': 'NewsArticle',
             headline: p.title,
             url: p.url,
-            datePublished: p.date,
+            ...(p.date ? { datePublished: p.date } : {}),
             publisher: { '@type': 'Organization', name: p.outlet },
           })),
         }

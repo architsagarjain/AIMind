@@ -10,18 +10,20 @@ import type { PressMention } from '@/types';
  * The section hides itself while this list is empty.
  */
 export const press: PressMention[] = [
-  // {
-  //   outlet: 'Dailyhunt',
-  //   title: 'Exact headline as published',
-  //   url: 'https://m.dailyhunt.in/news/...',
-  //   date: '2026-09-01',
-  //   summary: 'One line on what the piece covers.',
-  //   featured: true,
-  // },
+  {
+    // Syndicated from The Business Stories. TODO(archit): replace the title
+    // with the exact published headline, and add the date, once confirmed.
+    outlet: 'Dailyhunt',
+    title: 'Archit Sagar Jain, featured in The Business Stories',
+    url: 'https://m.dailyhunt.in/news/india/english/thebusinessstories-epaper-dh81e4e6e2104e4dbbb7f32ee26194cfb7/-newsid-dh81e4e6e2104e4dbbb7f32ee26194cfb7_55734036c40741568aeda0b0bd28cac2',
+    summary: 'A feature on Archit and his work, published by The Business Stories and carried on Dailyhunt.',
+    featured: true,
+  },
 ];
 
 /** Featured first, then newest. */
 export const pressByPriority = () =>
   [...press].sort(
-    (a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)) || b.date.localeCompare(a.date),
+    (a, b) =>
+      Number(Boolean(b.featured)) - Number(Boolean(a.featured)) || (b.date ?? '').localeCompare(a.date ?? ''),
   );

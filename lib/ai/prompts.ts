@@ -1,8 +1,8 @@
 /**
  * Starter prompts for the chat's empty state.
  *
- * Chosen to cover the four things people actually want to know — the headline
- * numbers, the career pivot, how he thinks, and what he wants next — and each
+ * Chosen to cover the four things people actually want to know (the headline
+ * numbers, the career pivot, how he thinks, and what he wants next), and each
  * one is answerable offline as well as live.
  */
 export const STARTER_PROMPTS = [

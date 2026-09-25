@@ -83,3 +83,14 @@ export function createThinkStripper() {
     },
   };
 }
+
+/**
+ * House style: no dashes. The persona asks the model not to use them, and
+ * free models do anyway, so the stream is normalised as it passes through.
+ * A dash between clauses becomes a comma; one inside a numeric range, a hyphen.
+ */
+export function tidyDashes(text: string): string {
+  return text
+    .replace(/(\d)\s*[–—]\s*(\d)/g, '$1-$2')
+    .replace(/\s*[—–]\s*/g, ', ');
+}

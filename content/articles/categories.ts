@@ -1,14 +1,28 @@
 import type { ArticleCategory } from '@/types';
 
-/** Kept apart from the articles so client code can import it without their bodies. */
-export const CATEGORIES: { name: ArticleCategory; blurb: string }[] = [
-  { name: 'Framework', blurb: 'Original frameworks for making decisions and handling change.' },
+/**
+ * Kept apart from the articles so client code can import it without their
+ * bodies. Order is the order the hub shows them in.
+ */
+export const CATEGORIES: { name: ArticleCategory; label: string; blurb: string }[] = [
   {
-    name: 'Founder’s Office',
-    blurb: 'Founder’s Office and Chief of Staff roles: what the work is, how to get in, how to do it well.',
+    name: 'Framework',
+    label: 'Frameworks',
+    blurb: 'Original frameworks for making decisions and handling change.',
   },
   {
-    name: 'Venture Capital',
-    blurb: 'VC roles and investing, written from the operator’s side of the table.',
+    name: 'Sector Breakdown',
+    label: 'Sector breakdowns',
+    blurb: 'How an industry works, with public numbers, from inside a business operating in it.',
+  },
+  {
+    name: 'Operating Playbook',
+    label: 'Operating playbooks',
+    blurb: 'Specific pieces of operating work, how they were done, and what they moved.',
+  },
+  {
+    name: 'Investment Thesis',
+    label: 'Investment theses',
+    blurb: 'How I would evaluate and back businesses, argued from what I have run.',
   },
 ];

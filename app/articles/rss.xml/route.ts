@@ -29,7 +29,7 @@ export function GET() {
     <title>${escape(`${profile.name}: Articles`)}</title>
     <link>${SITE_URL}/articles</link>
     <atom:link href="${SITE_URL}/articles/rss.xml" rel="self" type="application/rss+xml" />
-    <description>Founder’s Office, Chief of Staff and venture capital roles, from an operator.</description>
+    <description>Sector breakdowns, operating playbooks and investment theses from an operator.</description>
     <language>en</language>
 ${items}
   </channel>

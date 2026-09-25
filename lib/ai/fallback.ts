@@ -8,7 +8,7 @@ import { profile } from '@/content/profile';
  * erroring. Answers are hand-written from the same CV the model reads, so
  * nothing here claims anything the live clone could not.
  *
- * Matching is keyword-scored rather than semantic — deliberately simple, and
+ * Matching is keyword-scored, not semantic: deliberately simple, and
  * honest about it: every reply is labelled as offline so it is never mistaken
  * for the real thing.
  */
@@ -28,19 +28,19 @@ const ENTRIES: FallbackEntry[] = [
   {
     keys: ['jammu', 'family business', 'business family', 'fourth generation', 'where are you from', 'hometown'],
     answer:
-      "I'm from Jammu, fourth generation in a business family. Operating a business was the dinner-table conversation long before it was a career choice — I grew up around cash flow, customers and the unglamorous parts.\n\nThat's a real advantage and a real bias. The advantage is commercial instinct. The bias is assuming everyone thinks in P&L. Symbiosis and then PwC gave me the frameworks to formalise the instinct, and ZenCabs — back home in Jammu — let me point it at something I was building myself.",
+      "I'm from Jammu, fourth generation in a business family. Operating a business was the dinner-table conversation long before it was a career choice, so I grew up around cash flow, customers and the unglamorous parts.\n\nThat gave me commercial instinct, along with a bias toward assuming everyone thinks in P&L. Symbiosis and then PwC gave me the frameworks to formalise the instinct, and ZenCabs, back home in Jammu, let me point it at something I was building myself.",
   },
 
   // ------------------------------------------------------------------ ZenCabs
   {
     keys: ['zencabs', 'zen cabs', 'ev', 'mobility', 'cab', 'fleet', 'run-rate', 'run rate'],
     answer:
-      "ZenCabs is an EV mobility venture in Jammu. I joined as Head of Strategy & Growth and took it from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months.\n\nThe core call was treating supply as the harder half. A rider who opens the app to zero cars never opens it again, so I built the driver funnel first — recruitment, training and the incentive structure — and onboarded 43 driver partners.\n\nThe number I actually cared about was utilisation. On an owned EV fleet, every idle car is capital sitting still. We moved fleet utilisation from 40% to 75% and revenue per car to ₹62.5K a month, tracked against 15+ KPIs in a weekly review with the founder.",
+      "ZenCabs is an EV mobility venture in Jammu. I joined as Head of Strategy & Growth and took it from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months.\n\nThe core call was treating supply as the harder half. A rider who opens the app to zero cars never opens it again, so I built the driver funnel first: recruitment, training and the incentive structure. That onboarded 43 driver partners.\n\nThe number I cared about most was utilisation. On an owned EV fleet, every idle car is capital sitting still. We moved fleet utilisation from 40% to 75% and revenue per car to ₹62.5K a month, tracked against 15+ KPIs in a weekly review with the founder.",
   },
   {
     keys: ['cancellation', 'cancel', 'reliability', 'sop', 'dispatch'],
     answer:
-      "Cancellations were at 40% when I started at ZenCabs. We got them to 6%.\n\nIt looked like an ops problem and it was really a retention problem — every cancelled ride costs more than the acquisition that produced it. The fix was unglamorous: institutionalising 10+ SOPs across onboarding and dispatch so the same failure didn't recur, then reviewing the exceptions weekly.\n\nThat's the pattern in most marketplace businesses. Reliability compounds quietly and discounts don't.",
+      "Cancellations were at 40% when I started at ZenCabs. We got them to 6%.\n\nIt looked like an ops problem and behaved like a retention problem, because every cancelled ride costs more than the acquisition that produced it. The fix was unglamorous: 10+ SOPs across onboarding and dispatch so the same failure didn't recur, and a weekly review of the exceptions.\n\nMost marketplace businesses work this way. Reliability compounds over time, and the effect of a discount wears off.",
   },
   {
     keys: ['utilisation', 'utilization', 'revenue per car', 'unit economics'],
@@ -52,36 +52,36 @@ const ENTRIES: FallbackEntry[] = [
   {
     keys: ['pwc', 'big 4', 'big four', 'risk consulting', 'consulting at pwc'],
     answer:
-      "I spent fifteen months at PwC India in risk consulting, finishing as a Specialist 2.\n\nThe headline is ₹6+ Cr in annual client cost savings via root-cause diagnostics and process redesign — ₹2 Cr+ of that from reengineering 25+ processes across procurement, HR and finance. I executed engagements worth ₹12 Cr+ for 10+ clients including Cars24, Stryker India and PIF.\n\nThe piece I'm proudest of is the internal audit AI tool I co-developed. It saved 10,000+ consulting hours across 200+ consultants, and I led the firm-level training that got it to 50% adoption in six months.",
+      "I spent fifteen months at PwC India in risk consulting, finishing as a Specialist 2.\n\nThe headline is ₹6+ Cr in annual client cost savings from root-cause diagnostics and process redesign, ₹2 Cr+ of it from reengineering 25+ processes across procurement, HR and finance. I executed engagements worth ₹12 Cr+ for 10+ clients including Cars24, Stryker India and PIF.\n\nThe piece I'm proudest of is the internal audit AI tool I co-developed. It saved 10,000+ consulting hours across 200+ consultants, and I led the firm-level training that got it to 50% adoption in six months.",
   },
   {
     keys: ['leave pwc', 'left pwc', 'why leave', 'quit', 'consulting to startup', 'why did you leave'],
     answer:
-      "My time at PwC was genuinely valuable — a standard of rigour where your analysis has to survive people actively looking for holes. I still use that structured problem-solving on every growth problem I touch.\n\nBut I saw exactly how large organisations make decisions, and that's precisely why I wanted to go build in a small one. I'd already run Cairros through college, so I knew what founder-speed felt like. ZenCabs was the opposite end of the spectrum from Big-4, and that was the point.",
+      "PwC taught me a standard of rigour where your analysis has to survive people actively looking for holes, and I still use that structured problem-solving on every growth problem.\n\nIt also showed me how large organisations make decisions, which is why I wanted to build inside a small one. I'd already run Cairros through college, so I knew what founder speed felt like. ZenCabs sat at the far end of the spectrum from a Big 4 firm, and I wanted exactly that.",
   },
   {
     keys: ['ai tool', 'internal audit', 'automation', 'consulting hours', '10,000', '10000'],
     answer:
-      "At PwC I co-developed an internal audit AI tool that saved 10,000+ consulting hours across 200+ consultants.\n\nThe build was the easy half. Getting to 50% adoption in six months took firm-level training across 10 pilot engagements — consultants don't adopt a tool because it exists, they adopt it because someone showed them it makes Friday easier.\n\nThat's the lesson I took into everything since: adoption is a distribution problem, not a features problem.",
+      "At PwC I co-developed an internal audit AI tool that saved 10,000+ consulting hours across 200+ consultants.\n\nThe build was the easy half. Getting to 50% adoption in six months took firm-level training across 10 pilot engagements. Consultants start using a tool once someone shows them, on their own client work, that it makes the week easier.\n\nI took that into everything since: adoption is mostly a distribution problem.",
   },
   {
     keys: ['cost saving', 'cost reduction', 'savings', '6 cr', '₹6'],
     answer:
-      "₹6+ Cr in annual client cost savings at PwC, from root-cause diagnostics and process redesign.\n\nThe method is boring and it works. Walk the process as people actually run it rather than as the policy document describes it. Size every gap — a finding without a number attached doesn't get prioritised and doesn't get funded. Then fix the decision rights, not just the spend: I cut decision turnaround 30%+ just by designing DOA matrices and approval workflows for the CXOs.\n\nThe cheapest saving is almost always a decision-rights problem that nobody has looked at.",
+      "₹6+ Cr in annual client cost savings at PwC, from root-cause diagnostics and process redesign.\n\nThe method is boring and it works. Walk the process as people actually run it, and read the policy document afterwards. Size every gap, because a finding without a number attached doesn't get prioritised or funded. Then fix decision rights along with the spend: designing DOA matrices and approval workflows for CXOs cut decision turnaround by 30%+.\n\nThe cheapest saving is almost always a decision-rights problem nobody has looked at.",
   },
 
   // ------------------------------------------------------------------ Cairros
   {
     keys: ['cairros', 'agency', 'your own business', 'founded', 'entrepreneur'],
     answer:
-      "Cairros was the consulting and marketing agency I started in my second year at Symbiosis and scaled to seven-figure annual revenue in two years — strategy, sales and delivery, end to end.\n\nSome of the work: three restaurant clients grown 30% in revenue at 7% MoM through menu reengineering and table-turnaround ops, and a magazine client taken from ₹2L to ₹7L a month — 3.5x at 23% MoM over six months. We expanded across four sectors.\n\nRunning my own P&L at 20 taught me which advice is actually expensive to follow. It's still the fastest education I've had.",
+      "Cairros was the consulting and marketing agency I started in my second year at Symbiosis and scaled to seven-figure annual revenue in two years, owning strategy, sales and delivery end to end.\n\nSome of the work: three restaurant clients grown 30% in revenue at 7% MoM through menu reengineering and table-turnaround ops, and a magazine client taken from ₹2L to ₹7L a month, which is 3.5x at 23% MoM over six months. We expanded across four sectors.\n\nRunning my own P&L at 20 taught me which advice is actually expensive to follow. It's still the fastest education I've had.",
   },
 
   // -------------------------------------------------------------- other roles
   {
     keys: ['mccs', 'infrastructure', 'construction', 'manpower', 'hiring'],
     answer:
-      "MCCS Infra is an infrastructure and construction business I worked with as a Business Transformation Consultant.\n\nI unlocked ₹2 Cr in cost savings through manpower restructuring and capacity planning, accelerated inbound enquiries 4.5x via digital strategy and a brand overhaul, and compressed hiring turnaround by 80% while halving cost per hire.\n\nIn a people-heavy business the org chart *is* the cost structure. And reactive hiring is the most expensive hiring there is — fixing the system beat fixing any individual role.",
+      "MCCS Infra is an infrastructure and construction business I worked with as a Business Transformation Consultant.\n\nI unlocked ₹2 Cr in cost savings through manpower restructuring and capacity planning, accelerated inbound enquiries 4.5x via digital strategy and a brand overhaul, and compressed hiring turnaround by 80% while halving cost per hire.\n\nIn a people-heavy business the org chart *is* the cost structure. Reactive hiring is the most expensive hiring there is, and fixing the hiring system did more than fixing any individual role.",
   },
   {
     keys: ['equip9', 'equip 9', 'marketplace marketing', 'segmentation', 'performance marketing'],
@@ -91,19 +91,19 @@ const ENTRIES: FallbackEntry[] = [
   {
     keys: ['shaadi', 'mangalam', 'wedding', 'conversion rate', 'pricing'],
     answer:
-      "Shaadi Mangalam is a wedding services business. I came in on growth and business strategy.\n\nWe tripled monthly leads to 3,000 and moved conversion from 1.4% to 4% by restructuring pricing and the sales process, then shipped 100+ process and product fixes across sprints alongside a website redesign.\n\nThe important part is the order. Almost every growth brief I get has it backwards — if you triple leads into a 1.4% funnel you've just multiplied the waste. Conversion first, volume second.",
+      "Shaadi Mangalam is a wedding services business. I came in on growth and business strategy.\n\nWe tripled monthly leads to 3,000 and moved conversion from 1.4% to 4% by restructuring pricing and the sales process, then shipped 100+ process and product fixes across sprints alongside a website redesign.\n\nThe important part is the order. Most growth briefs I get have it backwards: triple leads into a 1.4% funnel and you've multiplied the waste. Conversion first, volume second.",
   },
 
   // -------------------------------------------------------------- education
   {
     keys: ["masters' union", 'masters union', 'mastersunion', 'pgp', 'why study', 'mba'],
     answer:
-      "I spent three years doing consulting, growth and operations — Cairros, Equip9, PwC, then ZenCabs. The pattern I kept hitting was that I could diagnose and scale a business but I couldn't build the product underneath it. That's the gap Masters' Union fills for me.\n\nThe PGP in Technology & Business Management is practitioner-taught, which matches how I actually learn: do the thing first, understand why it worked second. I wanted the technology layer on top of an operating background, not a theory degree.",
+      "I spent three years on consulting, growth and operations at Cairros, Equip9, PwC and then ZenCabs. The pattern I kept hitting was that I could diagnose and scale a business but I couldn't build the product underneath it. That's the gap Masters' Union fills for me.\n\nThe PGP in Technology & Business Management is practitioner-taught, which matches how I actually learn: do the thing first, understand why it worked second. I wanted the technology layer on top of an operating background, taught by people who practise it.",
   },
   {
     keys: ['symbiosis', 'college', 'bba', 'degree', 'graduation'],
     answer:
-      "BBA at Symbiosis Centre for Management Studies in Pune, majoring in Accounts & Finance and Marketing Management. CGPA 8.16, top 10% of the batch.\n\nOutside the coursework I was elected Placement Coordinator from a cohort of 400, was Marketing Head at Sympulse, and worked with Enactus Pune. I also started Cairros in my second year rather than waiting for the degree to end — most of what I actually learned came from that.",
+      "BBA at Symbiosis Centre for Management Studies in Pune, majoring in Accounts & Finance and Marketing Management. CGPA 8.16, top 10% of the batch.\n\nOutside the coursework I was elected Placement Coordinator from a cohort of 400, was Marketing Head at Sympulse, and worked with Enactus Pune. I also started Cairros in my second year, and most of what I learned in those years came from running it.",
   },
 
   // -------------------------------------------------------- how I think/work
@@ -115,12 +115,12 @@ const ENTRIES: FallbackEntry[] = [
   {
     keys: ['how do you work', 'your process', 'approach', 'operating', 'cadence', 'framework'],
     answer:
-      "Diagnose, size, sequence, then build the cadence.\n\nDiagnose properly — the presenting problem (\"we need more marketing\") is almost never the actual constraint. Size everything, because an unsized problem never gets prioritised. Sequence so the constrained side gets fixed first. Then install the weekly review that makes the work self-correcting.\n\nThe ZenCabs weekly KPI review with the founder was the highest-leverage thing I built there. Not a deck — a cadence. Fifteen KPIs, every week, and problems surfaced in days instead of quarters.",
+      "Diagnose, size, sequence, then build the cadence.\n\nDiagnose properly, because the presenting problem (\"we need more marketing\") is almost never the actual constraint. Size everything, since an unsized problem never gets prioritised. Sequence the work so the constrained side gets fixed first. Then install a weekly review that makes the work self-correcting.\n\nThe weekly KPI review with the founder was the most useful thing I built at ZenCabs: 15+ KPIs every week, so problems surfaced in days instead of quarters.",
   },
   {
     keys: ['market a startup', 'marketing', 'gtm', 'go to market', 'growth strategy', 'how would you'],
     answer:
-      "I'd start by refusing the question as asked. \"How do I market this\" is usually the wrong first question — the real one is what's actually constraining growth. Positioning, supply, conversion and retention all look like marketing problems from outside.\n\nOnce that's clear: fix conversion before chasing volume, because tripling leads into a broken funnel just multiplies waste — that's exactly what we did at Shaadi Mangalam, 1.4% to 4% first. Then segment properly; it's the cheapest performance lever and the most skipped. Then build one channel to competence before opening a second.\n\nAnd set the review cadence on day one, so you find out something isn't working in a week rather than a quarter.",
+      "I'd start by questioning the question. \"How do I market this\" is usually the wrong first question. The better one is what's constraining growth, because positioning, supply, conversion and retention all look like marketing problems from outside.\n\nOnce that's clear, fix conversion before chasing volume, because tripling leads into a broken funnel just multiplies waste. At Shaadi Mangalam we took conversion from 1.4% to 4% first. Then segment properly; it's the cheapest performance lever and the most skipped. Then build one channel to competence before opening a second.\n\nAnd set the review cadence on day one, so you find out within a week when something isn't working.",
   },
   {
     keys: ['founder', "founder's office", 'founders office', 'chief of staff', 'what role', 'looking for'],
@@ -130,22 +130,22 @@ const ENTRIES: FallbackEntry[] = [
   {
     keys: ['strength', 'good at', 'superpower', 'why hire', 'why you'],
     answer:
-      "Structure plus speed, in the same person.\n\nThe consulting half means I frame problems properly and put numbers on them before acting — ₹6+ Cr in client savings came from that discipline, not from working harder. The founder half means I'll go build the thing on Monday rather than writing a deck about it — ZenCabs went from launch to ₹3 Cr annualised in four months.\n\nMost teams have to hire those two separately.",
+      "Structure and speed in the same person.\n\nThe consulting half means I frame problems properly and put numbers on them before acting, and that discipline is where ₹6+ Cr in client savings came from. The founder half means I'll go and build the thing on Monday. ZenCabs went from launch to a ₹3 Cr annualised run-rate in four months.\n\nMost teams have to hire those two separately.",
   },
   {
     keys: ['ai', 'artificial intelligence', 'tech', 'technology', 'building', 'tools'],
     answer:
-      "I'm less interested in AI as a topic than in AI that moves an operating metric.\n\nAt Equip9 I built a content engine with AI workflow agents that halved production turnaround. At PwC I co-developed an internal audit AI tool that saved 10,000+ consulting hours across 200+ consultants. This site is a version of the same instinct — an AI clone of me you can interrogate instead of reading a PDF.\n\nThat's also why I'm at Masters' Union on the technology programme. I want to be the person who builds it, not just the one who specs it.",
+      "The AI I care about is the kind that moves an operating metric.\n\nAt Equip9 I built a content engine with AI workflow agents that halved production turnaround. At PwC I co-developed an internal audit AI tool that saved 10,000+ consulting hours across 200+ consultants. This site comes from the same instinct: an AI clone of me you can question, in place of a PDF.\n\nThat's also why I'm at Masters' Union on the technology programme. I want to be able to build these things myself.",
   },
 
   // ------------------------------------------------------------------ contact
   {
     keys: ['hire', 'work with', 'contact', 'reach', 'email', 'get in touch', 'available'],
-    answer: `The fastest way is ${profile.links.email}, or find me on LinkedIn — I'm at ${profile.links.linkedin}.\n\nI'm most useful on founder's office, growth and go-to-market work, particularly where the problem hasn't been framed yet and you'd rather have someone building alongside the team than reviewing from outside it.`,
+    answer: `The fastest way is ${profile.links.email}, or LinkedIn at ${profile.links.linkedin}.\n\nI'm most useful on founder's office, growth and go-to-market work, especially where the problem hasn't been framed yet and you want someone building alongside the team.`,
   },
 ];
 
-const DEFAULT_ANSWER = `I don't have a good answer to that one from what's in here — I'd rather say I don't know than make something up.
+const DEFAULT_ANSWER = `I don't have a good answer to that one from what I know, and I'd sooner say so than make something up.
 
 What I can talk about properly: taking ZenCabs from launch to 25,000+ users and ₹3 Cr annualised, the fifteen months at PwC India and the ₹6+ Cr in client savings, building Cairros to seven figures while at college, the work at Equip9, MCCS Infra and Shaadi Mangalam, or what I'm doing at Masters' Union now. Ask me about any of those.`;
 
@@ -154,10 +154,10 @@ export type OfflineReason = 'unconfigured' | 'unavailable';
 
 const OFFLINE_NOTE: Record<OfflineReason, string> = {
   unconfigured:
-    "— Offline mode: the live clone isn't connected yet, so this is a pre-written answer.",
+    "_Offline mode: the live clone isn't connected yet, so this is a pre-written answer._",
   // Free models are rate-limited and sometimes all busy at once.
   unavailable:
-    '— The live clone is at capacity right now, so this is a pre-written answer. Ask again in a minute for the live one.',
+    '_The live clone is at capacity right now, so this is a pre-written answer. Ask again in a minute for the live one._',
 };
 
 export function fallbackAnswer(question: string, reason: OfflineReason = 'unconfigured'): string {

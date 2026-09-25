@@ -22,8 +22,8 @@ const interTight = Inter_Tight({
 export const metadata: Metadata = {
   metadataBase: SITE_URL_OBJECT,
   title: {
-    default: `${profile.product} — ${profile.tagline}`,
-    template: `%s — ${profile.product}`,
+    default: `${profile.product} | ${profile.tagline}`,
+    template: `%s | ${profile.product}`,
   },
   description: profile.description,
   applicationName: profile.product,
