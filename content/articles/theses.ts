@@ -384,3 +384,215 @@ export const appliedAiThesis: Article = {
     },
   ],
 };
+
+export const vcFunding2025: Article = {
+  slug: 'indian-startup-funding-2025',
+  title: 'Where Indian venture money went in 2025, and what it says',
+  seoTitle: 'Indian Startup Funding 2025: What the Data Says',
+  description:
+    'Indian tech raised $10.5B in 2025, down 17%, while early-stage funding rose and late-stage fell. What the Tracxn data says about where investors see returns.',
+  excerpt: `Indian tech startups raised $10.5 billion in 2025, 17% less than in 2024. Early-stage money grew while late-stage money shrank by a quarter. Read closely, the year says a lot about what investors now pay for.`,
+  category: 'Investment Thesis',
+  keywords: [
+    'Indian startup funding 2025',
+    'India venture capital 2025',
+    'Tracxn India tech report',
+    'early stage funding India',
+    'AI funding India',
+    'startup IPOs India',
+  ],
+  published: '2026-09-26',
+  blocks: [
+    {
+      type: 'p',
+      text: `Funding totals get reported as a single headline every year, and the headline usually hides the interesting part. Tracxn's annual report on Indian tech is detailed enough to read past it, so these are the figures I think matter and what I take from them as an operator who wants to back companies.`,
+    },
+
+    { type: 'h2', text: 'The year in numbers' },
+    {
+      type: 'table',
+      head: ['Measure', '2025', 'Change on 2024'],
+      rows: [
+        ['Total raised by Indian tech', '$10.5 billion', 'Down 17% from $12.7 billion'],
+        ['Early-stage funding', '$3.9 billion', 'Up 7% from $3.7 billion'],
+        ['Late-stage funding', '$5.5 billion', 'Down 26% from $7.5 billion'],
+        ['Enterprise applications', '$2.6 billion', 'Down 17% from $3.2 billion'],
+        ['Fintech', '$2.4 billion', 'Up 2% from $2.3 billion'],
+        ['AI', 'About $1.22 billion', 'Up about 58%'],
+        ['IPOs', '42', ''],
+        ['Acquisitions', '136', ''],
+        ['New unicorns', '5', ''],
+      ],
+      caption: 'Tracxn, India Tech Annual Funding Report 2025. India remained the third most funded tech ecosystem, behind the US and the UK.',
+    },
+    {
+      type: 'p',
+      text: `Subtracting early and late stage from the total leaves about $1.1 billion for seed. The whole decline, and more, came from late stage: it fell by about $2 billion while early stage grew.`,
+    },
+
+    { type: 'h2', text: 'What I take from it' },
+    { type: 'h3', text: 'Investors are paying for proof earlier' },
+    {
+      type: 'p',
+      text: `Early-stage funding rising while late-stage funding falls says investors still want to back new companies and are less willing to pay large late-stage prices for growth without profits. Forty-two IPOs in one year also means the public market has become a real exit, and public investors look at margins. A company raising a Series A in this market has to show the path to unit economics that a later investor, or a public one, will eventually demand.`,
+    },
+    { type: 'h3', text: 'Fintech held steady and AI grew from a small base' },
+    {
+      type: 'p',
+      text: `Fintech was flat at about $2.4 billion, which for a mature category counts as resilience. AI grew fastest, by about 58%, but at around $1.22 billion it was still a small share of the total. I read that as the market funding applied AI in Indian businesses cautiously, which fits the gap between adoption and expertise I wrote about in [where applied AI pays inside Indian businesses](/articles/applied-ai-indian-businesses-thesis).`,
+    },
+    { type: 'h3', text: 'Enterprise software cooled' },
+    {
+      type: 'p',
+      text: `Enterprise applications fell 17% and were still the largest single sector at $2.6 billion. Software that sells to businesses remains where the most money goes, and the fall suggests buyers and investors both want clearer proof of the hours or rupees a product saves.`,
+    },
+
+    { type: 'h2', text: 'What it means for founders and operators' },
+    {
+      type: 'ul',
+      items: [
+        'Unit economics now matter at the early stage, because the later rounds that used to cover losses are smaller.',
+        'A credible path to an IPO or acquisition is part of the pitch, since both were active exits in 2025.',
+        'Capital-heavy models, such as owned fleets, need their financing thought through before growth, as BluSmart showed.',
+        'Businesses with fragmented supply and reliable delivery, the kind I describe in [my thesis on India beyond the metros](/articles/tier-2-india-investment-thesis), can raise early money on operating proof.',
+      ],
+    },
+
+    { type: 'h2', text: 'What would change my reading' },
+    {
+      type: 'p',
+      text: `If late-stage funding recovers sharply in 2026 without a matching improvement in the profitability of the companies raising it, then 2025 was a pause and not a change in what investors pay for. If the IPO window narrows, early-stage investors will need other exits, and seed and Series A would likely tighten next. I would check both against the next annual report, the way my [Push and Absorb framework](/articles/push-and-absorb-framework) suggests checking any assumption: decide in advance what evidence would change your mind.`,
+    },
+
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[Tracxn: India Tech Annual Funding Report 2025](https://tracxn.com/d/insights/market-reports/india-tech-annual-funding-report-2025/__pvsyFahv-Ilo6lB2JbwcePNNWOdgWGMsVyntzEVDIn0)',
+        '[Tracxn: India Tech raises $10.5B in 2025, ranks third most funded ecosystem](https://w.tracxn.com/report-releases/india-tech-annual-funding-report-2025)',
+        '[Tracxn: India FinTech Annual Funding Report 2025](https://tracxn.com/d/insights/market-reports/india-fintech-annual-funding-report-2025/__KI88fIIv3fr5S2VBcl2e1wyQJn6Vtcx04wbRitnU33o)',
+      ],
+    },
+  ],
+  faq: [
+    {
+      q: 'How much did Indian startups raise in 2025?',
+      a: 'Indian tech startups raised $10.5 billion in 2025 according to Tracxn, down 17% from $12.7 billion in 2024. India remained the third most funded tech ecosystem after the US and UK.',
+    },
+    {
+      q: 'Did early-stage funding fall in India in 2025?',
+      a: 'No. Early-stage funding rose 7% to $3.9 billion, while late-stage funding fell 26% to $5.5 billion. The overall decline came from late-stage rounds.',
+    },
+    {
+      q: 'Which sectors got the most funding in India in 2025?',
+      a: 'Enterprise applications raised about $2.6 billion and fintech about $2.4 billion. AI funding grew fastest, by about 58%, to around $1.22 billion.',
+    },
+  ],
+};
+
+export const openNetworks: Article = {
+  slug: 'open-networks-mobility-namma-yatri',
+  title: 'Open networks worked first in mobility. Namma Yatri shows why',
+  seoTitle: 'ONDC and Namma Yatri: Open Networks in Mobility',
+  description:
+    'Namma Yatri passed 100 million zero-commission rides while ONDC retail shrank as subsidies ended. Why open networks took hold in mobility first, and what follows.',
+  excerpt: `Namma Yatri passed 100 million rides and ₹1,600 crore in driver earnings without taking a commission. On ONDC, mobility grew while retail shrank as subsidies ended. The difference says a lot about where open networks can win.`,
+  category: 'Investment Thesis',
+  keywords: [
+    'ONDC mobility',
+    'Namma Yatri',
+    'zero commission ride hailing',
+    'open network digital commerce',
+    'Beckn protocol',
+    'ride hailing India',
+  ],
+  published: '2026-09-26',
+  blocks: [
+    {
+      type: 'p',
+      text: `Running strategy and growth for a cab service in Jammu means I pay close attention to how the national players price their drivers. The biggest change of the last two years did not come from Uber or Ola. It came from an open-network app in Bengaluru that refused to take a commission, and the rest of the industry followed.`,
+    },
+
+    { type: 'h2', text: 'The numbers' },
+    {
+      type: 'p',
+      text: `Namma Yatri, which runs on India's Open Network for Digital Commerce (ONDC) with open data and open-source code, passed 100 million rides in 2025 and says it enabled more than ₹1,600 crore of earnings for over 6 lakh drivers. Bengaluru accounted for nearly 85 million of those trips and Kolkata about 10 million. It launched zero-commission cabs in Bengaluru in April 2024, after starting with autos.`,
+    },
+    {
+      type: 'p',
+      text: `On the wider network, mobility and retail went in opposite directions. ONDC logged 8.1 million mobility transactions in February 2025, up 47% from 5.5 million in October 2024. Retail orders peaked at 6.5 million in October 2024 and fell to 4.6 million by February 2025 as the network capped the incentives it paid sellers and buyers.`,
+    },
+    {
+      type: 'table',
+      head: ['Derived figure', 'Working', 'Result'],
+      rows: [
+        ['Driver earnings per ride', '₹1,600 crore ÷ 100 million rides', 'About ₹160'],
+        ["Bengaluru's share of rides", '85 million ÷ 100 million', 'About 85%'],
+        ['ONDC mobility growth in four months', '8.1 million against 5.5 million', 'Up 47%'],
+        ['ONDC retail change over the same period', '4.6 million against 6.5 million', 'Down about 29%'],
+      ],
+      caption: 'My arithmetic on the reported figures.',
+    },
+
+    { type: 'h2', text: 'Why mobility worked when retail struggled' },
+    {
+      type: 'p',
+      text: `A ride is a simple, repeatable transaction with two parties and a price that both can see. The driver gains the most from removing the commission, so supply has a reason to join the network without a subsidy. Retail on an open network needs catalogues, inventory, payments, returns and delivery to work across many independent apps, and much of the early usage was paid for by incentives. When the incentives were capped, retail orders fell and mobility kept growing.`,
+    },
+    {
+      type: 'p',
+      text: `The concentration is the caveat. With about 85% of Namma Yatri's rides in Bengaluru, the model is proven in one city with a strong local community of drivers, and the question for anyone investing is how well it travels.`,
+    },
+
+    { type: 'h2', text: 'What it did to the incumbents' },
+    {
+      type: 'p',
+      text: `Rapido moved drivers to flat subscriptions from December 2023, Uber followed for autos in February 2025, saying it wanted to avoid a competitive disadvantage, and Ola rolled out a national version in June 2025. A zero-commission open network changed what drivers expect to keep, and the commission-based platforms adapted. I run that change through my framework, from each party's chair, in [the zero-commission shift, seen from every chair](/articles/zero-commission-shift-push-and-absorb).`,
+    },
+
+    { type: 'h2', text: 'The thesis' },
+    {
+      type: 'p',
+      text: `Open networks win first where the supply side gains the most from removing the platform's cut and the transaction is simple enough to run across apps without subsidy. That points to mobility, local services and some kinds of logistics before complex retail. For investors, the value moves away from the commission and toward what sits around the transaction: driver financing, vehicle leasing, insurance, fleet software and reliability that an open network does not guarantee on its own.`,
+    },
+    {
+      type: 'p',
+      text: `That last point matters for any operator. An open network can make a ride cheaper to book. It cannot make a car turn up. The businesses that organise reliable supply on top of open rails, the kind I describe in [my thesis on building beyond the metros](/articles/tier-2-india-investment-thesis), should still have room to earn.`,
+    },
+
+    { type: 'h2', text: 'What would prove this wrong' },
+    {
+      type: 'ul',
+      items: [
+        "Namma Yatri failing to grow outside Bengaluru, which would mean the model depends on one city's driver community.",
+        'Open-network mobility volumes falling once any remaining incentives end.',
+        'Commission-based platforms winning drivers back with guaranteed earnings that an open network cannot match.',
+      ],
+    },
+
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[Business Standard: Namma Yatri hits 100 million rides, enables ₹1,600 crore of driver earnings](https://www.business-standard.com/companies/news/namma-yatri-hits-100-million-rides-enables-1-600-cr-driver-earnings-125060600641_1.html)',
+        '[Business Standard: Namma Yatri launches a zero-commission cab service in Bengaluru (April 2024)](https://www.business-standard.com/technology/apps/namma-yatri-launches-zero-commission-cab-service-in-bengaluru-124041601064_1.html)',
+        '[Business Standard: Retail growth slows on ONDC as the platform caps incentives (March 2025)](https://www.business-standard.com/companies/news/ondc-retail-decline-incentive-cuts-service-fee-growth-mobility-logistics-125032700419_1.html)',
+        '[Inc42: Uber follows Rapido with a zero-commission model for auto drivers](https://inc42.com/buzz/exclusive-uber-follows-rapido-rolls-out-zero-commission-model-for-auto-drivers/)',
+      ],
+    },
+  ],
+  faq: [
+    {
+      q: 'What is Namma Yatri?',
+      a: "A zero-commission ride-hailing app that runs on India's Open Network for Digital Commerce with open data and open-source code. It passed 100 million rides in 2025, most of them in Bengaluru, and says it enabled over ₹1,600 crore of earnings for more than 6 lakh drivers.",
+    },
+    {
+      q: 'How is ONDC doing in mobility compared with retail?',
+      a: 'ONDC mobility transactions grew 47% to 8.1 million between October 2024 and February 2025, while retail orders fell from 6.5 million to 4.6 million as the network capped incentives.',
+    },
+    {
+      q: 'Why did open networks work in mobility first?',
+      a: 'A ride is a simple transaction between two parties, and drivers gain the most from removing the commission, so supply joins without a subsidy. Retail needs catalogues, inventory, payments and returns to work across apps, and much of its early use depended on incentives.',
+    },
+  ],
+};

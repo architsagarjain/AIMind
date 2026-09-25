@@ -668,3 +668,317 @@ export const restaurantEconomics: Article = {
     },
   ],
 };
+
+export const evAdoption: Article = {
+  slug: 'india-ev-adoption-two-three-wheelers',
+  title: "India's EV transition is running on three wheels",
+  seoTitle: 'EV Adoption in India: Why Three-Wheelers Lead',
+  description:
+    "Why electric three-wheelers passed half of India's sales while cars lag, what PM E-DRIVE funds and leaves out, and what it means for fleets and investors.",
+  excerpt: `Electric three-wheelers are now most of India's three-wheeler sales. Electric cars are still a sliver. The difference comes down to how many kilometres a vehicle drives, and that has consequences for anyone running a fleet.`,
+  category: 'Sector Breakdown',
+  keywords: [
+    'EV adoption India',
+    'electric three wheeler sales',
+    'PM E-DRIVE scheme',
+    'EV penetration FY25',
+    'electric fleet economics',
+    'EV subsidy India',
+  ],
+  published: '2026-09-26',
+  blocks: [
+    {
+      type: 'p',
+      text: `At ZenCabs I run strategy and growth for an electric cab fleet in Jammu, so I watch EV adoption from the side of someone who has to make the numbers work on every car. The national data says something that surprises people who follow the car market: India's transition to electric is being led by the vehicles that work hardest.`,
+    },
+
+    { type: 'h2', text: 'Where adoption actually is' },
+    {
+      type: 'p',
+      text: `The Federation of Automobile Dealers Associations (FADA) reported that electric three-wheelers rose from 54.2% to 57.3% of three-wheeler retail sales in FY25. Electric two-wheelers rose from 5.4% to 6.1%, in a two-wheeler market of 1,88,77,812 units that year. Electric cars remain a small single-digit share of car sales. Momentum has continued since: FADA reported record electric vehicle retail of 2.98 lakh units in August 2026, 12.3% of everything sold that month.`,
+    },
+    {
+      type: 'table',
+      head: ['Segment', 'Electric share of retail sales, FY25', 'Typical use'],
+      rows: [
+        ['Three-wheelers', '57.3%, up from 54.2%', 'Commercial: passengers and goods, all day'],
+        ['Two-wheelers', '6.1%, up from 5.4%', 'Mostly personal commuting'],
+        ['Cars', 'Small single digits', 'Mostly personal, low daily distance'],
+      ],
+      caption: 'Shares from FADA retail data for FY25.',
+    },
+
+    { type: 'h2', text: 'Why the hardest-working vehicles switch first' },
+    {
+      type: 'p',
+      text: `An electric vehicle usually costs more to buy and less to run per kilometre. The saving only pays back the higher price if the vehicle covers enough distance. A three-wheeler carrying passengers or goods all day covers that distance quickly, and its owner buys on running cost because the vehicle is a livelihood. A private car that sits parked most of the day may never cover enough kilometres for the saving to matter to its owner.`,
+    },
+    {
+      type: 'p',
+      text: `This is the same arithmetic that runs an electric cab fleet. At ZenCabs, fleet utilisation rose from 40% to 75%, and every extra hour a car spends carrying riders spreads its fixed cost further and earns more of the running-cost advantage. An electric fleet that runs at low utilisation has paid the premium without collecting the saving. I break that down in [the unit economics of an electric cab fleet](/articles/ev-cab-fleet-unit-economics-tier-2-india).`,
+    },
+
+    { type: 'h2', text: 'What PM E-DRIVE funds, and what it leaves out' },
+    {
+      type: 'p',
+      text: `The PM E-DRIVE scheme has an outlay of ₹10,900 crore. It was set up to support 24.79 lakh electric two-wheelers, 3.16 lakh electric three-wheelers and 14,028 electric buses, with ₹2,000 crore for public charging. Demand incentives of ₹3,679 crore go to buyers of electric two-wheelers, three-wheelers, buses, trucks and ambulances. The incentive for two- and three-wheelers was set at ₹5,000 per kWh of battery in FY25, halving to ₹2,500 per kWh in FY26.`,
+    },
+    {
+      type: 'p',
+      text: `Two things follow for a fleet operator. Electric cars, including cars bought for cab fleets, are not on the list of vehicles that get the demand incentive, so an electric cab fleet has to make its economics work without that central purchase support. And the incentives that do exist are designed to step down. Any business model that only works with the subsidy is betting on a number the government has already said will shrink.`,
+    },
+
+    { type: 'h2', text: 'Reading the subsidy step-down with Push and Absorb' },
+    {
+      type: 'p',
+      text: `A subsidy cut is a textbook case for the Absorb half of my [Push and Absorb framework](/articles/push-and-absorb-framework). It is somebody else's decision arriving as a condition. Classified, it is fast (it happens on a known date) and permanent (it is not coming back at the old rate), which means steady it now and redesign for a world without it. The companies that treat the step-down as a surprise are the ones that mistook a temporary price for a permanent one.`,
+    },
+
+    { type: 'h2', text: 'What I would watch as an investor' },
+    {
+      type: 'ul',
+      items: [
+        'Financing for drivers and small fleet owners, since the buyer who benefits most from an EV is often the one with the least access to credit.',
+        'Battery health and resale value, which decide the real cost of ownership and are still poorly priced in the used market.',
+        'Charging where commercial vehicles actually rest, which is not always where public chargers are built.',
+        'Unit economics after the subsidy, modelled at the FY26 rate and at zero.',
+        'Utilisation, for any fleet business, because it is the number that turns a price premium into a saving.',
+      ],
+    },
+
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[FADA: FY25 and March 2025 vehicle retail data (PDF)](https://fada.in/images/press-release/167f3463b1a212FADA%20Releases%20FY%202025%20and%20March%202025%20Vehicle%20Retail%20Data.pdf)',
+        '[Mobility Outlook: FADA FY25 vehicle retail](https://www.mobilityoutlook.com/news/fadas-fy25-vehicle-retail-records-cautious-gains-amid-economic-uncertainty/)',
+        '[Social News XYZ: EV retail hits a record August high of 2.98 lakh units, FADA (September 2026)](https://www.socialnews.xyz/2026/09/08/ev-retail-sales-hit-record-august-high-of-2-98-lakh-units-penetration-rises-to-12-3-pc-fada/)',
+        '[Prime Minister of India: Cabinet approves the PM E-DRIVE scheme](https://www.pmindia.gov.in/en/news_updates/cabinet-approves-pm-electric-drive-revolution-in-innovative-vehicle-enhancement-pm-e-drive-scheme-with-an-outlay-of-rs-10900-crore-over-a-period-of-two-years/)',
+      ],
+    },
+  ],
+  faq: [
+    {
+      q: 'What share of vehicles sold in India are electric?',
+      a: 'In FY25, FADA data showed electric three-wheelers at 57.3% of three-wheeler retail sales and electric two-wheelers at 6.1%, with electric cars a small single-digit share. In August 2026 FADA reported electric vehicles at 12.3% of all retail sales.',
+    },
+    {
+      q: 'What is the PM E-DRIVE scheme?',
+      a: 'A ₹10,900 crore central scheme supporting electric two-wheelers, three-wheelers, buses, trucks and ambulances through demand incentives, plus ₹2,000 crore for public charging. The two- and three-wheeler incentive was ₹5,000 per kWh in FY25 and ₹2,500 per kWh in FY26.',
+    },
+    {
+      q: 'Why are electric three-wheelers more popular than electric cars in India?',
+      a: 'Three-wheelers are mostly commercial and drive long distances every day, so the lower running cost of an electric vehicle pays back its higher price quickly. Private cars drive less, so the saving takes much longer to matter.',
+    },
+  ],
+};
+
+export const quickCommerce: Article = {
+  slug: 'quick-commerce-india-economics',
+  title: 'Quick commerce in India: the economics of the ten-minute promise',
+  seoTitle: 'Quick Commerce in India: Unit Economics and Density',
+  description:
+    "Blinkit's margin on ₹14,386 crore of orders was about a quarter of one percent. What dark-store density, order value and losses say about quick commerce in India.",
+  excerpt: `Blinkit reached adjusted EBITDA profit on ₹14,386 crore of quarterly orders with a margin of about a quarter of one percent. Quick commerce works, and it works on a knife edge that depends on density.`,
+  category: 'Sector Breakdown',
+  keywords: [
+    'quick commerce India',
+    'Blinkit profitability',
+    'Zepto losses FY25',
+    'dark store economics',
+    'q-commerce unit economics',
+    'Instamart',
+  ],
+  published: '2026-09-26',
+  blocks: [
+    {
+      type: 'p',
+      text: `Quick commerce is the category most investors in India have an opinion on, and the one where the published numbers are most useful for testing that opinion. I have not worked in it. I have run a business whose economics depend on the same variable, the density of demand around a fixed asset, so this is how I read it.`,
+    },
+
+    { type: 'h2', text: 'What the numbers say' },
+    {
+      type: 'p',
+      text: `Eternal, Zomato's parent, reported that Blinkit ended the March 2026 quarter with 2,243 dark stores and adjusted EBITDA of ₹37 crore on net order value of ₹14,386 crore, after reaching adjusted EBITDA profit for the first time in the preceding quarter. The shareholder letter reported about 27.2 million monthly transacting users, an average order value of ₹525 and roughly 274 million orders in the quarter.`,
+    },
+    {
+      type: 'p',
+      text: `Zepto, its nearest rival, reported FY25 turnover of ₹11,110 crore, about 2.5 times the ₹4,454 crore of FY24, with a net loss of ₹3,367 crore, up from about ₹1,215 crore.`,
+    },
+
+    { type: 'h2', text: 'The numbers underneath the numbers' },
+    {
+      type: 'table',
+      head: ['Derived figure', 'Working', 'Result'],
+      rows: [
+        ['Blinkit adjusted EBITDA margin', '₹37 crore ÷ ₹14,386 crore', 'About 0.26% of order value'],
+        ['Orders per dark store per day', '274 million ÷ 2,243 stores ÷ about 90 days', 'Roughly 1,350'],
+        ['Adjusted EBITDA per order', '₹37 crore ÷ 274 million orders', 'Roughly ₹1.35'],
+      ],
+      caption: 'My arithmetic on the reported figures. The quarter is taken as 90 days.',
+    },
+    {
+      type: 'p',
+      text: `A business making about ₹1.35 per order has almost no room for error. A small rise in delivery cost per order, a slight fall in order value or a few hundred fewer orders per store per day would put it back into loss. The profitability is real, and it is a thin line that holds only at very high density.`,
+    },
+
+    { type: 'h2', text: 'Density is the business' },
+    {
+      type: 'p',
+      text: `A dark store is a fixed asset with rent, staff and inventory that cost the same whether it serves 300 orders a day or 1,500. Each extra order within delivery range spreads that cost further and makes the rider's route shorter. This is the same logic as utilisation in an electric cab fleet, where a car's fixed cost only pays back if it is busy. At about 1,350 orders per store per day, Blinkit's network is dense enough to work. A new store in a thin neighbourhood starts far below that and loses money until it fills up.`,
+    },
+    {
+      type: 'p',
+      text: `That is why I would be careful about quick commerce in smaller cities, where the same store would see a fraction of the orders. I set out that caution in [an operator's thesis on building beyond the metros](/articles/tier-2-india-investment-thesis).`,
+    },
+
+    { type: 'h2', text: 'Who else the ten-minute promise changes' },
+    {
+      type: 'p',
+      text: `For consumer brands, quick commerce is a new shelf that sells the top few products in each category and pays attention to availability hour by hour. For neighbourhood stores, it competes directly on the small, urgent basket that used to be theirs. For the platforms, the next margin is expected to come from higher-value categories, advertising sold to brands, and private labels, each of which raises the value of an order without adding delivery cost.`,
+    },
+
+    { type: 'h2', text: 'What I would ask a quick commerce business' },
+    {
+      type: 'ul',
+      items: [
+        'Orders per store per day, for stores open more than a year against new stores.',
+        'How many months a new store takes to reach breakeven.',
+        'Delivery cost per order, and how it moves with order density.',
+        'Contribution per order with discounts and before advertising income.',
+        'The share of stores that are profitable today.',
+      ],
+    },
+
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[Inc42: Eternal Q3, Blinkit and Hyperpure achieve adjusted EBITDA profitability](https://inc42.com/buzz/eternal-q3-blinkit-hyperpure-achieve-adjusted-ebitda-profitability/)',
+        '[The Arc: Blinkit sees another profitable quarter](https://www.thearcweb.com/article/blinkit-zomato-eternal-quick-commerce-Q4-results-food-delivery-IGbWzh0VOAzqIhIC)',
+        "[Entrackr: Eternal's reality check, Blinkit's thin margins](https://entrackr.com/analysis/eternals-reality-check-blinkits-thin-margins-and-districts-losses-11777148)",
+        '[Entrackr: Zepto revenue soars 2.5x to ₹11,110 crore in FY25](https://entrackr.com/news/zepto-revenue-soars-25x-to-rs-11110-cr-in-fy25-9602729)',
+        '[BW Retail World: Zepto FY25 loss widens to ₹3,367 crore](https://bwretailworld.com/sector/e-commerce-marketplaces/zepto-fy25-sales-jump-129-loss-widens-to-rs-3367-cr)',
+      ],
+    },
+  ],
+  faq: [
+    {
+      q: 'Is quick commerce profitable in India?',
+      a: 'Blinkit reported adjusted EBITDA profit, including ₹37 crore on ₹14,386 crore of net order value in the March 2026 quarter, a margin of about 0.26%. Zepto reported a FY25 net loss of ₹3,367 crore. Profitability so far is thin and depends on very high order density per store.',
+    },
+    {
+      q: 'How many dark stores does Blinkit have?',
+      a: 'Eternal reported 2,243 Blinkit dark stores at the end of the March 2026 quarter.',
+    },
+    {
+      q: 'Why does density matter so much in quick commerce?',
+      a: "A dark store's rent, staff and inventory are largely fixed, so each extra order within range spreads those costs further and shortens delivery routes. At Blinkit's reported volumes, stores average roughly 1,350 orders a day.",
+    },
+  ],
+};
+
+export const religiousTourism: Article = {
+  slug: 'religious-tourism-india-economy',
+  title: 'Religious tourism is one of the largest travel markets in India',
+  seoTitle: 'Religious Tourism in India: Market Size and Economics',
+  description:
+    'India recorded 250 crore domestic tourist visits in 2023. What Ayodhya, Varanasi and Vaishno Devi show about the economics of pilgrim travel, and its risks.',
+  excerpt: `Ayodhya drew 16.44 crore visitors in 2024. Vaishno Devi draws around 95 lakh a year, an average of 26,000 a day. Pilgrim travel is one of India's biggest travel markets, and most of the businesses serving it are tiny.`,
+  category: 'Sector Breakdown',
+  keywords: [
+    'religious tourism India',
+    'pilgrimage tourism market',
+    'Vaishno Devi pilgrims',
+    'Ayodhya tourist footfall',
+    'domestic tourism India',
+    'Katra',
+  ],
+  published: '2026-09-26',
+  blocks: [
+    {
+      type: 'p',
+      text: `ZenCabs runs airport transfers and trips to Katra, the base town for the Vaishno Devi shrine, alongside city rides in Jammu. Pilgrim traffic is one of the three demand pools in [my sizing of the Jammu cab market](/articles/sizing-cab-market-tier-2-city). Working with it made me look at religious travel as an economy of its own, and the public numbers are larger than most people expect.`,
+    },
+
+    { type: 'h2', text: 'The scale' },
+    {
+      type: 'p',
+      text: `The Ministry of Tourism recorded 2,509.63 million domestic tourist visits in 2023, up from 1,731.01 million in 2022 and about 120 crore in 2014. A large part of that is religious travel. In Uttar Pradesh alone, the state tourism department counted 10.99 crore visitors to Ayodhya and 4.61 crore to Varanasi in the first six months of 2024, out of 33 crore across the state. Ayodhya's full-year count rose from 16.44 crore in 2024 to 29.95 crore in 2025.`,
+    },
+    {
+      type: 'table',
+      head: ['Destination', 'Visitors', 'Year'],
+      rows: [
+        ['Ayodhya', '16.44 crore', '2024'],
+        ['Ayodhya', '29.95 crore', '2025'],
+        ['Varanasi', '4.61 crore', 'January to June 2024'],
+        ['Vaishno Devi', '94.8 lakh', '2024'],
+        ['Vaishno Devi', '95.22 lakh', '2023'],
+      ],
+    },
+    {
+      type: 'p',
+      text: `Vaishno Devi is smaller than the Uttar Pradesh cities and steadier. The Shri Mata Vaishno Devi Shrine Board recorded 94.8 lakh pilgrims in 2024, 95.22 lakh in 2023 and 91.25 lakh in 2022, against an all-time high of 1.04 crore in 2012. That is an average of about 26,000 pilgrims a day, each of whom needs to get there, sleep somewhere and eat.`,
+    },
+
+    { type: 'h2', text: 'The economy around a shrine' },
+    {
+      type: 'p',
+      text: `The spend around a pilgrimage runs through transport, accommodation, food, offerings and guided services, and most of it goes to small local operators: taxi drivers, guest houses, dhabas and shops. Demand is heavy and predictable in aggregate, and it peaks sharply around festivals, when the Shrine Board prepares for Navratri crowds. The businesses serving it face a capacity problem at peak and idle assets between peaks, the same shape as the wedding calendar in [my breakdown of the wedding economy](/articles/indian-wedding-industry-breakdown).`,
+    },
+    {
+      type: 'p',
+      text: `Very little of this is organised. A pilgrim arriving in Jammu often finds transport through a taxi stand, a hotel desk or a number from a relative. That is a gap an organised operator can close with reliability and prices published in advance.`,
+    },
+
+    { type: 'h2', text: 'The risks, read as forces' },
+    {
+      type: 'p',
+      text: `Pilgrim traffic is exposed to forces nobody in the local economy controls, and my [Push and Absorb framework](/articles/push-and-absorb-framework) is useful for sorting them. Reporting on the 2024 figures linked that year's dip to the Lok Sabha and Assembly elections and to the attack on a bus carrying pilgrims to Shiv Khori in June. Those are fast shocks, and a business with reserves can take the hit until numbers recover, as they did.`,
+    },
+    {
+      type: 'p',
+      text: `Rail is a different kind of force. Direct trains now run from New Delhi to Katra in about eight hours, which lets more pilgrims skip Jammu and a road transfer altogether. It is slow and permanent, the combination the framework flags as the most dangerous, because no single month feels like a crisis. For a Jammu transport business the right response is to adapt: follow the pilgrim to Katra itself, and build demand from the city and the airport that does not depend on the transfer.`,
+    },
+
+    { type: 'h2', text: 'What I would look for in a business serving pilgrims' },
+    {
+      type: 'ul',
+      items: [
+        'Revenue by week across a full year, to see how deep the gaps between festivals are.',
+        'Capacity at peak, and what happens to customers the business cannot serve.',
+        'How much of the business depends on one route or one shrine.',
+        'Prices published in advance, which matter more to a first-time visitor than to a local.',
+        'Exposure to changes in how pilgrims arrive, such as new rail or road links.',
+      ],
+    },
+
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[PIB: Ministry of Tourism year-end review 2024](https://www.pib.gov.in/PressReleasePage.aspx?PRID=2087824&reg=3&lang=2)',
+        '[All India Radio: Domestic tourist visits rise from 120 crore in 2014 to 250 crore in 2023](https://www.newsonair.gov.in/domestic-tourist-visits-in-india-rise-from-120-crore-in-2014-to-250-crore-in-2023-tourism-minister-gajendra-singh-shekhawat)',
+        '[Travel Trends Today: 11 crore tourists visited Ayodhya in the first six months of 2024](https://www.traveltrendstoday.in/record-11-crore-tourists-visited-ayodhya-in-first-six-months-of-2024-tourism-dept)',
+        '[Travel Trends Today: Ayodhya sees 29.95 crore visitors in 2025, up from 16.44 crore in 2024](https://www.traveltrendstoday.in/ayodhya-sees-2995-cr-visitors-in-2025-up-from-1644-cr-in-2024)',
+        '[Daily Excelsior: 9.5 million pilgrims visited the Vaishno Devi shrine in 2024](https://www.dailyexcelsior.com/9-5-million-pilgrims-visited-mata-vaishno-devi-shrine-in-2024/)',
+        '[Wikipedia: New Delhi to Shri Mata Vaishno Devi Katra Vande Bharat Express](https://en.wikipedia.org/wiki/New_Delhi%E2%80%93Shri_Mata_Vaishno_Devi_Katra_Vande_Bharat_Express)',
+      ],
+    },
+  ],
+  faq: [
+    {
+      q: 'How big is religious tourism in India?',
+      a: 'India recorded about 250 crore domestic tourist visits in 2023, and religious travel is a large share. Ayodhya alone drew 16.44 crore visitors in 2024 and 29.95 crore in 2025, according to the Uttar Pradesh tourism department.',
+    },
+    {
+      q: 'How many pilgrims visit Vaishno Devi every year?',
+      a: 'The Shri Mata Vaishno Devi Shrine Board recorded 94.8 lakh pilgrims in 2024 and 95.22 lakh in 2023, about 26,000 a day on average. The all-time high was 1.04 crore in 2012.',
+    },
+    {
+      q: 'What are the main risks for businesses that serve pilgrims?',
+      a: 'Short shocks such as elections or security incidents, which recover, and slow permanent shifts such as new direct rail links that change how pilgrims arrive, which require a business to adapt its routes and demand base.',
+    },
+  ],
+};

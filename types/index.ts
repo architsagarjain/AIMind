@@ -85,7 +85,12 @@ export interface ChatMessage {
 
 // ------------------------------------------------------------------ articles
 
-export type ArticleCategory = 'Framework' | 'Sector Breakdown' | 'Operating Playbook' | 'Investment Thesis';
+export type ArticleCategory =
+  | 'Framework'
+  | 'Sector Breakdown'
+  | 'Operating Playbook'
+  | 'Investment Thesis'
+  | 'Thought Piece';
 
 /** Figures built from HTML, so their text is real, indexable, and reflows on phones. */
 export type ArticleFigure = 'lever' | 'bridges' | 'chain';

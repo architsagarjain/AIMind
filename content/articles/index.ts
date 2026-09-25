@@ -3,12 +3,22 @@ import { pushAndAbsorb } from './push-and-absorb';
 import {
   aiInInternalAudit,
   constructionEquipment,
+  evAdoption,
   evCabEconomics,
+  quickCommerce,
+  religiousTourism,
   restaurantEconomics,
   weddingIndustry,
 } from './sectors';
 import { citySizing, marginLeaks, pricingPlaybook, weeklyOperatingReview } from './operating';
-import { appliedAiThesis, marketplaceMetrics, tier2Thesis } from './theses';
+import { appliedAiThesis, marketplaceMetrics, openNetworks, tier2Thesis, vcFunding2025 } from './theses';
+import {
+  agencyInCollege,
+  buildingTheClone,
+  leavingBigFour,
+  reliabilityStrategy,
+  zeroCommissionChairs,
+} from './thoughts';
 
 /** Every article, in the order the hub lists them within a category. */
 export const articles: Article[] = [
@@ -17,6 +27,9 @@ export const articles: Article[] = [
   weddingIndustry,
   constructionEquipment,
   restaurantEconomics,
+  evAdoption,
+  quickCommerce,
+  religiousTourism,
   aiInInternalAudit,
   weeklyOperatingReview,
   citySizing,
@@ -25,6 +38,13 @@ export const articles: Article[] = [
   tier2Thesis,
   appliedAiThesis,
   marketplaceMetrics,
+  vcFunding2025,
+  openNetworks,
+  zeroCommissionChairs,
+  buildingTheClone,
+  leavingBigFour,
+  agencyInCollege,
+  reliabilityStrategy,
 ];
 
 export { RETIRED_SLUGS } from './retired';

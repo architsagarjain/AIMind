@@ -148,7 +148,9 @@ export function buildKnowledgeBase(): string {
   sections.push(
     [
       '## MY ARTICLES (link a visitor to the relevant one by its path)',
-      ...articles.map((a) => `- ${a.title} (${a.category}) at /articles/${a.slug}: ${plain(a.excerpt)}`),
+      // Titles and paths only: the excerpts cost prompt length, which is
+      // latency on every answer, and the title is enough to pick a link.
+      ...articles.map((a) => `- ${a.title} (${a.category}) at /articles/${a.slug}`),
     ].join('\n'),
   );
 

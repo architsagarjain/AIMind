@@ -25,4 +25,9 @@ export const CATEGORIES: { name: ArticleCategory; label: string; blurb: string }
     label: 'Investment theses',
     blurb: 'How I would evaluate and back businesses, argued from what I have run.',
   },
+  {
+    name: 'Thought Piece',
+    label: 'Thought pieces',
+    blurb: 'Opinions and lessons from the work, including where I changed my mind.',
+  },
 ];
