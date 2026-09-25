@@ -5,7 +5,7 @@ export const experience: ResumeExperience[] = [
   {
     org: 'ZenCabs',
     role: 'Head of Strategy & Growth',
-    period: 'Jan 2026 — Present',
+    period: 'Jan 2026 to Present',
     location: 'Jammu, India',
     bullets: [
       'Built the venture from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months.',
@@ -21,7 +21,7 @@ export const experience: ResumeExperience[] = [
   {
     org: 'Shaadi Mangalam',
     role: 'Growth & Business Strategy Consultant',
-    period: 'Apr 2026 — Present',
+    period: 'Apr 2026 to Present',
     location: 'India',
     bullets: [
       'Tripled monthly leads to 3,000 and lifted conversion from 1.4% to 4% by restructuring pricing and sales.',
@@ -31,7 +31,7 @@ export const experience: ResumeExperience[] = [
   {
     org: 'PwC India',
     role: 'Risk Consulting Specialist 2',
-    period: 'Oct 2024 — Jan 2026',
+    period: 'Oct 2024 to Jan 2026',
     location: 'Gurugram, India',
     bullets: [
       'Delivered ₹6+ Cr in annual client cost savings via root-cause diagnostics and process redesign.',
@@ -48,7 +48,7 @@ export const experience: ResumeExperience[] = [
   {
     org: 'MCCS Infra Pvt. Ltd.',
     role: 'Business Transformation Consultant',
-    period: 'Nov 2024 — Jul 2025',
+    period: 'Nov 2024 to Jul 2025',
     location: 'India',
     bullets: [
       'Unlocked ₹2 Cr in cost savings via manpower restructuring and capacity planning.',
@@ -59,19 +59,19 @@ export const experience: ResumeExperience[] = [
   {
     org: 'Cairros',
     role: 'Founder & Managing Partner',
-    period: 'Aug 2022 — May 2024',
+    period: 'Aug 2022 to May 2024',
     location: 'Pune, India',
     bullets: [
       'Scaled the agency to seven-figure annual revenue in two years by owning strategy, sales and delivery end to end.',
       'Grew three restaurant clients 30% in revenue (7% MoM) via menu reengineering and table-turnaround operations.',
-      'Raised a magazine client’s sales 3.5x — ₹2L to ₹7L/month at 23% MoM over six months.',
+      'Raised a magazine client’s sales 3.5x, from ₹2L to ₹7L/month at 23% MoM over six months.',
       'Expanded across four sectors via rebrand, hiring and growth mandates backed by market research.',
     ],
   },
   {
     org: 'Equip9',
     role: 'Digital Marketing Executive',
-    period: 'Dec 2022 — Oct 2024',
+    period: 'Dec 2022 to Oct 2024',
     location: 'Pune, India',
     bullets: [
       'Improved lead conversion 40% and drove 300% profit growth via segmentation-led acquisition.',
@@ -85,19 +85,19 @@ export const education: ResumeEducation[] = [
   {
     school: 'Masters’ Union',
     degree: 'PGP in Technology & Business Management',
-    period: 'Jun 2026 — Present',
+    period: 'Jun 2026 to Present',
     location: 'Gurugram, India',
   },
   {
     school: 'Symbiosis Centre for Management Studies',
-    degree: 'BBA — Accounts & Finance, Marketing Management · CGPA 8.16 (top 10%)',
-    period: 'Jul 2021 — Apr 2024',
+    degree: 'BBA in Accounts & Finance and Marketing Management · CGPA 8.16 (top 10%)',
+    period: 'Jul 2021 to Apr 2024',
     location: 'Pune, India',
   },
   {
     school: 'Delhi Public School',
     degree: 'CBSE XII 92% (Commerce with Maths) · CBSE X 94.2%, 100/100 Science',
-    period: '2007 — 2021',
+    period: '2007 to 2021',
     location: 'Jammu, India',
   },
 ];

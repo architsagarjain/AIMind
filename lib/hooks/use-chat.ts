@@ -121,7 +121,7 @@ export function useChat(): UseChatResult {
           setMessages((prev) =>
             prev.map((m) =>
               m.id === assistantId && !m.content
-                ? { ...m, content: `I couldn't answer that just now — ${message}` }
+                ? { ...m, content: `I couldn't answer that just now (${message}).` }
                 : m,
             ),
           );

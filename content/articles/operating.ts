@@ -11,7 +11,7 @@ export const weeklyOperatingReview: Article = {
   seoTitle: 'How to Run a Weekly Operating Review: A KPI Playbook',
   description:
     'How I ran a weekly KPI review at an EV startup: choosing the top metric, building the metric tree, setting thresholds and guardrails, and running the meeting.',
-  excerpt: `The most useful thing I built at ZenCabs was a one-hour meeting. How it was designed, from the metric tree to the agenda, and how these reviews usually fail.`,
+  excerpt: `The most useful thing I built at ZenCabs was a weekly meeting. How it was designed, from the metric tree to the agenda, and how these reviews usually fail.`,
   category: 'Operating Playbook',
   keywords: [
     'weekly operating review',
@@ -239,6 +239,252 @@ export const marginLeaks: Article = {
     {
       q: 'How do you prioritise cost reduction opportunities?',
       a: 'Put an annual rupee estimate on every finding, with the working shown, then rank by size and ease. A recommendation with a number, an owner and a first step is far easier for leadership to approve.',
+    },
+  ],
+};
+
+export const citySizing: Article = {
+  slug: 'sizing-cab-market-tier-2-city',
+  title: 'Sizing the cab market in a tier-2 city before you launch in it',
+  seoTitle: 'Bottom-Up Market Sizing: The Cab Market in Jammu',
+  description:
+    'A bottom-up market sizing for app-booked cabs in Jammu from public data: residents, airport passengers and Vaishno Devi pilgrims, with every assumption stated.',
+  excerpt: `An expansion case starts with a number you can defend. A bottom-up model of cab demand in Jammu from public data, with every assumption written down and tested.`,
+  category: 'Operating Playbook',
+  keywords: [
+    'market sizing example',
+    'bottom-up market sizing',
+    'TAM SAM SOM example India',
+    'cab market size Jammu',
+    'expansion case',
+    'founder office case study',
+  ],
+  published: '2026-09-26',
+  blocks: [
+    {
+      type: 'p',
+      text: `At ZenCabs the fleet grew by 10+ cars a month to 40, and every batch of cars had to be justified by a market sizing and an expansion case. That case used our own data. This is a rebuild of the method from public numbers only, so anyone can check it, and so the assumptions are visible enough to argue with.`,
+    },
+    {
+      type: 'p',
+      text: `The question: how many app-booked cab trips could Jammu support in a month? I build it from three pools of demand, give each a low, base and high case, and then compare the result with what ZenCabs actually did.`,
+    },
+
+    { type: 'h2', text: 'The public inputs' },
+    {
+      type: 'table',
+      head: ['Input', 'Figure', 'Source'],
+      rows: [
+        ['Jammu city population', '5,02,197 (2011)', 'Census of India'],
+        ['Jammu urban agglomeration', '6,57,314 (2011)', 'Census of India'],
+        ['Jammu airport passengers', '1.61 million (2024-25)', 'Ministry of Civil Aviation, in the Lok Sabha'],
+        ['Vaishno Devi pilgrims', '94.8 lakh (2024)', 'Shri Mata Vaishno Devi Shrine Board'],
+      ],
+    },
+    {
+      type: 'p',
+      text: `The Census is fifteen years old, so the first assumption is growth. At about 1.4% a year the 2011 urban agglomeration becomes roughly 8 lakh people in 2026. I use 8 lakh throughout. It matters less than the behavioural assumptions that follow.`,
+    },
+
+    { type: 'h2', text: 'Pool one: residents' },
+    {
+      type: 'p',
+      text: `Most residents will never book a cab through an app in a given month. They own a two-wheeler or a car, take an auto, or do not travel far. So the model starts from an addressable share: people with a smartphone, a reason to travel across the city and the income to pay a cab fare. My base case is 10% of 8 lakh, or 80,000 people, taking two app-booked trips a month each.`,
+    },
+    { type: 'p', text: `Base case: 80,000 people × 2 trips = 1,60,000 trips a month.` },
+
+    { type: 'h2', text: 'Pool two: the airport' },
+    {
+      type: 'p',
+      text: `The airport handled 1.61 million passengers in 2024-25, which counts arrivals and departures separately, so each passenger movement is one ground trip to or from the airport. That is about 1,34,000 a month. Many are collected by family or drive themselves; my base case is that 30% take a cab.`,
+    },
+    { type: 'p', text: `Base case: 1,34,000 × 30% = about 40,000 trips a month.` },
+
+    { type: 'h2', text: 'Pool three: pilgrims' },
+    {
+      type: 'p',
+      text: `94.8 lakh pilgrims visited the Vaishno Devi shrine in 2024, about 7.9 lakh a month, and Katra, the base town, is a road journey from Jammu. Many pilgrims take the train straight to Katra, travel by bus, or come in their own vehicles, so my base case is that 10% take a cab between Jammu and Katra. Pilgrims usually travel in groups, so I divide by an average of three people per cab.`,
+    },
+    { type: 'p', text: `Base case: 7.9 lakh × 10% ÷ 3 = about 26,000 trips a month.` },
+
+    { type: 'h2', text: 'The total, and how wrong it could be' },
+    {
+      type: 'table',
+      head: ['Pool', 'Low', 'Base', 'High'],
+      rows: [
+        ['Residents', '5% × 1 trip = 40,000', '10% × 2 trips = 1,60,000', '15% × 3 trips = 3,60,000'],
+        ['Airport', '20% = 26,800', '30% = 40,250', '40% = 53,700'],
+        ['Pilgrims', '5% ÷ 3 = 13,200', '10% ÷ 3 = 26,300', '15% ÷ 3 = 39,500'],
+        ['Trips a month', 'about 80,000', 'about 2,27,000', 'about 4,53,000'],
+      ],
+      caption: 'Monthly trips. The shares and trip rates are my assumptions; the population, airport and pilgrim figures are public.',
+    },
+    {
+      type: 'p',
+      text: `The range is wide, more than five times from low to high, and almost all of the width comes from one line: how many residents book cabs and how often. The airport and pilgrim pools together are between 40,000 and 93,000 trips a month in every case. That tells me where to spend research effort. A week of surveying residents would narrow the estimate more than a year of refining the airport numbers.`,
+    },
+
+    { type: 'h2', text: 'Checking it against reality' },
+    {
+      type: 'p',
+      text: `ZenCabs ran 7,500+ rides a month at a ₹331 average order value. That is about 3.3% of the base case, 9% of the low case and under 2% of the high case. Even on the pessimistic view, the service had reached a small share of the market, which is what justified adding cars.`,
+    },
+    {
+      type: 'p',
+      text: `Priced at ZenCabs' ₹331 average order value, the base case is about ₹7.5 Cr of fares a month, or roughly ₹90 Cr a year. That understates it, because a Jammu to Katra trip costs far more than a city ride.`,
+    },
+
+    { type: 'h2', text: 'From market size to a fleet plan' },
+    {
+      type: 'p',
+      text: `A market size only becomes a decision when it turns into cars. At ZenCabs' actual rate of about 187 rides per car a month, serving 10% of the base case, about 22,700 trips, would need roughly 120 cars. That number is the useful output: it is a target the team can plan driver recruitment against.`,
+    },
+    {
+      type: 'p',
+      text: `The pace of adding cars should be set by utilisation. Each new batch is justified when the existing fleet is running near its target and cancellations from no car being available start to rise. If utilisation falls after a batch arrives, the next batch waits. That rule is a stop rule in the sense of my [Push and Absorb framework](/articles/push-and-absorb-framework): the condition for stopping is decided before the money is spent.`,
+    },
+
+    { type: 'h2', text: 'What would change the answer' },
+    {
+      type: 'ul',
+      items: [
+        'A resident survey. The resident pool drives most of the range, so this is the first thing to measure.',
+        'Katra rail traffic. Direct trains reduce the pilgrims who pass through Jammu by road.',
+        'A national aggregator arriving in force, which would split the market and raise driver costs.',
+        'Seasonality. Pilgrim numbers rise sharply around festivals, so a monthly average hides peaks the fleet has to cover.',
+      ],
+    },
+    {
+      type: 'p',
+      text: `The economics of each car in that fleet are in [the unit economics of an electric cab fleet](/articles/ev-cab-fleet-unit-economics-tier-2-india).`,
+    },
+
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[Census 2011: Jammu city population](https://www.census2011.co.in/census/city/3-jammu.html)',
+        '[Census 2011: Jammu metropolitan region](https://www.census2011.co.in/census/metropolitan/2-jammu.html)',
+        '[Kashmir Observer: Jammu airport records 1.61 million passengers in 2024-25](https://kashmirobserver.net/2025/08/07/jammu-airport-records-1-61-million-passengers-in-2024-25/)',
+        '[Daily Excelsior: 9.5 million pilgrims visited the Vaishno Devi shrine in 2024](https://www.dailyexcelsior.com/9-5-million-pilgrims-visited-mata-vaishno-devi-shrine-in-2024/)',
+      ],
+    },
+  ],
+  faq: [
+    {
+      q: 'How do you do a bottom-up market sizing?',
+      a: 'Split demand into pools you can count from public data, apply an explicit assumption for the share of each pool that would buy and how often, and give each assumption a low, base and high case. Then check the result against any real sales you have, and find which assumption drives most of the range.',
+    },
+    {
+      q: 'How big is the cab market in Jammu?',
+      a: 'On public data and stated assumptions, between about 80,000 and 4.5 lakh app-booked trips a month, with a base case of about 2.27 lakh. At ZenCabs average order value the base case is about ₹7.5 Cr of fares a month.',
+    },
+    {
+      q: 'How do you turn a market size into an expansion plan?',
+      a: 'Convert trips into the fleet needed at a realistic rides-per-car rate, then pace additions by utilisation: add capacity when the current fleet is near its utilisation target, and pause when a new batch pulls utilisation down.',
+    },
+  ],
+};
+
+export const pricingPlaybook: Article = {
+  slug: 'pricing-services-business-playbook',
+  title: 'Pricing is the fastest lever in a services business, and the one founders avoid',
+  seoTitle: 'Pricing Strategy for Services Businesses: A Playbook',
+  description:
+    "How pricing restructures moved conversion from 1.4% to 4% at a wedding business and tripled a magazine's monthly sales, and how to change prices safely.",
+  excerpt: `Two pricing restructures, one wedding business and one magazine, moved more revenue than any campaign I have run. How to change prices without losing the customers you have.`,
+  category: 'Operating Playbook',
+  keywords: [
+    'pricing strategy services business',
+    'how to raise prices',
+    'value based pricing',
+    'pricing restructure',
+    'conversion rate optimisation',
+    'price testing',
+  ],
+  published: '2026-09-26',
+  blocks: [
+    {
+      type: 'p',
+      text: `The two largest revenue moves I have been part of both started with pricing. At Shaadi Mangalam, a wedding services business, restructuring pricing and the sales process took conversion from 1.4% to 4% while monthly leads tripled to 3,000. Through Cairros, a pricing and sales restructure took a magazine client from ₹2L to ₹7L of sales a month over six months.`,
+    },
+    {
+      type: 'p',
+      text: `Founders are more reluctant to touch pricing than almost anything else, usually because they fear losing customers they already have. These are the patterns that made those changes work, and how to change a price without taking that risk blind.`,
+    },
+
+    { type: 'h2', text: 'Why pricing moves faster than anything else' },
+    {
+      type: 'p',
+      text: `A price change reaches every sale at once. A marketing campaign reaches the people who see it, and a product change reaches the people who use that feature. In the language of my [Push and Absorb framework](/articles/push-and-absorb-framework), it is a change with a direct path: you set the price yourself and the number moves, with nobody else having to act first.`,
+    },
+    {
+      type: 'p',
+      text: `The magazine numbers show how fast that compounds. ₹2L to ₹7L is 3.5 times, and at the 23% monthly growth it ran at, six months of compounding comes to about 3.46 times. No single launch produced it; it came month by month from the new structure.`,
+    },
+
+    { type: 'h2', text: 'Pattern one: start the conversation from value' },
+    {
+      type: 'p',
+      text: `At Shaadi Mangalam the sales conversation used to open with a discount, which told the family that the list price was not the real price. We restructured pricing so the conversation starts from what a family is getting, and the discount stops being the first move. A family comparing vendors is trying to reduce risk, and a clear account of what is included does that better than a lower number.`,
+    },
+
+    { type: 'h2', text: 'Pattern two: fix conversion before buying volume' },
+    {
+      type: 'p',
+      text: `The brief at Shaadi Mangalam was more leads. At 1.4% conversion, tripling leads would have tripled the cost of the ones that never converted. Measured from lead to booking, the old rate turned roughly 1,000 monthly leads into about 14 bookings; the new one turns 3,000 into about 120. Volume and conversion each contributed close to a threefold gain, and pricing was where the conversion gain started.`,
+    },
+
+    { type: 'h2', text: 'Pattern three: price is part of a system' },
+    {
+      type: 'p',
+      text: `At ZenCabs, GTM and pricing work together pushed monthly GMV past ₹25L across 7,500+ rides, and revenue per car reached ₹62.5K a month through utilisation, driver incentives and ride allocation. On a two-sided platform the price a rider pays and the incentive a driver earns have to be set together. Raising one without the other moves the problem to the other side of the market.`,
+    },
+
+    { type: 'h2', text: 'How to change a price without guessing' },
+    {
+      type: 'ol',
+      items: [
+        'Write the change down as one sentence: what moves and by how much, who is better off, who pays, and from when.',
+        'Check the four places it can break: capacity, incentives, expectations and what competitors do in response.',
+        'Test it where the exposure is bounded, in one segment, one channel or one time of day, before rolling it out.',
+        'Watch an early number, such as bookings a day, where monthly revenue would tell you only after the fact.',
+        'Write the stop rule before you start: the result that makes you reverse the change, and by when.',
+      ],
+    },
+    {
+      type: 'p',
+      text: `Expectation is the channel people miss. A price rise is close to irreversible, and a discount that runs too long becomes the price people expect. The canteen example in the framework, raising the price only at the evening counter where the competition is closed, is the shape of a good first test.`,
+    },
+
+    { type: 'h2', text: 'Signs a business has a pricing problem' },
+    {
+      type: 'ul',
+      items: [
+        'Most sales close with a discount the salesperson offered without being asked.',
+        'Prices are only shared on a call, so every enquiry needs a conversation to go anywhere.',
+        'Conversion is low while demand is healthy.',
+        'Prices have not changed in years while costs have.',
+        'Customers compare the business on price because nothing else about the offer is clear.',
+      ],
+    },
+    {
+      type: 'p',
+      text: `The same thinking applied to restaurants, where the menu is the price list, is in [Indian restaurants: where a 30% revenue lift comes from](/articles/indian-restaurant-economics).`,
+    },
+  ],
+  faq: [
+    {
+      q: 'Why is pricing the fastest growth lever?',
+      a: 'A price change reaches every sale at once, and the business controls it directly, with no customer, partner or team having to change behaviour first. That makes it faster than marketing or product changes, which reach only the people they touch.',
+    },
+    {
+      q: 'How do you raise prices without losing customers?',
+      a: 'Test the change where the exposure is bounded, such as one segment or one time of day, watch an early number like daily bookings, and write down in advance the result that would make you reverse it. Lead the sales conversation with what the customer gets.',
+    },
+    {
+      q: 'Should you fix conversion or buy more leads first?',
+      a: 'Fix conversion first. At 1.4% conversion, tripling leads triples the cost of leads that never convert. At Shaadi Mangalam, conversion moved from 1.4% to 4% while leads tripled, and the combination multiplied bookings roughly eight times.',
     },
   ],
 };

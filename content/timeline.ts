@@ -4,7 +4,7 @@ import type { TimelineMilestone } from '@/types';
 export const timeline: TimelineMilestone[] = [
   {
     id: 'dps-jammu',
-    year: '2007 — 2021',
+    year: '2007 to 2021',
     title: 'School',
     org: 'Delhi Public School',
     location: 'Jammu, India',
@@ -12,14 +12,14 @@ export const timeline: TimelineMilestone[] = [
     summary: 'Fourteen years in Jammu, and the first taste of leading something.',
     details: [
       'CBSE Class XII: 92%, Commerce with Maths.',
-      'CBSE Class X: 94.2%, including 100/100 in Science — top 5 out of 600 students.',
+      'CBSE Class X: 94.2%, including 100/100 in Science, and top 5 out of 600 students.',
       'House Captain, selected from a cohort of 600+.',
       'Fourth generation of a Jammu business family, so cash flow and customers were dinner-table conversation long before they were coursework.',
     ],
   },
   {
     id: 'symbiosis',
-    year: '2021 — 2024',
+    year: '2021 to 2024',
     title: 'BBA, Accounts & Finance and Marketing',
     org: 'Symbiosis Centre for Management Studies',
     location: 'Pune, India',
@@ -29,12 +29,12 @@ export const timeline: TimelineMilestone[] = [
       'CGPA 8.16, top 10% of the batch.',
       'Elected Placement Coordinator from a cohort of 400 students.',
       'Marketing Head at Sympulse; active with Enactus Pune.',
-      'Started taking on real client work in my second year rather than waiting for the degree to end.',
+      'Started taking on real client work in my second year, two years before the degree ended.',
     ],
   },
   {
     id: 'cairros',
-    year: '2022 — 2024',
+    year: '2022 to 2024',
     title: 'Founder & Managing Partner',
     org: 'Cairros',
     location: 'Pune, India',
@@ -43,13 +43,13 @@ export const timeline: TimelineMilestone[] = [
     details: [
       'Scaled to seven-figure annual revenue in two years, owning strategy, sales and delivery end to end.',
       'Grew three restaurant clients 30% in revenue at 7% month on month.',
-      'Raised a magazine client’s sales 3.5x — ₹2L to ₹7L a month at 23% MoM over six months.',
+      'Raised a magazine client’s sales 3.5x, from ₹2L to ₹7L a month at 23% MoM over six months.',
       'Expanded across four sectors via rebrand, hiring and growth mandates.',
     ],
   },
   {
     id: 'equip9',
-    year: '2022 — 2024',
+    year: '2022 to 2024',
     title: 'Digital Marketing Executive',
     org: 'Equip9',
     location: 'Pune, India',
@@ -63,12 +63,12 @@ export const timeline: TimelineMilestone[] = [
   },
   {
     id: 'pwc',
-    year: '2024 — 2026',
+    year: '2024 to 2026',
     title: 'Risk Consulting Specialist 2',
     org: 'PwC India',
     location: 'Gurugram, India',
     kind: 'work',
-    summary: 'Fifteen months of Big-4 rigour — diagnostics, process redesign and ₹6+ Cr in client savings.',
+    summary: 'Fifteen months of Big 4 rigour: diagnostics, process redesign and ₹6+ Cr in client savings.',
     details: [
       'Delivered ₹6+ Cr in annual client cost savings via root-cause diagnostics and process redesign.',
       'Realised ₹2 Cr+ by reengineering 25+ processes across procurement, HR and finance.',
@@ -79,7 +79,7 @@ export const timeline: TimelineMilestone[] = [
   },
   {
     id: 'mccs',
-    year: '2024 — 2025',
+    year: '2024 to 2025',
     title: 'Business Transformation Consultant',
     org: 'MCCS Infra',
     location: 'India',
@@ -93,7 +93,7 @@ export const timeline: TimelineMilestone[] = [
   },
   {
     id: 'zencabs',
-    year: '2026 — Present',
+    year: '2026 to Present',
     title: 'Head of Strategy & Growth',
     org: 'ZenCabs',
     location: 'Jammu, India',
@@ -109,7 +109,7 @@ export const timeline: TimelineMilestone[] = [
   },
   {
     id: 'shaadi-mangalam',
-    year: '2026 — Present',
+    year: '2026 to Present',
     title: 'Growth & Business Strategy Consultant',
     org: 'Shaadi Mangalam',
     location: 'India',
@@ -122,14 +122,14 @@ export const timeline: TimelineMilestone[] = [
   },
   {
     id: 'masters-union',
-    year: '2026 — Present',
+    year: '2026 to Present',
     title: 'PGP in Technology & Business Management',
     org: 'Masters’ Union',
     location: 'Gurugram, India',
     kind: 'education',
     summary: 'Adding the technology layer to a consulting and operating background.',
     details: [
-      'Pursuing the PGP TBM — the deliberate step from business operator toward technology builder.',
+      'Pursuing the PGP TBM, a deliberate step from business operator toward technology builder.',
       'I had spent three years shipping growth, consulting and operations work; the gap was building the thing itself.',
       'Masters’ Union is practitioner-taught, which suits how I actually learn: do it, then understand why it worked.',
     ],

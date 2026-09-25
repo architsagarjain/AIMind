@@ -52,11 +52,11 @@ export function AboutWindow() {
         <div className="mt-8 rounded-xl border border-accent/20 bg-accent/[0.04] p-5">
           <p className="text-sm leading-relaxed text-ink/90 italic">
             &ldquo;I enjoy building things, solving problems and scaling ideas. The thread through
-            consulting, startups, growth and operations has always been the same — get close to the
+            consulting, startups, growth and operations has always been the same: get close to the
             problem, then ship something.&rdquo;
           </p>
           <p className="mt-3 text-[11px] font-semibold tracking-[0.18em] text-accent uppercase">
-            — {profile.name}
+            {profile.name}
           </p>
         </div>
       </div>

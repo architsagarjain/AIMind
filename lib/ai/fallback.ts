@@ -115,7 +115,7 @@ const ENTRIES: FallbackEntry[] = [
   {
     keys: ['how do you work', 'your process', 'approach', 'operating', 'cadence', 'framework'],
     answer:
-      "Diagnose, size, sequence, then build the cadence.\n\nDiagnose properly, because the presenting problem (\"we need more marketing\") is almost never the actual constraint. Size everything, since an unsized problem never gets prioritised. Sequence the work so the constrained side gets fixed first. Then install a weekly review that makes the work self-correcting.\n\nThe weekly KPI review with the founder was the most useful thing I built at ZenCabs: 15+ KPIs every week, so problems surfaced in days instead of quarters.",
+      "Diagnose, size, sequence, then build the cadence.\n\nDiagnose properly, because the presenting problem (\"we need more marketing\") is almost never the actual constraint. Size everything, since an unsized problem never gets prioritised. Sequence the work so the constrained side gets fixed first. Then install a weekly review that makes the work self-correcting.\n\nThe weekly KPI review with the founder was the most useful thing I built at ZenCabs: 15+ KPIs every week, so a problem surfaced within days of starting.",
   },
   {
     keys: ['market a startup', 'marketing', 'gtm', 'go to market', 'growth strategy', 'how would you'],
@@ -135,7 +135,7 @@ const ENTRIES: FallbackEntry[] = [
   {
     keys: ['ai', 'artificial intelligence', 'tech', 'technology', 'building', 'tools'],
     answer:
-      "The AI I care about is the kind that moves an operating metric.\n\nAt Equip9 I built a content engine with AI workflow agents that halved production turnaround. At PwC I co-developed an internal audit AI tool that saved 10,000+ consulting hours across 200+ consultants. This site comes from the same instinct: an AI clone of me you can question, in place of a PDF.\n\nThat's also why I'm at Masters' Union on the technology programme. I want to be able to build these things myself.",
+      "The AI I care about is the kind that moves an operating metric.\n\nAt Equip9 I built a content engine with AI workflow agents that halved production turnaround. At PwC I co-developed an internal audit AI tool that saved 10,000+ consulting hours across 200+ consultants. This site comes from the same instinct: an AI clone of me you can question the way you would question me.\n\nThat's also why I'm at Masters' Union on the technology programme. I want to be able to build these things myself.",
   },
 
   // ------------------------------------------------------------------ contact

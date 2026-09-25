@@ -113,7 +113,7 @@ async function lookupVoice(): Promise<{ voiceId: string; voiceName: string }> {
       cache: 'no-store',
     });
 
-    if (!res.ok) throw new Error(`Voice lookup failed — ${await upstreamError(res)}`);
+    if (!res.ok) throw new Error(`Voice lookup failed: ${await upstreamError(res)}`);
 
     const { voices } = (await res.json()) as { voices?: ElevenVoice[] };
     if (!voices?.length) throw new Error('The account has no voices available.');
@@ -186,7 +186,7 @@ async function synthesizeWith(
     });
 
     if (!res.ok || !res.body) {
-      const error = `Synthesis failed (${model}) — ${await upstreamError(res)}`;
+      const error = `Synthesis failed (${model}): ${await upstreamError(res)}`;
       return { error, modelRejected: res.status < 500 && /model/i.test(error) };
     }
     return { stream: res.body };

@@ -94,37 +94,40 @@ export function ArticleBody({ blocks }: { blocks: ArticleBlock[] }) {
             );
           case 'table':
             return (
-              <div key={i} className="article-table" role="region" aria-label="Table" tabIndex={0}>
-                <table>
-                  {block.caption && <caption>{block.caption}</caption>}
-                  <thead>
-                    <tr>
-                      {block.head.map((h, j) => (
-                        <th key={j} scope="col">
-                          <Inline text={h} />
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {block.rows.map((row, j) => (
-                      <tr key={j}>
-                        {row.map((cell, k) =>
-                          k === 0 && block.head[0] === '' ? (
-                            <th key={k} scope="row">
-                              <Inline text={cell} />
-                            </th>
-                          ) : (
-                            <td key={k}>
-                              <Inline text={cell} />
-                            </td>
-                          ),
-                        )}
+              <figure key={i} className="article-table-wrap">
+                <div className="article-table" role="region" aria-label={block.caption ?? 'Table'} tabIndex={0}>
+                  <table>
+                    <thead>
+                      <tr>
+                        {block.head.map((h, j) => (
+                          <th key={j} scope="col">
+                            <Inline text={h} />
+                          </th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {block.rows.map((row, j) => (
+                        <tr key={j}>
+                          {row.map((cell, k) =>
+                            k === 0 && block.head[0] === '' ? (
+                              <th key={k} scope="row">
+                                <Inline text={cell} />
+                              </th>
+                            ) : (
+                              <td key={k}>
+                                <Inline text={cell} />
+                              </td>
+                            ),
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {/* Outside the scroll area, so a phone shows it in full. */}
+                {block.caption && <figcaption className="article-table-caption">{block.caption}</figcaption>}
+              </figure>
             );
           case 'figure':
             return <Figure key={i} figure={block.figure} caption={block.caption} />;

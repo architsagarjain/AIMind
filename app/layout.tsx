@@ -46,13 +46,13 @@ export const metadata: Metadata = {
     type: 'website',
     // No url here: every page would inherit it and claim to be the home page.
     // Each page's canonical link carries its own URL.
-    title: `${profile.name} — ${profile.product}`,
+    title: `${profile.name} | ${profile.product}`,
     description: profile.altTagline,
     siteName: profile.product,
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${profile.name} — ${profile.product}`,
+    title: `${profile.name} | ${profile.product}`,
     description: profile.altTagline,
   },
   robots: {

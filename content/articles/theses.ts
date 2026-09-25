@@ -259,3 +259,128 @@ export const marketplaceMetrics: Article = {
     },
   ],
 };
+
+export const appliedAiThesis: Article = {
+  slug: 'applied-ai-indian-businesses-thesis',
+  title: "Where applied AI pays inside Indian businesses: an operator's thesis",
+  seoTitle: 'Applied AI in Indian Businesses: An Investment Thesis',
+  description:
+    'An investment thesis on applied AI in India from three builds that moved real metrics: where AI pays, why adoption is the moat, and what would prove it wrong.',
+  excerpt: `I have shipped three AI builds that moved an operating number: an audit tool, a content engine and the clone on this site. What they taught me about where applied AI earns money in India.`,
+  category: 'Investment Thesis',
+  keywords: [
+    'applied AI India',
+    'enterprise AI adoption India',
+    'AI investment thesis',
+    'AI agents workflow automation',
+    'vertical AI',
+    'AI in services businesses',
+  ],
+  published: '2026-09-26',
+  blocks: [
+    {
+      type: 'p',
+      text: `I have built or co-built three AI systems that moved an operating number. At PwC India, an internal audit AI tool saved 10,000+ consulting hours across 200+ consultants and reached 50% adoption in six months. At Equip9, a content engine with AI workflow agents halved content production turnaround. And this site runs an AI clone of me that answers from my verified work, on free models with fallbacks, so it costs almost nothing to run. I have also built Nexus AI on Google AI Studio.`,
+    },
+    {
+      type: 'p',
+      text: `None of these is a frontier model. All of them are the same kind of product: a model placed inside a specific workflow, with a number that shows whether it worked. That is the category I think will produce most of the returns in Indian AI over the next few years.`,
+    },
+
+    { type: 'h2', text: 'Indian companies are adopting fast, and short of expertise' },
+    {
+      type: 'p',
+      text: `Deloitte's 2026 State of AI in the Enterprise survey found that 40% of Indian respondents reported significant or full use of AI, against a global average of about 28%. At-scale deployment in India was strongest in product development (62%), strategy and operations (56%), marketing and sales (55%) and supply chain (48%). The same survey found Indian organisations lagging global peers on deep AI expertise.`,
+    },
+    {
+      type: 'p',
+      text: `Internal audit shows the same pattern from another angle. In a 2024 study by Wolters Kluwer and the Internal Audit Foundation, about half of audit leaders said their organisations were implementing generative AI, while about 26% of auditors were using it in their work. I cover that gap in [AI in internal audit](/articles/ai-in-internal-audit).`,
+    },
+    {
+      type: 'p',
+      text: `Put together, the demand is real and the ability to turn a model into a working process is scarce. The companies that supply that ability, as products or as services built into products, have the opening.`,
+    },
+
+    { type: 'h2', text: 'What my three builds had in common' },
+    { type: 'h3', text: 'Each one replaced hours in one workflow' },
+    {
+      type: 'p',
+      text: `The audit tool took over document-heavy steps in an engagement. The content engine took over production steps that had been done by hand for every audience segment. The clone answers the questions a recruiter would otherwise ask me one call at a time. Each had a single workflow and a number, hours saved or turnaround time, that could be measured before and after.`,
+    },
+    { type: 'h3', text: 'Adoption was harder than the model' },
+    {
+      type: 'p',
+      text: `The PwC tool reached 50% adoption because we trained people inside 10 live pilot engagements, on their own client work. The model was the easier half. In most service businesses a tool that slows someone down in its first week gets dropped, so the product has to fit the job as people already do it.`,
+    },
+    { type: 'h3', text: 'Reliability decided whether people trusted it' },
+    {
+      type: 'p',
+      text: `The clone on this site is held to one hard rule: it may only state figures that are in its knowledge base. Free models fail often, so it falls back from one to the next, cancels slow ones, and answers from pre-written responses if all of them fail. A visitor never sees an error page. Getting that right took far longer than getting a first answer out of a model, and it is what makes the product usable.`,
+    },
+
+    { type: 'h2', text: 'Where I think applied AI pays in India' },
+    {
+      type: 'ul',
+      items: [
+        'Professional services, where hours are the product: audit, tax, compliance, legal and consulting delivery.',
+        'Marketing and sales operations, where content and outreach have to be produced for many segments at once.',
+        'Operations in fragmented sectors, such as dispatch, scheduling and vendor coordination in mobility, logistics and construction.',
+        'Customer support in Indian languages, where most volume is repetitive and most tools were built for English.',
+      ],
+    },
+    {
+      type: 'p',
+      text: `The companies I would back sell a measurable outcome in one of these workflows, charge in a way tied to that outcome, and have a way of getting the tool adopted that does not depend on the customer figuring it out alone.`,
+    },
+
+    { type: 'h2', text: 'Questions I would ask an applied AI company' },
+    {
+      type: 'ul',
+      items: [
+        'Which workflow does it change, and how many hours or rupees per customer per month?',
+        'What adoption do customers reach after six months, and what did the company do to get there?',
+        'What happens when the model is wrong, and how does the user find out?',
+        'How much of the product would survive a much better model becoming free next year?',
+        'Who inside the customer owns the number the product moves?',
+      ],
+    },
+
+    { type: 'h2', text: 'What would prove this thesis wrong' },
+    {
+      type: 'ul',
+      items: [
+        'General-purpose assistants becoming good enough inside existing software that a workflow product adds little.',
+        'Indian customers, especially small businesses, refusing to pay enough for time saved to support a company.',
+        'Adoption problems turning out to be temporary, which would remove the advantage of companies that solve them.',
+      ],
+    },
+    {
+      type: 'p',
+      text: `I would check these against the market every six months, the same way I would check a stop rule in my [Push and Absorb framework](/articles/push-and-absorb-framework).`,
+    },
+
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[Deloitte India: Indian enterprises lead global peers in at-scale AI adoption](https://www.deloitte.com/in/en/about/press-room/indian-enterprises-lead-global-peers-in-at-scale-ai-adoption-across-most-functions.html)',
+        '[Deloitte India: State of AI in the Enterprise, 2026](https://www.deloitte.com/in/en/issues/generative-ai/state-of-ai-in-enterprise.html)',
+        '[The Accountant: Wolters Kluwer and IIA report on generative AI in internal audit](https://www.theaccountant-online.com/news/wolters-kluwer-iia-report/)',
+      ],
+    },
+  ],
+  faq: [
+    {
+      q: 'How widely is AI used in Indian companies?',
+      a: "In Deloitte's 2026 State of AI in the Enterprise survey, 40% of Indian respondents reported significant or full AI use, against about 28% globally. Deployment at scale was strongest in product development, strategy and operations, marketing and sales, and supply chain.",
+    },
+    {
+      q: 'Where does applied AI create the most value?',
+      a: 'In specific workflows where hours are the cost, such as professional services, marketing and sales operations, and coordination work in fragmented sectors, and where the product can show the hours or rupees it saves.',
+    },
+    {
+      q: 'What is the hardest part of deploying AI in a business?',
+      a: 'Adoption. At PwC India, an internal audit AI tool reached 50% adoption in six months because people were trained on it inside live client engagements. A tool that slows people down in its first week tends to be dropped.',
+    },
+  ],
+};

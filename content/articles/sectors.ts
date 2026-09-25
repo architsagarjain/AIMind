@@ -545,3 +545,126 @@ export const aiInInternalAudit: Article = {
     },
   ],
 };
+
+export const restaurantEconomics: Article = {
+  slug: 'indian-restaurant-economics',
+  title: 'Indian restaurants: where a 30% revenue lift comes from in an 8% market',
+  seoTitle: 'Indian Restaurant Industry Economics: Menus, Tables, Apps',
+  description:
+    "India's restaurant market by the numbers, what delivery commissions do to margins, and the menu and table-turn work that grew three restaurants' revenue 30%.",
+  excerpt: `India's food services market is growing about 8% a year. Three restaurants I worked with through Cairros grew revenue 30%, and almost none of it came from marketing.`,
+  category: 'Sector Breakdown',
+  keywords: [
+    'Indian restaurant industry',
+    'NRAI India Food Services Report',
+    'restaurant menu engineering',
+    'table turnover',
+    'Zomato Swiggy commission',
+    'restaurant unit economics',
+  ],
+  published: '2026-09-26',
+  blocks: [
+    {
+      type: 'p',
+      text: `Through Cairros, the consulting and marketing agency I ran at college, I worked with three restaurant clients whose revenue grew 30%, compounding at 7% a month. The work was menu reengineering and table-turnaround operations. This is the sector those restaurants operate in, and the arithmetic behind why that kind of work moves revenue faster than most marketing does.`,
+    },
+
+    { type: 'h2', text: 'The size of the market' },
+    {
+      type: 'p',
+      text: `The National Restaurant Association of India (NRAI) values Indian food services at ₹5,69,487 crore in FY24 and expects ₹7,76,511 crore by FY28, growth of about 8.1% a year. The organised part, restaurants with the scale and systems of a proper business, was ₹2,49,649 crore or 43.8% of the total, and NRAI expects it to grow at 13.2% a year to 52.9% of the market by 2028. The sector employs about 85.5 lakh people.`,
+    },
+    {
+      type: 'p',
+      text: `The number to take from that is the gap between 8% and 13%. The market as a whole grows steadily, and the organised players take share from the unorganised ones. A restaurant grows faster than its market by taking share on its own street, and that comes down to how it runs.`,
+    },
+
+    { type: 'h2', text: 'What delivery apps do to the margin' },
+    {
+      type: 'p',
+      text: `Delivery is the obvious growth channel, and it carries a cost that dine-in does not. NRAI has described aggregator commissions of 20% to 30% of order value as unviable, and its complaint led the Competition Commission of India to order an investigation into Zomato and Swiggy in 2022. The CCI's investigation report, reported in 2024, found that the platforms had violated competition law.`,
+    },
+    {
+      type: 'p',
+      text: `Take a round-number order of ₹400. At a 25% commission the restaurant keeps ₹300, before food cost, packaging and any discount it funds. The same dish sold at a table carries none of that commission. So for a restaurant with empty tables at peak hours, filling them is usually the better margin than chasing delivery volume, and a restaurant that is already full at peak has a capacity problem that no delivery app solves.`,
+    },
+
+    { type: 'h2', text: 'The two levers inside the building' },
+    { type: 'p', text: `Restaurant revenue breaks into a simple product: seats, times turns, times the average bill.` },
+    {
+      type: 'table',
+      head: ['Lever', 'What moves it', 'Where it shows up'],
+      rows: [
+        ['Seats', 'Layout and capacity', 'Rarely changes without a refit'],
+        ['Turns per service', 'Speed of ordering, kitchen and billing', 'More covers from the same room at peak'],
+        ['Average bill', 'Menu design, pricing and what the staff recommend', 'More revenue from every cover'],
+      ],
+    },
+    {
+      type: 'p',
+      text: `Seats are fixed in the short run, so the work sits in the other two. A restaurant with 40 seats that goes from two dinner turns to two and a half serves 20 more covers a night. With round numbers for illustration, 20 covers at an average bill of ₹600 is ₹12,000 more a night, all from guests who were already waiting for a table.`,
+    },
+
+    { type: 'h3', text: 'Menu reengineering' },
+    {
+      type: 'p',
+      text: `Menu engineering sorts every dish by two measures: how often it sells and how much margin it earns. High sellers with high margins get the best position on the menu. High margin dishes that sell slowly get better placement, a better description or a staff recommendation. Popular dishes with thin margins get repriced or re-portioned. Dishes weak on both get cut, which also makes the kitchen faster. A shorter menu with the right dishes in the right places raises the average bill and speeds up ordering at the same time.`,
+    },
+    { type: 'h3', text: 'Table turnaround' },
+    {
+      type: 'p',
+      text: `A table turns more slowly because of waits the guest does not choose: for a menu, for the order to be taken, for food, for the bill. Each wait is a process with an owner. Shortening them removes dead time between the parts of the meal a guest enjoys, and nobody has to be hurried out.`,
+    },
+
+    { type: 'h2', text: 'Why the growth compounded' },
+    {
+      type: 'p',
+      text: `The three restaurants grew revenue 30% at about 7% a month. Those two numbers agree: 7% a month compounds to about 31% in four months. Growth from operations compounds because each improvement stays in place while the next one is added, where a promotion lifts one month and then fades.`,
+    },
+    {
+      type: 'p',
+      text: `The same logic, that operating changes stick and promotions fade, is what my [Push and Absorb framework](/articles/push-and-absorb-framework) calls the expectation channel. A festival discount becomes the price people expect all year. A faster table does not create an expectation you later have to take back.`,
+    },
+
+    { type: 'h2', text: 'What I would look at in any restaurant business' },
+    {
+      type: 'ul',
+      items: [
+        'Covers per seat at peak, by day of the week.',
+        'Average bill, and how it moved after the last menu change.',
+        'The share of revenue from delivery, and the effective commission on it after discounts.',
+        'Menu items that sell below a threshold, and what they cost the kitchen in time.',
+        'Time from seating to order, and from order to food, at peak.',
+      ],
+    },
+    {
+      type: 'p',
+      text: `Pricing sat underneath much of this work. I wrote more about it in [pricing as the fastest lever in a services business](/articles/pricing-services-business-playbook).`,
+    },
+
+    { type: 'h2', text: 'Sources' },
+    {
+      type: 'ul',
+      items: [
+        '[Restaurant India: NRAI India Food Services Report 2024 findings](https://www.restaurantindia.in/article/india-to-be-the-3rd-largest-food-service-market-by-2028-overtaking-japan-nrai-ifsr-2024)',
+        '[NRAI: India Food Services Report 2024](https://nrai.org/aboutNewsAndUpdate.aspx?ID=6EQtfBjriLQ%3D&Type=oS9yZygW1hU%3D)',
+        '[The News Minute: CCI orders probe into Zomato and Swiggy](https://www.thenewsminute.com/news/cci-orders-probe-zomato-swiggy-over-alleged-unfair-practices-162585)',
+        '[The Tribune: Competition Commission probe finds Zomato and Swiggy violating competition norms](https://www.tribuneindia.com/news/business/competition-commission-probe-finds-zomato-swiggy-violating-competition-norms/)',
+      ],
+    },
+  ],
+  faq: [
+    {
+      q: 'How big is the Indian restaurant industry?',
+      a: "NRAI's India Food Services Report 2024 values the market at ₹5,69,487 crore in FY24, growing about 8.1% a year to ₹7,76,511 crore by FY28. The organised segment was 43.8% of the total and is expected to reach 52.9% by 2028.",
+    },
+    {
+      q: 'How much commission do Zomato and Swiggy charge restaurants?',
+      a: 'NRAI has described commissions of 20% to 30% of order value. Its complaint led the Competition Commission of India to investigate both platforms from 2022, and the investigation report found violations of competition law.',
+    },
+    {
+      q: 'How do restaurants increase revenue without more customers?',
+      a: 'By raising turns per service, so the same seats serve more covers at peak, and by raising the average bill through menu engineering: placing high margin dishes well, repricing popular low margin ones and cutting dishes weak on both.',
+    },
+  ],
+};

@@ -69,7 +69,7 @@ export function buildKnowledgeBase(): string {
     [
       '## IDENTITY',
       `Name: ${profile.name}`,
-      `From: ${profile.hometown} — fourth-generation business family`,
+      `From: ${profile.hometown}, fourth-generation business family`,
       `Currently: ${profile.currently}`,
       `Self-description: ${profile.roles.join(' · ')}`,
       `Interests: ${profile.interests.join(', ')}`,
@@ -83,7 +83,7 @@ export function buildKnowledgeBase(): string {
       '## CAREER TIMELINE',
       ...timeline.map((m) =>
         [
-          `### ${m.title} — ${m.org} (${m.year}, ${m.location})`,
+          `### ${m.title}, ${m.org} (${m.year}, ${m.location})`,
           m.summary,
           ...m.details.filter((d) => addsToCaseStudy(d, studies.get(orgKey(m.org)))).map((d) => `- ${d}`),
         ].join('\n'),
@@ -96,7 +96,7 @@ export function buildKnowledgeBase(): string {
       '## PROJECTS & CASE STUDIES',
       ...projects.map((p) =>
         [
-          `### ${p.name} — ${p.subtitle}`,
+          `### ${p.name}: ${p.subtitle}`,
           `Role: ${p.role} | Period: ${p.period}`,
           `Verified metrics: ${p.metrics.map((m) => `${m.label}: ${m.value}`).join(' | ')}`,
           `Challenge: ${p.caseStudy.challenge}`,
@@ -111,7 +111,7 @@ export function buildKnowledgeBase(): string {
 
   sections.push(
     [
-      '## RESUME — EXPERIENCE',
+      '## RESUME: EXPERIENCE',
       ...experience.map((e) =>
         [
           `### ${e.role}, ${e.org} (${e.period}, ${e.location})`,
@@ -123,7 +123,7 @@ export function buildKnowledgeBase(): string {
 
   sections.push(
     [
-      '## RESUME — EDUCATION',
+      '## RESUME: EDUCATION',
       ...education.map((e) => `- ${e.degree}, ${e.school} (${e.period}, ${e.location})`),
     ].join('\n'),
   );
@@ -148,7 +148,7 @@ export function buildKnowledgeBase(): string {
   sections.push(
     [
       '## MY ARTICLES (link a visitor to the relevant one by its path)',
-      ...articles.map((a) => `- ${a.title} (${a.category}) — /articles/${a.slug}: ${plain(a.excerpt)}`),
+      ...articles.map((a) => `- ${a.title} (${a.category}) at /articles/${a.slug}: ${plain(a.excerpt)}`),
     ].join('\n'),
   );
 

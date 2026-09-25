@@ -1,8 +1,14 @@
 import type { Article, ArticleBlock } from '@/types';
 import { pushAndAbsorb } from './push-and-absorb';
-import { aiInInternalAudit, constructionEquipment, evCabEconomics, weddingIndustry } from './sectors';
-import { marginLeaks, weeklyOperatingReview } from './operating';
-import { marketplaceMetrics, tier2Thesis } from './theses';
+import {
+  aiInInternalAudit,
+  constructionEquipment,
+  evCabEconomics,
+  restaurantEconomics,
+  weddingIndustry,
+} from './sectors';
+import { citySizing, marginLeaks, pricingPlaybook, weeklyOperatingReview } from './operating';
+import { appliedAiThesis, marketplaceMetrics, tier2Thesis } from './theses';
 
 /** Every article, in the order the hub lists them within a category. */
 export const articles: Article[] = [
@@ -10,10 +16,14 @@ export const articles: Article[] = [
   evCabEconomics,
   weddingIndustry,
   constructionEquipment,
+  restaurantEconomics,
   aiInInternalAudit,
   weeklyOperatingReview,
+  citySizing,
+  pricingPlaybook,
   marginLeaks,
   tier2Thesis,
+  appliedAiThesis,
   marketplaceMetrics,
 ];
 

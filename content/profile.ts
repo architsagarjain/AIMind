@@ -34,10 +34,10 @@ export const profile = {
 
   about: [
     'I come from a fourth-generation business family in Jammu, so operating a business was the dinner-table conversation long before it was a career.',
-    'I started Cairros in my second year of college and scaled it to seven-figure annual revenue in two years — strategy, sales and delivery, end to end. That is still the fastest education I have had.',
+    'I started Cairros in my second year of college and scaled it to seven-figure annual revenue in two years, owning strategy, sales and delivery end to end. It is still the fastest education I have had.',
     'At PwC India I spent fifteen months in risk consulting, delivering ₹6+ Cr in annual client cost savings across engagements worth ₹12 Cr+ for clients including Cars24, Stryker India and PIF. I also co-built an internal audit AI tool that saved 10,000+ consulting hours across 200+ consultants.',
-    'Then I went the other direction entirely. At ZenCabs I took an EV mobility venture from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months — cancellations from 40% to 6%, fleet utilisation from 40% to 75%.',
-    'Today I am at Masters’ Union on the PGP in Technology & Business, sitting where consulting rigour meets founder-speed execution. That is exactly where I want to be.',
+    'Then I went in the other direction. At ZenCabs I took an EV mobility venture from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months, cutting cancellations from 40% to 6% and lifting fleet utilisation from 40% to 75%.',
+    'Today I am at Masters’ Union on the PGP in Technology & Business, where consulting rigour meets founder-speed execution, which is where I want to be.',
   ],
 
   interests: [

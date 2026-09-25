@@ -250,7 +250,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
               Meet Archit AI
             </span>
             <span className="mt-0.5 block text-[11px] text-faint">
-              Same thoughts. Always available.
+              My answers, at any hour.
             </span>
           </span>
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-void">

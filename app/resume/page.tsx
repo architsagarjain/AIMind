@@ -11,7 +11,7 @@ import './print.css';
 export const metadata: Metadata = {
   alternates: { canonical: '/resume' },
   title: 'Resume',
-  description: `Resume of ${profile.name} — ${profile.roles.join(', ')}.`,
+  description: `Resume of ${profile.name}: ${profile.roles.join(', ')}.`,
 };
 
 /**
@@ -66,7 +66,7 @@ export default function ResumePage() {
             <article key={`${role.org}-${role.role}`} className="break-inside-avoid">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="font-display text-base font-bold text-ink">
-                  {role.role} — {role.org}
+                  {role.role}, {role.org}
                 </h3>
                 <p className="text-[11px] text-faint">
                   {role.period} · {role.location}
@@ -92,7 +92,7 @@ export default function ResumePage() {
           {education.map((entry) => (
             <div key={entry.school} className="flex flex-wrap items-baseline justify-between gap-2">
               <p className="text-sm font-semibold text-ink">
-                {entry.degree} — {entry.school}
+                {entry.degree}, {entry.school}
               </p>
               <p className="text-[11px] text-faint">
                 {entry.period} · {entry.location}
@@ -123,7 +123,7 @@ export default function ResumePage() {
             <article key={project.slug} className="break-inside-avoid">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="text-sm font-bold text-ink">
-                  {project.name} — {project.subtitle}
+                  {project.name}: {project.subtitle}
                 </h3>
                 <p className="text-[11px] text-faint">{project.role}</p>
               </div>
@@ -133,11 +133,6 @@ export default function ResumePage() {
         </div>
       </section>
 
-      <footer className="no-print mt-12 border-t border-hairline pt-6 text-xs text-faint">
-        Generated from{' '}
-        <code className="rounded bg-white/10 px-1.5 py-0.5 text-accent">content/resume.ts</code> —
-        edit there and this page updates.
-      </footer>
     </main>
   );
 }

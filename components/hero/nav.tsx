@@ -40,7 +40,7 @@ export function Nav({
       <button
         onClick={() => onNavigate('home')}
         className="group text-left"
-        aria-label={`${profile.product} — home`}
+        aria-label={`${profile.product}, home`}
       >
         <span className="block font-display text-lg font-extrabold tracking-[0.22em] text-ink md:text-xl">
           ARCHIT.AI

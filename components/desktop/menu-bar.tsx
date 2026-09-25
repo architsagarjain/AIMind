@@ -64,7 +64,7 @@ export function MenuBar({ onExit }: { onExit: () => void }) {
         <BatteryFull className="hidden h-4 w-4 sm:block" strokeWidth={1.6} />
         <Wifi className="h-3.5 w-3.5" strokeWidth={2} />
         <Search className="hidden h-3.5 w-3.5 sm:block" strokeWidth={2} />
-        <span className="tabular-nums text-ink">{time || '—'}</span>
+        <span className="tabular-nums text-ink">{time || '\u00a0'}</span>
       </div>
     </div>
   );
