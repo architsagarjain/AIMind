@@ -25,6 +25,7 @@ you into a laptop screen, which boots into a virtual desktop where every
 - [Database schema](#database-schema)
 - [API routes](#api-routes)
 - [Editing the content](#editing-the-content)
+- [Articles and SEO](#articles-and-seo)
 - [Performance](#performance)
 - [Accessibility](#accessibility)
 - [Deployment](#deployment)
@@ -411,6 +412,42 @@ they cannot drift apart.
 
 ---
 
+## Articles and SEO
+
+The articles live at `/articles` as their own statically generated pages, so
+search engines index them as ordinary documents, independent of the 3D home
+page. The desktop's **Writing** app lists the same articles.
+
+| File | What it holds |
+| --- | --- |
+| `content/articles/*.ts` | The articles, as typed blocks (headings, paragraphs, lists, tables, quotes, figures) plus an FAQ. Text supports `**bold**` and `[label](/path)` |
+| `content/articles/index.ts` | The registry: order, reading time, related articles |
+| `content/press.ts` | Coverage elsewhere. `featured: true` leads the "Featured in" strip; the strip hides itself while the list is empty |
+| `content/apps.ts` | Apps you have built (Nexus AI), shown in Projects and on the hub |
+
+**To add an article:** write a new `Article` in `content/articles/`, add it to
+the array in `content/articles/index.ts`, and build. The page, sitemap entry,
+RSS item, share image, structured data and the AI clone's knowledge all come
+from that one object.
+
+**What makes it indexable:**
+
+- `app/robots.ts` allows everything except `/api/` and points to the sitemap by absolute URL.
+- `app/sitemap.ts` lists every page and article, with each article's date.
+- Every page sets a canonical URL; articles set their own title, description and Open Graph article tags.
+- Structured data (`lib/seo.ts`): `Person` and `WebSite` on every page, plus `BlogPosting`, `BreadcrumbList` and `FAQPage` on articles, and a `CollectionPage` on the hub. Press entries are attached to the `Person` as `subjectOf`, which is how search engines connect that coverage to you.
+- A share image per article, generated at build time (`app/articles/[slug]/opengraph-image.tsx`).
+- An RSS feed at `/articles/rss.xml`.
+
+**Connecting a search console:**
+
+1. Set `NEXT_PUBLIC_SITE_URL` to your real domain, so canonical URLs and the sitemap use it.
+2. In Google Search Console, add the site as a **URL prefix** property, choose the **HTML tag** method, and copy the token from `content="…"` into `GOOGLE_SITE_VERIFICATION`. Do the same for Bing Webmaster Tools with `BING_SITE_VERIFICATION`. Redeploy, then click Verify.
+3. Submit `https://your-domain/sitemap.xml` under **Sitemaps**.
+4. Use **URL Inspection → Request indexing** on `/articles` and the articles you most want found first.
+
+---
+
 ## Performance
 
 - 3D is code-split and gated behind a capability check, so the initial JS for
@@ -468,6 +505,8 @@ Set these in **Project → Settings → Environment Variables**:
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | All | No |
 | `SUPABASE_SERVICE_ROLE_KEY` | Production, Preview | No — **never** prefix with `NEXT_PUBLIC_` |
 | `NEXT_PUBLIC_SITE_URL` | All | No — falls back to the Vercel deployment host. Set it once you have a domain |
+| `GOOGLE_SITE_VERIFICATION` | Production | No — the token from Search Console's HTML-tag method |
+| `BING_SITE_VERIFICATION` | Production | No — the token from Bing Webmaster Tools |
 
 Then:
 

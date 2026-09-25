@@ -13,6 +13,9 @@ const ALLOWED = new Set([
   'resume_downloaded',
   'chat_started',
   'boot_completed',
+  'article_opened',
+  'press_opened',
+  'app_opened',
 ]);
 
 export async function POST(req: Request) {

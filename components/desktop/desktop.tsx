@@ -13,6 +13,7 @@ import { AboutWindow } from '@/components/windows/about-window';
 import { ProjectsWindow } from '@/components/windows/projects-window';
 import { TimelineWindow } from '@/components/windows/timeline-window';
 import { ResumeWindow } from '@/components/windows/resume-window';
+import { WritingWindow } from '@/components/windows/writing-window';
 import { AskWindow } from '@/components/windows/ask-window';
 import { useWindows, WINDOW_IDS } from '@/lib/store/windows';
 import type { WindowId } from '@/types';
@@ -22,6 +23,7 @@ const BODIES: Record<WindowId, React.ComponentType> = {
   projects: ProjectsWindow,
   timeline: TimelineWindow,
   resume: ResumeWindow,
+  writing: WritingWindow,
   ask: AskWindow,
 };
 
@@ -38,7 +40,7 @@ export function Desktop({ onExit }: { onExit: () => void }) {
   const anyOpen = WINDOW_IDS.some((id) => windows[id].open && !windows[id].minimized);
   const { open, close, focused } = useWindows();
 
-  // Keyboard: ⌘/Ctrl+1..5 open windows, Escape closes the focused one.
+  // Keyboard: ⌘/Ctrl+1..6 open windows, Escape closes the focused one.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && focused) {

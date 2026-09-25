@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { projects } from '@/content/projects';
+import { apps } from '@/content/apps';
 import type { Project } from '@/types';
 import { SectionLabel } from '@/components/ui/section-label';
 import { Tag } from '@/components/ui/tag';
@@ -106,6 +107,31 @@ export function ProjectsWindow() {
                 </motion.button>
               ))}
             </div>
+
+            {apps.length > 0 && (
+              <div className="mt-10">
+                <SectionLabel>Apps I have built</SectionLabel>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  {apps.map((app) => (
+                    <a
+                      key={app.url}
+                      href={app.url}
+                      target="_blank"
+                      rel="noopener"
+                      onClick={() => track('app_opened', { app: app.name })}
+                      className="group flex items-start justify-between gap-3 rounded-2xl border border-hairline-strong surface-1 p-5 transition-all duration-400 hover:-translate-y-1 hover:border-accent/40 hover:surface-2"
+                    >
+                      <span>
+                        <span className="block font-display text-xl font-bold text-ink">{app.name}</span>
+                        <span className="mt-1 block text-[13px] leading-relaxed text-muted">{app.tagline}</span>
+                        <span className="mt-3 block text-[11px] text-faint">Built with {app.builtWith}</span>
+                      </span>
+                      <ArrowUpRight className="h-4 w-4 shrink-0 text-faint transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

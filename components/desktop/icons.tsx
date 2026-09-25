@@ -1,4 +1,4 @@
-import { Briefcase, FileText, MessagesSquare, Route, User } from 'lucide-react';
+import { Briefcase, FileText, MessagesSquare, PenLine, Route, User } from 'lucide-react';
 import type { WindowId } from '@/types';
 
 /** Shared window metadata: one place defines every label, icon and subtitle. */
@@ -15,6 +15,7 @@ export const WINDOW_META: Record<
   projects: { label: 'Projects', subtitle: 'Case studies', Icon: Briefcase, accent: '#5E5CE6' },
   timeline: { label: 'Timeline', subtitle: 'The path so far', Icon: Route, accent: '#FF9F0A' },
   resume: { label: 'Resume', subtitle: 'Experience & skills', Icon: FileText, accent: '#0E9F9F' },
+  writing: { label: 'Writing', subtitle: 'Articles & frameworks', Icon: PenLine, accent: '#FF375F' },
   ask: { label: 'Ask Archit', subtitle: 'Talk to the clone', Icon: MessagesSquare, accent: '#BF5AF2' },
 };
 

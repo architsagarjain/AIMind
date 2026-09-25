@@ -1,4 +1,9 @@
+import type { Metadata } from 'next';
 import { ExperienceShell } from '@/components/experience-shell';
+import { ArticleIndexProvider } from '@/components/windows/article-index';
+import { articleSummaries } from '@/content/articles';
+
+export const metadata: Metadata = { alternates: { canonical: '/' } };
 
 /**
  * The whole experience is one route.
@@ -8,5 +13,9 @@ import { ExperienceShell } from '@/components/experience-shell';
  * context on every navigation. The desktop's windows are the "pages".
  */
 export default function HomePage() {
-  return <ExperienceShell />;
+  return (
+    <ArticleIndexProvider value={articleSummaries()}>
+      <ExperienceShell />
+    </ArticleIndexProvider>
+  );
 }

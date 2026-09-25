@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Inter_Tight } from 'next/font/google';
 import { profile } from '@/content/profile';
-import { SITE_URL, SITE_URL_OBJECT } from '@/lib/site';
+import { SITE_URL_OBJECT } from '@/lib/site';
+import { JsonLd } from '@/components/seo/json-ld';
+import { graph, personSchema, websiteSchema } from '@/lib/seo';
 import './globals.css';
 
 const inter = Inter({
@@ -36,10 +38,14 @@ export const metadata: Metadata = {
     'ZenCabs',
     'PwC India',
     'Cairros Consulting',
+    'Founder’s Office',
+    'Chief of Staff',
+    'venture capital',
   ],
   openGraph: {
     type: 'website',
-    url: SITE_URL,
+    // No url here: every page would inherit it and claim to be the home page.
+    // Each page's canonical link carries its own URL.
     title: `${profile.name} — ${profile.product}`,
     description: profile.altTagline,
     siteName: profile.product,
@@ -49,7 +55,19 @@ export const metadata: Metadata = {
     title: `${profile.name} — ${profile.product}`,
     description: profile.altTagline,
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
+  },
+  // Search console ownership. Paste only the token (the content="…" value)
+  // into these env vars; the tags are omitted while they are unset.
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION?.trim() || undefined,
+    other: process.env.BING_SITE_VERIFICATION?.trim()
+      ? { 'msvalidate.01': process.env.BING_SITE_VERIFICATION.trim() }
+      : undefined,
+  },
 };
 
 export const viewport: Viewport = {
@@ -73,6 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         {children}
+        <JsonLd data={graph(personSchema(), websiteSchema())} />
       </body>
     </html>
   );

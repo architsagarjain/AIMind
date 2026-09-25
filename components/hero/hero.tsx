@@ -130,7 +130,8 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           animate="show"
           className="mt-3 font-display text-[clamp(2.6rem,10vw,6.8rem)] leading-[0.86] font-extrabold md:mt-4"
         >
-          <span className="block text-ink">ARCHIT</span>
+          <span className="block text-ink">ARCHIT</span>{' '}
+          {/* The space keeps the heading's text "ARCHIT JAIN" for crawlers and screen readers. */}
           <span className="text-gradient-accent block">JAIN</span>
         </motion.h1>
 

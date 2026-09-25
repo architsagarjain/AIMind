@@ -25,7 +25,7 @@ export function Dock() {
     >
       {/* macOS dock: a translucent slab with a hairline, icons as squircles,
           and a running dot under each open app. */}
-      <div className="glass-strong flex items-end gap-2 rounded-[22px] px-3 py-2.5 shadow-[var(--shadow-window)]">
+      <div className="glass-strong flex items-end gap-1.5 rounded-[22px] px-2.5 py-2.5 shadow-[var(--shadow-window)] sm:gap-2 sm:px-3">
         {WINDOW_IDS.map((id) => {
           const { label, Icon, accent } = WINDOW_META[id];
           const win = windows[id];
@@ -60,7 +60,8 @@ export function Dock() {
                   that read as a macOS app icon rather than a web button. */}
               <span
                 className={cn(
-                  'flex h-[52px] w-[52px] items-center justify-center rounded-[14px]',
+                  // Six apps: slightly smaller on phones so the dock fits a 360px screen.
+                  'flex h-[46px] w-[46px] items-center justify-center rounded-[13px] sm:h-[52px] sm:w-[52px] sm:rounded-[14px]',
                   'transition-transform duration-200 ease-out',
                   'group-hover:-translate-y-2 group-hover:scale-110',
                 )}
@@ -70,7 +71,7 @@ export function Dock() {
                     'inset 0 1px 0 #ffffff80, inset 0 -1px 0 #00000014, 0 4px 10px -3px #0b1a3359',
                 }}
               >
-                <Icon className="h-[26px] w-[26px] text-white" strokeWidth={1.7} />
+                <Icon className="h-[23px] w-[23px] text-white sm:h-[26px] sm:w-[26px]" strokeWidth={1.7} />
               </span>
 
               <span

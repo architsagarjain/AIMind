@@ -5,6 +5,7 @@ import { Chat } from '@/components/chat/chat';
 import { profile } from '@/content/profile';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/ask' },
   title: 'Ask Archit',
   description: `${profile.altTagline} Talk to a digital version of ${profile.name}.`,
 };

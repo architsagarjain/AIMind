@@ -17,6 +17,7 @@ const DEFAULTS: Record<WindowId, { width: number; height: number }> = {
   projects: { width: 940, height: 620 },
   timeline: { width: 780, height: 600 },
   resume: { width: 820, height: 660 },
+  writing: { width: 760, height: 640 },
   ask: { width: 720, height: 640 },
 };
 
@@ -35,7 +36,7 @@ function initialWindow(id: WindowId, index: number): DesktopWindowState {
   };
 }
 
-const IDS: WindowId[] = ['about', 'projects', 'timeline', 'resume', 'ask'];
+const IDS: WindowId[] = ['about', 'projects', 'timeline', 'resume', 'writing', 'ask'];
 
 interface WindowStore {
   windows: Record<WindowId, DesktopWindowState>;

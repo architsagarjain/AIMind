@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { profile } from '@/content/profile';
@@ -70,21 +71,40 @@ export function Nav({
             )}
           </button>
         ))}
+        {/* A real link rather than a window: the articles are their own pages,
+            and an <a href> in the home page HTML is how crawlers find them. */}
+        <Link
+          href="/articles"
+          className="text-[11px] font-semibold tracking-[0.18em] text-muted uppercase transition-colors duration-300 hover:text-ink"
+        >
+          Articles
+        </Link>
       </nav>
 
-      <button
-        onClick={onTalk}
-        className={cn(
-          'group flex items-center gap-2.5 rounded-full border border-hairline-strong bg-white/5 px-5 py-3 backdrop-blur-xl',
-          'text-[11px] font-semibold tracking-[0.16em] uppercase text-ink',
-          'transition-all duration-300 hover:border-accent/50 hover:bg-accent/10 hover:shadow-[var(--shadow-glow-sm)]',
-          'md:px-7 md:py-3.5',
-        )}
-      >
-        <MessageSquare className="h-4 w-4 text-accent" strokeWidth={2} />
-        <span className="hidden sm:inline">Talk To Archit</span>
-        <span className="sm:hidden">Talk</span>
-      </button>
+      <div className="flex items-center gap-4">
+        {/* Below lg the link row is hidden, so the articles get their own link.
+            Not on phones: at 360px it pushes the wordmark onto two lines, and
+            the desktop's Writing app covers it there. */}
+        <Link
+          href="/articles"
+          className="hidden text-[11px] font-semibold tracking-[0.16em] text-muted uppercase transition-colors hover:text-ink sm:inline lg:hidden"
+        >
+          Articles
+        </Link>
+        <button
+          onClick={onTalk}
+          className={cn(
+            'group flex items-center gap-2.5 rounded-full border border-hairline-strong bg-white/5 px-5 py-3 backdrop-blur-xl',
+            'text-[11px] font-semibold tracking-[0.16em] uppercase text-ink',
+            'transition-all duration-300 hover:border-accent/50 hover:bg-accent/10 hover:shadow-[var(--shadow-glow-sm)]',
+            'md:px-7 md:py-3.5',
+          )}
+        >
+          <MessageSquare className="h-4 w-4 text-accent" strokeWidth={2} />
+          <span className="hidden sm:inline">Talk To Archit</span>
+          <span className="sm:hidden">Talk</span>
+        </button>
+      </div>
     </motion.header>
   );
 }

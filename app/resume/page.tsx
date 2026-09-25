@@ -9,6 +9,7 @@ import { AutoPrint } from './auto-print';
 import './print.css';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/resume' },
   title: 'Resume',
   description: `Resume of ${profile.name} — ${profile.roles.join(', ')}.`,
 };

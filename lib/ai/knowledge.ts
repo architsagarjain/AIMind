@@ -2,6 +2,10 @@ import { profile } from '@/content/profile';
 import { projects } from '@/content/projects';
 import { timeline } from '@/content/timeline';
 import { education, experience, skills } from '@/content/resume';
+import { articles, plain } from '@/content/articles';
+import { pushAndAbsorb } from '@/content/articles/push-and-absorb';
+import { apps } from '@/content/apps';
+import { pressByPriority } from '@/content/press';
 
 /**
  * Compiles the content files into a compact, token-efficient context block.
@@ -127,6 +131,41 @@ export function buildKnowledgeBase(): string {
   sections.push(
     ['## SKILLS', ...skills.map((s) => `- ${s.group}: ${s.items.join(', ')}`)].join('\n'),
   );
+
+  // The framework is Archit's own, so the clone should be able to explain it.
+  // Its FAQ answers are the compact form of the whole paper.
+  sections.push(
+    [
+      '## MY FRAMEWORK: PUSH AND ABSORB',
+      `Published ${pushAndAbsorb.published} at /articles/${pushAndAbsorb.slug}`,
+      ...(pushAndAbsorb.faq ?? []).map((f) => `- ${f.q} ${plain(f.a)}`),
+      '- The three bridges: tracing back hands you a lever, turning it around moves you from Absorb into Push, and rehearsing from the other side (running Absorb from the other party’s chair) tests a push before you spend on it.',
+      '- The four knock-on channels: capacity, incentive, expectation, response. Expectation is the most expensive and least reversible.',
+      '- Its core claim: context is just somebody else’s decision. The aim is to spend more of your working life making changes than absorbing them.',
+    ].join('\n'),
+  );
+
+  sections.push(
+    [
+      '## MY ARTICLES (link a visitor to the relevant one by its path)',
+      ...articles.map((a) => `- ${a.title} (${a.category}) — /articles/${a.slug}: ${plain(a.excerpt)}`),
+    ].join('\n'),
+  );
+
+  if (apps.length) {
+    sections.push(
+      ['## APPS I HAVE BUILT', ...apps.map((a) => `- ${a.name}: ${a.tagline} Built with ${a.builtWith}. ${a.url}`)].join(
+        '\n',
+      ),
+    );
+  }
+
+  const press = pressByPriority();
+  if (press.length) {
+    sections.push(
+      ['## PRESS COVERAGE', ...press.map((p) => `- ${p.outlet}, ${p.date}: “${p.title}” ${p.url}`)].join('\n'),
+    );
+  }
 
   return sections.join('\n\n---\n\n');
 }

@@ -3,7 +3,8 @@ import { Fragment } from 'react';
 /**
  * Minimal inline formatter for model output.
  *
- * Handles paragraphs, bullet/numbered lists, `code`, **bold** and _italic_ —
+ * Handles paragraphs, bullet/numbered lists, `code`, **bold**, _italic_ and
+ * links to the site’s own pages —
  * which covers everything the persona prompt actually produces. A full markdown
  * renderer would add ~40KB to the bundle to parse tables and images the clone
  * never emits.
@@ -19,6 +20,27 @@ import { Fragment } from 'react';
  */
 const INLINE =
   /(`[^`]+`|\*\*[^*]+\*\*|(?<![A-Za-z0-9_])_[^_\n]+_(?![A-Za-z0-9_]))/g;
+
+/**
+ * Links to the site's own pages: the clone points visitors at articles by
+ * path, as `/articles/slug` or as a markdown link to one. Only same-site
+ * paths are linked, so a model cannot turn chat text into an outbound link.
+ */
+const SITE_LINK = /(\[[^\]]+\]\(\/[a-z0-9/-]+\)|\/articles\/[a-z0-9-]+)/g;
+
+function linkify(text: string, keyPrefix: string) {
+  return text.split(SITE_LINK).map((part, i) => {
+    const key = `${keyPrefix}-l${i}`;
+    const md = /^\[([^\]]+)\]\((\/[a-z0-9/-]+)\)$/.exec(part);
+    const href = md ? md[2] : /^\/articles\/[a-z0-9-]+$/.test(part) ? part : null;
+    if (!href) return <Fragment key={key}>{part}</Fragment>;
+    return (
+      <a key={key} href={href} target="_blank" rel="noopener" className="text-accent underline underline-offset-2">
+        {md ? md[1] : part}
+      </a>
+    );
+  });
+}
 
 function renderInline(text: string, keyPrefix: string) {
   return text.split(INLINE).map((part, i) => {
@@ -47,7 +69,7 @@ function renderInline(text: string, keyPrefix: string) {
         </code>
       );
     }
-    return <Fragment key={key}>{part}</Fragment>;
+    return <Fragment key={key}>{linkify(part, key)}</Fragment>;
   });
 }
 
