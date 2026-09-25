@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown, MessageSquare, Play, Volume2 } from 'lucide-react';
 import { heroStats, profile } from '@/content/profile';
 import { INITIALS } from '@/lib/boot-content';
+import { CountUp, HeroName, Marquee, PromptTicker, RoleRoller } from './hero-effects';
 import { EASE_OUT_EXPO } from '@/lib/utils';
 
 /**
@@ -131,9 +132,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           animate="show"
           className="mt-3 font-display text-[clamp(2.6rem,10vw,6.8rem)] leading-[0.86] font-extrabold md:mt-4"
         >
-          <span className="block text-ink">ARCHIT</span>{' '}
-          {/* The space keeps the heading's text "ARCHIT JAIN" for crawlers and screen readers. */}
-          <span className="text-gradient-accent block">JAIN</span>
+          <HeroName first="ARCHIT" last="JAIN" />
         </motion.h1>
 
         <motion.p
@@ -141,14 +140,9 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           variants={rise}
           initial="hidden"
           animate="show"
-          className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[8.5px] font-semibold tracking-[0.14em] text-ink uppercase sm:gap-x-3 sm:text-[10px] sm:tracking-[0.2em] md:mt-6 md:text-[11px]"
+          className="mt-5 text-[9.5px] font-semibold tracking-[0.16em] text-ink uppercase sm:text-[10px] sm:tracking-[0.2em] md:mt-6 md:text-[11px]"
         >
-          {profile.roles.map((role, i) => (
-            <span key={role} className="flex items-center gap-2 sm:gap-3">
-              {i > 0 && <span className="text-accent">•</span>}
-              {role}
-            </span>
-          ))}
+          <RoleRoller roles={profile.roles} />
         </motion.p>
 
         {/* The summary carries the two numbers worth remembering. */}
@@ -166,20 +160,15 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           <Figure>₹3 Cr</Figure> annualised run-rate in four months.
         </motion.p>
 
-        {/* Credibility strip — the names do work that adjectives cannot. */}
+        {/* Credibility strip: the names do work that adjectives cannot. */}
         <motion.p
           custom={5}
           variants={rise}
           initial="hidden"
           animate="show"
-          className="mt-5 hidden flex-wrap items-center gap-x-3 gap-y-2 text-[9px] font-semibold tracking-[0.2em] text-faint uppercase sm:flex md:mt-6 md:text-[10px]"
+          className="pointer-events-auto mt-5 hidden text-[9px] font-semibold tracking-[0.2em] text-faint uppercase sm:flex md:mt-6 md:text-[10px]"
         >
-          {profile.affiliations.map((org, i) => (
-            <span key={org} className="flex items-center gap-3">
-              {i > 0 && <span className="h-3 w-px bg-hairline-strong" />}
-              {org}
-            </span>
-          ))}
+          <Marquee items={profile.affiliations} />
         </motion.p>
 
         {/* ---------------------------------------------------------- actions */}
@@ -187,15 +176,17 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
             of the frame instead (below), clear of the subject's face. */}
         <Actions onTalk={onTalk} onExplore={onExplore} className="mt-7 hidden md:mt-9 md:flex" />
 
-        <motion.p
+        {/* A live prompt: it types real questions, and clicking asks one. */}
+        <motion.div
           custom={7}
           variants={rise}
           initial="hidden"
           animate="show"
-          className="mt-5 hidden text-xs text-faint sm:block md:mt-6"
+          className="mt-5 hidden md:mt-6 md:block"
         >
-          Ask me anything about my journey, projects, experiences or ideas.
-        </motion.p>
+          <PromptTicker onTalk={onTalk} />
+          <p className="mt-2 pl-1 text-xs text-faint">Ask me anything about my journey, projects, experiences or ideas.</p>
+        </motion.div>
       </div>
 
       {/* ------------------------------------------------------------ bottom */}
@@ -216,7 +207,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
               <div>
                 <dt className="sr-only">{stat.label}</dt>
                 <dd className="text-gradient-accent font-display text-lg font-extrabold tabular-nums sm:text-2xl md:text-[30px]">
-                  {stat.value}
+                  <CountUp value={stat.value} delay={1 + i * 0.12} />
                 </dd>
                 <p className="mt-1 text-[8px] font-semibold tracking-[0.12em] text-faint uppercase sm:text-[9px] sm:tracking-[0.16em]">
                   {stat.label}

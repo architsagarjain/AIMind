@@ -317,3 +317,49 @@
 .os-light .bloom {
   background: radial-gradient(circle, #1d9bf01f 0%, transparent 70%);
 }
+
+/* ===========================================================================
+   Hero motion
+   =========================================================================== */
+
+/* The surname's gradient with a highlight that sweeps across every few
+   seconds, then rests. */
+.hero-sheen {
+  background: linear-gradient(
+    110deg,
+    var(--color-accent) 0%,
+    var(--color-accent-2) 38%,
+    #e8fdff 50%,
+    var(--color-accent-2) 62%,
+    var(--color-accent) 100%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: hero-sheen 7s ease-in-out 2.2s infinite;
+}
+@keyframes hero-sheen {
+  0% { background-position: 100% 50%; }
+  30%, 100% { background-position: 0% 50%; }
+}
+
+/* Affiliations ticker: two copies of the row slide left by one copy's width. */
+.hero-marquee {
+  animation: hero-marquee 28s linear infinite;
+}
+@keyframes hero-marquee {
+  to { transform: translateX(-50%); }
+}
+.hero-marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-sheen,
+  .hero-marquee {
+    animation: none;
+  }
+}
