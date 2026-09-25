@@ -1,8 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, ChevronDown, MessageSquare, Play } from 'lucide-react';
+import { ArrowRight, ChevronDown, MessageSquare, Play, Volume2 } from 'lucide-react';
 import { heroStats, profile } from '@/content/profile';
+import { INITIALS } from '@/lib/boot-content';
 import { EASE_OUT_EXPO } from '@/lib/utils';
 
 /**
@@ -233,17 +234,20 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           onClick={onTalk}
           className="pointer-events-auto hidden items-center gap-4 rounded-full border border-hairline-strong bg-surface-raised/70 py-2.5 pr-2.5 pl-4 backdrop-blur-2xl transition-all duration-300 hover:border-accent/40 hover:shadow-[var(--shadow-glow-sm)] xl:flex"
         >
-          <div className="flex -space-x-2.5">
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className="relative h-9 w-9 rounded-full border-2 border-surface-raised bg-gradient-to-br from-[#2a3550] to-[#121a2c]"
-              >
-                {i === 0 && (
-                  <span className="absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border-2 border-surface-raised bg-accent" />
-                )}
-              </span>
-            ))}
+          {/* Who you are talking to, and the two ways to talk: the same
+              monogram and online dot as the Ask Archit app, then chat and
+              voice. */}
+          <div className="flex -space-x-2.5" aria-hidden="true">
+            <span className="relative z-30 flex h-9 w-9 items-center justify-center rounded-full border-2 border-surface-raised bg-[linear-gradient(135deg,#1d9bf0,#5e5ce6)]">
+              <span className="font-display text-[11px] font-bold text-white">{INITIALS}</span>
+              <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-surface-raised bg-[#34c759]" />
+            </span>
+            <span className="relative z-20 flex h-9 w-9 items-center justify-center rounded-full border-2 border-surface-raised bg-[#1a2238]">
+              <MessageSquare className="h-3.5 w-3.5 text-accent" strokeWidth={2.2} />
+            </span>
+            <span className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 border-surface-raised bg-[#1a2238]">
+              <Volume2 className="h-3.5 w-3.5 text-accent" strokeWidth={2.2} />
+            </span>
           </div>
           <span className="text-left">
             <span className="block text-[10px] font-bold tracking-[0.18em] text-ink uppercase">
