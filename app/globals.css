@@ -6,6 +6,13 @@
    All tokens live here; components consume them through Tailwind utilities.
    =========================================================================== */
 
+/* Height steps for the desktop hero. Laptop windows are often far shorter than
+   they are wide, so the hero sheds spacing, then its least vital lines, as the
+   window gets shorter, and the stat row always stays on screen. */
+@custom-variant short (@media (min-width: 48rem) and (max-height: 56rem));
+@custom-variant shorter (@media (min-width: 48rem) and (max-height: 48.75rem));
+@custom-variant shortest (@media (min-width: 48rem) and (max-height: 46.25rem));
+
 @theme {
   /* --- Surface ------------------------------------------------------------ */
   --color-void: #050816;

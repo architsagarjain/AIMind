@@ -80,7 +80,7 @@ function Figure({ children }: { children: React.ReactNode }) {
 export function Hero({ onTalk, onExplore, fade }: HeroProps) {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-20 flex flex-col justify-between px-6 pt-20 pb-5 md:px-12 md:pt-28 md:pb-10"
+      className="pointer-events-none absolute inset-0 z-20 flex flex-col justify-between px-6 pt-20 pb-5 md:px-12 md:pt-28 md:pb-10 short:pt-24 short:pb-6 shortest:pt-[5.5rem]"
       style={{
         opacity: fade,
         // Copy drifts up and back as it fades — a parallax depth cue.
@@ -98,7 +98,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           variants={rise}
           initial="hidden"
           animate="show"
-          className="mb-6 inline-flex max-w-[calc(100%-5.25rem)] items-center gap-2.5 rounded-full border border-hairline-strong bg-white/[0.04] py-1.5 pr-3 pl-2.5 backdrop-blur-xl sm:max-w-none sm:pr-4"
+          className="mb-6 short:mb-4 inline-flex max-w-[calc(100%-5.25rem)] items-center gap-2.5 rounded-full border border-hairline-strong bg-white/[0.04] py-1.5 pr-3 pl-2.5 backdrop-blur-xl sm:max-w-none sm:pr-4"
         >
           <span className="relative flex h-2 w-2 shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
@@ -130,7 +130,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           variants={rise}
           initial="hidden"
           animate="show"
-          className="mt-3 font-display text-[clamp(2.6rem,10vw,6.8rem)] leading-[0.86] font-extrabold md:mt-4"
+          className="mt-3 font-display text-[clamp(2.6rem,min(10vw,13svh),6.8rem)] leading-[0.86] font-extrabold md:mt-4 short:mt-3"
         >
           <HeroName first="ARCHIT" last="JAIN" />
         </motion.h1>
@@ -140,7 +140,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           variants={rise}
           initial="hidden"
           animate="show"
-          className="mt-5 text-[9.5px] font-semibold tracking-[0.16em] text-ink uppercase sm:text-[10px] sm:tracking-[0.2em] md:mt-6 md:text-[11px]"
+          className="mt-5 text-[9.5px] font-semibold tracking-[0.16em] text-ink uppercase sm:text-[10px] sm:tracking-[0.2em] md:mt-6 md:text-[11px] short:mt-4"
         >
           <RoleRoller roles={profile.roles} />
         </motion.p>
@@ -153,7 +153,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           animate="show"
           // Phones drop it: the stat row carries the same numbers, and the
           // paragraph was what landed across the subject's face.
-          className="mt-5 hidden max-w-lg text-[13.5px] leading-relaxed text-muted sm:text-[15px] md:mt-6 md:block md:text-base"
+          className="mt-5 hidden max-w-lg text-[13.5px] leading-relaxed text-muted sm:text-[15px] md:mt-6 md:block md:text-base short:mt-4 shortest:hidden"
         >
           I turn ambiguous problems into decisions, systems and outcomes.{' '}
           <Figure>₹6+ Cr</Figure> in client cost savings at PwC India, and ZenCabs from launch to a{' '}
@@ -166,7 +166,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           variants={rise}
           initial="hidden"
           animate="show"
-          className="pointer-events-auto mt-5 hidden text-[9px] font-semibold tracking-[0.2em] text-faint uppercase sm:flex md:mt-6 md:text-[10px]"
+          className="pointer-events-auto mt-5 hidden text-[9px] font-semibold tracking-[0.2em] text-faint uppercase sm:flex md:mt-6 md:text-[10px] shorter:hidden"
         >
           <Marquee items={profile.affiliations} />
         </motion.p>
@@ -174,7 +174,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
         {/* ---------------------------------------------------------- actions */}
         {/* Desktop: under the copy. Phones get the same buttons at the bottom
             of the frame instead (below), clear of the subject's face. */}
-        <Actions onTalk={onTalk} onExplore={onExplore} className="mt-7 hidden md:mt-9 md:flex" />
+        <Actions onTalk={onTalk} onExplore={onExplore} className="mt-7 hidden md:mt-9 md:flex short:mt-6" />
 
         {/* A live prompt: it types real questions, and clicking asks one. */}
         <motion.div
@@ -182,10 +182,10 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           variants={rise}
           initial="hidden"
           animate="show"
-          className="mt-5 hidden md:mt-6 md:block"
+          className="mt-5 hidden md:mt-6 md:block short:mt-4"
         >
           <PromptTicker onTalk={onTalk} />
-          <p className="mt-2 pl-1 text-xs text-faint">Ask me anything about my journey, projects, experiences or ideas.</p>
+          <p className="mt-2 pl-1 text-xs text-faint short:hidden">Ask me anything about my journey, projects, experiences or ideas.</p>
         </motion.div>
       </div>
 
