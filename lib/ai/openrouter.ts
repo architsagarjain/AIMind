@@ -25,7 +25,7 @@ import OpenAI from 'openai';
  * OPENROUTER_BASE_URL exists for local tests against a mock and is ignored in
  * production builds, so a stray env var can never send the key elsewhere.
  */
-const BASE_URL =
+export const OPENROUTER_BASE_URL =
   (process.env.NODE_ENV !== 'production' && process.env.OPENROUTER_BASE_URL) ||
   'https://openrouter.ai/api/v1';
 
@@ -61,6 +61,12 @@ const CATALOGUE_TIMEOUT_MS = 4_000;
 
 export const isFreeModelId = (id: string) => /^[\w.-]+\/[\w.:-]+:free$/.test(id);
 
+/** OpenRouter's attribution headers; optional, and they identify the app. Shared with the voice. */
+export const OPENROUTER_HEADERS = {
+  'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'https://archit.ai',
+  'X-Title': 'ARCHIT.AI',
+};
+
 let client: OpenAI | null = null;
 
 /** Null when no key is set, so the route can use the offline responder instead of failing. */
@@ -70,16 +76,12 @@ export function getOpenRouter(): OpenAI | null {
   if (!client) {
     client = new OpenAI({
       apiKey,
-      baseURL: BASE_URL,
+      baseURL: OPENROUTER_BASE_URL,
       // Fallback is ours: the SDK's own retries would re-send to the same
       // model and multiply the wait, when the next free model is the better bet.
       maxRetries: 0,
       timeout: 25_000,
-      defaultHeaders: {
-        // OpenRouter's attribution headers; optional, and they identify the app.
-        'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'https://archit.ai',
-        'X-Title': 'ARCHIT.AI',
-      },
+      defaultHeaders: OPENROUTER_HEADERS,
     });
   }
   return client;
@@ -121,7 +123,7 @@ function isTextChat(m: CatalogueModel): boolean {
 
 /** Fetches the free text models from the catalogue. Throws on failure, so failures are not cached. */
 async function fetchFreeCatalogue(): Promise<CatalogueModel[]> {
-  const res = await fetch(`${BASE_URL}/models`, {
+  const res = await fetch(`${OPENROUTER_BASE_URL}/models`, {
     signal: AbortSignal.timeout(CATALOGUE_TIMEOUT_MS),
     headers: { Accept: 'application/json' },
     cache: 'no-store',
@@ -141,7 +143,7 @@ async function fetchFreeCatalogue(): Promise<CatalogueModel[]> {
  * the catalogue before the first model could be asked, which put a network
  * round trip in front of the first answer.
  */
-const sharedCatalogue = unstable_cache(fetchFreeCatalogue, ['openrouter-free-catalogue', BASE_URL], {
+const sharedCatalogue = unstable_cache(fetchFreeCatalogue, ['openrouter-free-catalogue', OPENROUTER_BASE_URL], {
   revalidate: CATALOGUE_TTL_MS / 1000,
 });
 

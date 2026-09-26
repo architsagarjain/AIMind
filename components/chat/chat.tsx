@@ -143,7 +143,7 @@ export function Chat() {
                 </Bubble>
 
                 {/* Read aloud. Hidden entirely when the deployment has no
-                    ElevenLabs key, so it never offers something that 503s. */}
+                    OpenRouter key, so it never offers something that 503s. */}
                 {!mine && message.content && !(isStreaming && message.id === lastId) && speech.available && (
                   <button
                     onClick={() => void speech.speak(message.id, message.content)}

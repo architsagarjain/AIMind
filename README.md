@@ -59,8 +59,9 @@ you into a laptop screen, which boots into a virtual desktop where every
    draggable, resizable windows: About, Projects, Timeline, Resume and Ask
    Archit. On phones, windows fill the screen.
 
-Every step is skippable. `Skip intro` on the hero, `Skip` (or Enter) during the boot, and
-`prefers-reduced-motion` routes straight to the desktop.
+Every step is skippable. The hero's buttons and nav links jump to the desktop,
+`Skip` (or Enter) cuts the boot short, and `prefers-reduced-motion` routes
+straight to the desktop.
 
 ---
 
@@ -108,7 +109,8 @@ Open <http://localhost:3000>.
   (`lib/ai/fallback.ts`) built from the same content files the real model reads.
 
 Add `OPENROUTER_API_KEY` to switch the chat to the live clone, on free models
-only (see [The live clone](#the-live-clone-free-models-only)). Add the Supabase keys
+only (see [The live clone](#the-live-clone-free-models-only)). The same key turns on
+the Listen voice, which uses OpenRouter's free Deepgram Flux TTS. Add the Supabase keys
 to start persisting conversations. Neither is required to ship.
 
 | Script | Does |
@@ -511,6 +513,8 @@ Set these in **Project → Settings → Environment Variables**:
 | --- | --- | --- |
 | `OPENROUTER_API_KEY` | Production, Preview | No — falls back to offline mode |
 | `OPENROUTER_MODELS` | All | No — comma-separated preference order; only `:free` IDs are accepted |
+| `OPENROUTER_TTS_VOICE` | All | No — Flux voice to try first; defaults to `flux-naveen-en` |
+| `OPENROUTER_TTS_MODEL` | All | No — defaults to `deepgram/flux-tts:free`; only `:free` IDs are accepted |
 | `NEXT_PUBLIC_SUPABASE_URL` | All | No |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | All | No |
 | `SUPABASE_SERVICE_ROLE_KEY` | Production, Preview | No — **never** prefix with `NEXT_PUBLIC_` |

@@ -387,22 +387,26 @@ with the title optically centred over the full width, 52px dock icons on a
 
 ## 13. Voice
 
-`/api/speak` streams ElevenLabs TTS for an assistant reply; `useSpeech` plays it.
+`/api/speak` streams speech for an assistant reply from OpenRouter's free
+Deepgram Flux TTS (`deepgram/flux-tts:free`); `useSpeech` plays it.
 
-Two decisions worth recording:
+Three decisions worth recording:
 
-- **The voice is resolved by name, not ID.** Voice IDs are account-specific, and
-  a wrong one fails at request time with an opaque 400. The route reads the
-  account's `/v1/voices`, prefers a stock male voice by name, falls back to
-  anything labelled male, and caches the result for the instance.
-  `ELEVENLABS_VOICE_ID` short-circuits it.
+- **Same key and same rule as the chat.** The voice uses `OPENROUTER_API_KEY`
+  and only ever sends a `:free` model ID. `OPENROUTER_TTS_MODEL` can name
+  another free model; anything without the suffix is ignored.
+- **A voice list, not a single voice.** `flux-naveen-en` (Indian English male)
+  comes first, with two American male voices behind it. A rejected voice
+  falls through to the next and the working one is remembered.
+  `OPENROUTER_TTS_VOICE` puts a voice first.
 - **Absence is a UI state, not an error.** With no key the route returns 503 and
   `useSpeech` flips `available` to false, so the Listen control disappears
   instead of offering something that fails. Same posture as the chat's offline
-  responder.
+  responder. `GET /api/speak` runs a one-word probe and reports the result.
 
-The 1,200-character cap is the load-bearing guard: TTS bills per character and
-the endpoint is public.
+The 1,200-character cap is the load-bearing guard: the endpoint is public and
+the free voice's rate limit is shared by every visitor. A 429 upstream is
+passed through as a 429 with a plain message.
 
 ---
 
