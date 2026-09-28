@@ -21,6 +21,23 @@ const newId = () =>
     : Math.random().toString(36).slice(2);
 
 /**
+ * Appends streamed text, applying any trim markers in it. `\0trim:N\0` means
+ * "remove the last N characters": the route sends it when an answer was
+ * stopped part-way, to end it on its last whole sentence.
+ */
+function applyStream(content: string, text: string): string {
+  let out = content;
+  let last = 0;
+  const marker = /\u0000trim:(\d+)\u0000/g;
+  for (let m = marker.exec(text); m; m = marker.exec(text)) {
+    out += text.slice(last, m.index);
+    out = out.slice(0, Math.max(0, out.length - Number(m[1])));
+    last = m.index + m[0].length;
+  }
+  return out + text.slice(last);
+}
+
+/**
  * Streaming chat client for `/api/chat`.
  *
  * The response is a raw text stream rather than SSE — there is exactly one
@@ -103,13 +120,21 @@ export function useChat(): UseChatResult {
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
+        // Holds a trim marker split across two reads until it is whole.
+        let carry = '';
 
         for (;;) {
           const { done, value } = await reader.read();
           if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
+          const text = carry + decoder.decode(value, { stream: true });
+          // Each marker has two NULs, so an odd count means the last one is
+          // unclosed; it waits for the next read.
+          const open = (text.split('\u0000').length - 1) % 2 ? text.lastIndexOf('\u0000') : -1;
+          const ready = open === -1 ? text : text.slice(0, open);
+          carry = open === -1 ? '' : text.slice(open);
+          if (!ready) continue;
           setMessages((prev) =>
-            prev.map((m) => (m.id === assistantId ? { ...m, content: m.content + chunk } : m)),
+            prev.map((m) => (m.id === assistantId ? { ...m, content: applyStream(m.content, ready) } : m)),
           );
         }
       } catch (err) {

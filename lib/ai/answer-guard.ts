@@ -94,3 +94,25 @@ export function tidyDashes(text: string): string {
     .replace(/(\d)\s*[–—]\s*(\d)/g, '$1-$2')
     .replace(/\s*[—–]\s*/g, ', ');
 }
+
+/**
+ * Ending on a whole sentence.
+ *
+ * An answer can still be stopped part-way: by the token cap, by the time
+ * limit, or by a free model dropping the stream. Leaving the half sentence on
+ * screen reads as broken, so the route cuts back to the last full stop and
+ * tells the client with a trim marker: `\0trim:N\0` means "remove the last N
+ * characters". NUL never appears in model text, so the marker cannot collide
+ * with an answer.
+ */
+export const trimMarker = (chars: number) => `\u0000trim:${chars}\u0000`;
+
+/** Index just past the last complete sentence (or line) in `text`; 0 if none. */
+export function lastSentenceEnd(text: string): number {
+  // A full stop only ends a sentence when whitespace or the end follows, so
+  // "3.5x" and "v2.5" do not count.
+  const re = /[.!?]["')\]]*(?=\s|$)|\n/g;
+  let end = 0;
+  for (let m = re.exec(text); m; m = re.exec(text)) end = m.index + m[0].length;
+  return end;
+}

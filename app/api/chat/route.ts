@@ -3,7 +3,14 @@ import type OpenAI from 'openai';
 import { attemptGroups, freeCandidates, getOpenRouter, isAIConfigured, isFreeModelId } from '@/lib/ai/openrouter';
 import { buildSystemPrompt } from '@/lib/ai/system-prompt';
 import { fallbackAnswer, fallbackStream } from '@/lib/ai/fallback';
-import { GUARD_CHARS, createThinkStripper, looksLikeReasoning, tidyDashes } from '@/lib/ai/answer-guard';
+import {
+  GUARD_CHARS,
+  createThinkStripper,
+  lastSentenceEnd,
+  looksLikeReasoning,
+  tidyDashes,
+  trimMarker,
+} from '@/lib/ai/answer-guard';
 import { rateLimit } from '@/lib/ai/rate-limit';
 import { insertMessage, upsertConversation } from '@/lib/supabase/queries';
 
@@ -56,10 +63,18 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | typeof TIM
 }
 
 /**
- * Room for a "go deep" answer. The persona asks for about 350 words at most,
- * so this is headroom, not a target.
+ * Headroom, not a target: the persona asks for about 150 words, 250 when
+ * asked to go deep. It is set well above that because some free models spend
+ * hidden reasoning tokens from the same allowance, and at 1,200 that ran an
+ * ordinary answer into the cap mid-sentence. Free models cost nothing per
+ * token, so the headroom is free.
  */
-const MAX_TOKENS = 1_200;
+const MAX_TOKENS = 3_000;
+/**
+ * A stopped answer is cut back to its last full sentence when at least this
+ * much of it is left; shorter than that, it says it was cut instead.
+ */
+const MIN_CLEAN_ANSWER = 100;
 
 /** Keep the request bounded — this is a portfolio chat, not a document tool. */
 const MAX_MESSAGE_CHARS = 1_500;
@@ -340,7 +355,13 @@ export async function POST(req: Request) {
         for (const c of inFlight.values()) c.abort();
       }
 
-      if (outcome === 'long') {
+      // Stopped part-way: end on the last whole sentence when enough is left,
+      // so the answer reads as finished rather than broken off.
+      const clean = outcome === 'long' || outcome === 'cut' ? full.slice(0, lastSentenceEnd(full)).trimEnd() : '';
+      if (clean.length >= MIN_CLEAN_ANSWER) {
+        controller.enqueue(encoder.encode(trimMarker(full.length - clean.length)));
+        full = clean;
+      } else if (outcome === 'long') {
         emit('…\n\nI will stop there. Say "go on" and I will pick it up.');
       } else if (outcome === 'cut') {
         emit('\n\nI lost my train of thought there. Ask me that again?');
