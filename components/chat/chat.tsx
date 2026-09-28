@@ -147,6 +147,9 @@ export function Chat() {
                 {!mine && message.content && !(isStreaming && message.id === lastId) && speech.available && (
                   <button
                     onClick={() => void speech.speak(message.id, message.content)}
+                    onPointerEnter={() => speech.prefetch(message.content)}
+                    onPointerLeave={speech.cancelPrefetch}
+                    onFocus={() => speech.prefetch(message.content)}
                     aria-label={speaking ? 'Stop playback' : 'Read aloud'}
                     className="mt-1 ml-2 inline-flex items-center gap-1 text-[11px] font-medium text-faint transition-colors hover:text-[#0a84ff]"
                   >

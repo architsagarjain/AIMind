@@ -1,5 +1,5 @@
 import 'server-only';
-import { OPENROUTER_BASE_URL, OPENROUTER_HEADERS, isFreeModelId } from './openrouter';
+import { OPENROUTER_BASE_URL, OPENROUTER_HEADERS, isFreeModelId } from './openrouter-config';
 
 /**
  * Text-to-speech for the AI clone, on OpenRouter's free Deepgram Flux TTS.
@@ -17,14 +17,21 @@ import { OPENROUTER_BASE_URL, OPENROUTER_HEADERS, isFreeModelId } from './openro
  * `GET /api/speak` runs a one-word probe and reports what came back.
  *
  * VOICE
- * Naveen is Flux's Indian English male voice, the closest match to the person
- * being cloned. If the endpoint rejects a voice, the next one is tried and the
- * one that works is remembered. OPENROUTER_TTS_VOICE puts a voice first.
+ * Only Flux's featured male voices, which Deepgram names as its strongest
+ * all-rounders: Drew first, then Bruce (both American), then Jack (British).
+ * If the endpoint rejects a voice, the next one is tried and the one that
+ * works is remembered. OPENROUTER_TTS_VOICE puts a voice first.
  *
  * LATENCY
- * The first sound is what a visitor feels. The client asks for one sentence
- * at a time and the upstream audio is streamed straight through, so playback
- * starts on a short first chunk.
+ * The first sound is what a visitor feels, so:
+ *  - the route runs on the edge, near the visitor and with no cold start;
+ *  - the client asks for a short first clause, then sentence groups, and
+ *    fetches ahead while it plays;
+ *  - the upstream audio streams straight through;
+ *  - a free endpoint sometimes sits in a queue, so a request with no answer
+ *    after HEDGE_MS gets a twin, and whichever answers first is used. Same
+ *    idea as the chat's hedging, and it only costs a request when the first
+ *    one is already slow.
  */
 
 const DEFAULT_MODEL = 'deepgram/flux-tts:free';
@@ -32,16 +39,18 @@ const DEFAULT_MODEL = 'deepgram/flux-tts:free';
 const configuredModel = process.env.OPENROUTER_TTS_MODEL?.trim();
 export const TTS_MODEL = configuredModel && isFreeModelId(configuredModel) ? configuredModel : DEFAULT_MODEL;
 
-/** Indian English male first, then two American male voices as fallbacks. */
-const DEFAULT_VOICES = ['flux-naveen-en', 'flux-bruce-en', 'flux-drew-en'];
+/** Featured male voices only: Drew and Bruce (American), then Jack (British). */
+const DEFAULT_VOICES = ['flux-drew-en', 'flux-bruce-en', 'flux-jack-en'];
 const configuredVoice = process.env.OPENROUTER_TTS_VOICE?.trim();
 const VOICES = configuredVoice
   ? [configuredVoice, ...DEFAULT_VOICES.filter((v) => v !== configuredVoice)]
   : DEFAULT_VOICES;
 let workingVoice: string | null = null;
 
-/** Long enough for a 360-character chunk on a slow free endpoint. */
+/** Long enough for a full chunk on a slow free endpoint. */
 const TIMEOUT_MS = 20_000;
+/** A request with no answer by now gets a twin; a healthy one answers well inside it. */
+const HEDGE_MS = 2_500;
 
 export const isVoiceConfigured = () => Boolean(process.env.OPENROUTER_API_KEY?.trim());
 
@@ -74,7 +83,7 @@ export async function synthesize(text: string): Promise<SynthesisResult> {
   const voices = workingVoice ? [workingVoice, ...VOICES.filter((v) => v !== workingVoice)] : VOICES;
   let last: SynthesisResult = { error: 'No voice accepted the request.' };
   for (const voice of voices) {
-    const result = await synthesizeWith(apiKey, voice, text);
+    const result = await hedged(apiKey, voice, text);
     if (result.stream) {
       workingVoice = voice;
       return result;
@@ -87,11 +96,67 @@ export async function synthesize(text: string): Promise<SynthesisResult> {
   return { error: last.error, status: last.status };
 }
 
+type Attempt = SynthesisResult & { voiceRejected?: boolean };
+
+/**
+ * One request, plus a twin if the first has not answered after HEDGE_MS, or
+ * at once if it failed in a way a retry can fix (a 5xx, a dropped
+ * connection). The first success wins and the other is cancelled. A definite
+ * failure (a bad key, a rejected voice, the rate limit) is returned at once:
+ * a twin would fail the same way.
+ */
+function hedged(apiKey: string, voice: string, text: string): Promise<Attempt> {
+  return new Promise((resolve) => {
+    const controllers: AbortController[] = [];
+    let pending = 0;
+    let settled = false;
+    let firstFailure: Attempt | null = null;
+
+    const launch = () => {
+      const controller = new AbortController();
+      controllers.push(controller);
+      pending++;
+      void synthesizeWith(apiKey, voice, text, controller).then((result) => {
+        pending--;
+        if (settled) return;
+        if (result.stream) {
+          settled = true;
+          clearTimeout(timer);
+          for (const c of controllers) if (c !== controller) c.abort();
+          resolve(result);
+        } else if (result.slow && controllers.length < 2) {
+          // A quick 5xx or a dropped connection: retry once now instead of
+          // waiting out the hedge timer.
+          firstFailure ??= result;
+          clearTimeout(timer);
+          launch();
+        } else if (pending === 0 || !result.slow) {
+          // Nothing left in flight, or a definite answer a twin would repeat.
+          settled = true;
+          clearTimeout(timer);
+          for (const c of controllers) if (c !== controller) c.abort();
+          resolve(firstFailure ?? result);
+        } else {
+          firstFailure ??= result;
+        }
+      });
+    };
+
+    launch();
+    const timer = setTimeout(() => {
+      if (!settled) launch();
+    }, HEDGE_MS);
+  });
+}
+
 async function synthesizeWith(
   apiKey: string,
   voice: string,
   text: string,
-): Promise<SynthesisResult & { voiceRejected?: boolean }> {
+  controller: AbortController,
+): Promise<Attempt & { slow?: boolean }> {
+  // A manual timer: AbortSignal.timeout is not on every edge runtime.
+  const timeout = setTimeout(() => controller.abort(new Error('timeout')), TIMEOUT_MS);
   try {
     const res = await fetch(`${OPENROUTER_BASE_URL}/audio/speech`, {
       method: 'POST',
@@ -101,9 +166,11 @@ async function synthesizeWith(
         'Content-Type': 'application/json',
       },
       cache: 'no-store',
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: controller.signal,
       body: JSON.stringify({ model: TTS_MODEL, voice, input: text, response_format: 'mp3' }),
     });
+    // Headers are in; the body streams on its own time from here.
+    clearTimeout(timeout);
 
     if (!res.ok || !res.body) {
       const error = `Synthesis failed (${voice}): ${await upstreamError(res)}`;
@@ -114,12 +181,19 @@ async function synthesizeWith(
         error,
         status: res.status,
         voiceRejected: res.status >= 400 && res.status < 500 && res.status !== 401 && /voice/i.test(error),
+        // An upstream 5xx is often one busy worker; the twin may land elsewhere.
+        slow: res.status >= 500,
       };
     }
     return { stream: res.body, contentType: res.headers.get('content-type') || 'audio/mpeg' };
   } catch (err) {
-    const timedOut = (err as Error).name === 'TimeoutError';
-    return { error: timedOut ? 'The voice took too long to respond.' : `Synthesis threw: ${(err as Error).message}` };
+    clearTimeout(timeout);
+    const timedOut = controller.signal.reason instanceof Error && controller.signal.reason.message === 'timeout';
+    return {
+      error: timedOut ? 'The voice took too long to respond.' : `Synthesis threw: ${(err as Error).message}`,
+      // A timeout or a dropped connection is worth the twin still in flight.
+      slow: true,
+    };
   }
 }
 

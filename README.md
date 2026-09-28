@@ -513,7 +513,7 @@ Set these in **Project → Settings → Environment Variables**:
 | --- | --- | --- |
 | `OPENROUTER_API_KEY` | Production, Preview | No — falls back to offline mode |
 | `OPENROUTER_MODELS` | All | No — comma-separated preference order; only `:free` IDs are accepted |
-| `OPENROUTER_TTS_VOICE` | All | No — Flux voice to try first; defaults to `flux-naveen-en` |
+| `OPENROUTER_TTS_VOICE` | All | No — Flux voice to try first; defaults to `flux-drew-en` |
 | `OPENROUTER_TTS_MODEL` | All | No — defaults to `deepgram/flux-tts:free`; only `:free` IDs are accepted |
 | `NEXT_PUBLIC_SUPABASE_URL` | All | No |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | All | No |

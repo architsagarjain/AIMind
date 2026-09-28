@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/ai/rate-limit';
 import { isVoiceConfigured, synthesize, voiceDiagnostics } from '@/lib/ai/voice';
 
-export const runtime = 'nodejs';
+// Edge: close to the visitor and no cold start, which is most of the wait
+// before the first sound on a short clip.
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 /**

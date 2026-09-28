@@ -390,15 +390,22 @@ with the title optically centred over the full width, 52px dock icons on a
 `/api/speak` streams speech for an assistant reply from OpenRouter's free
 Deepgram Flux TTS (`deepgram/flux-tts:free`); `useSpeech` plays it.
 
-Three decisions worth recording:
+Four decisions worth recording:
 
 - **Same key and same rule as the chat.** The voice uses `OPENROUTER_API_KEY`
   and only ever sends a `:free` model ID. `OPENROUTER_TTS_MODEL` can name
   another free model; anything without the suffix is ignored.
-- **A voice list, not a single voice.** `flux-naveen-en` (Indian English male)
-  comes first, with two American male voices behind it. A rejected voice
-  falls through to the next and the working one is remembered.
-  `OPENROUTER_TTS_VOICE` puts a voice first.
+- **A voice list, not a single voice.** Only Flux's featured male voices,
+  which Deepgram rates as its strongest: `flux-drew-en`, then `flux-bruce-en`,
+  then `flux-jack-en`. A rejected voice falls through to the next and the
+  working one is remembered. `OPENROUTER_TTS_VOICE` puts a voice first.
+- **Latency is spent where it is felt.** The route runs on the edge (no cold
+  start, and the OpenAI SDK stays out of it via `openrouter-config.ts`). The
+  first clip is one short clause; two clips are fetched ahead of the one
+  playing; resting the pointer on Listen fetches the first clip before the
+  click; clips are cached by text for instant replay. Upstream, a request
+  with no answer after 2.5s gets a twin and the first to answer wins, the same
+  hedging idea as the chat.
 - **Absence is a UI state, not an error.** With no key the route returns 503 and
   `useSpeech` flips `available` to false, so the Listen control disappears
   instead of offering something that fails. Same posture as the chat's offline

@@ -1,6 +1,9 @@
 import 'server-only';
 import { unstable_cache } from 'next/cache';
 import OpenAI from 'openai';
+import { OPENROUTER_BASE_URL, OPENROUTER_HEADERS, isFreeModelId } from './openrouter-config';
+
+export { isFreeModelId };
 
 /**
  * The live clone runs on OpenRouter, on FREE models only.
@@ -20,14 +23,6 @@ import OpenAI from 'openai';
  *
  * There is deliberately no OpenAI or other paid provider behind this.
  */
-
-/**
- * OPENROUTER_BASE_URL exists for local tests against a mock and is ignored in
- * production builds, so a stray env var can never send the key elsewhere.
- */
-export const OPENROUTER_BASE_URL =
-  (process.env.NODE_ENV !== 'production' && process.env.OPENROUTER_BASE_URL) ||
-  'https://openrouter.ai/api/v1';
 
 /**
  * Preferred order: plain instruction-followers that hold a persona well and
@@ -58,14 +53,6 @@ const PER_REQUEST = 2;
 const MAX_CANDIDATES = 6;
 const CATALOGUE_TTL_MS = 60 * 60 * 1000;
 const CATALOGUE_TIMEOUT_MS = 4_000;
-
-export const isFreeModelId = (id: string) => /^[\w.-]+\/[\w.:-]+:free$/.test(id);
-
-/** OpenRouter's attribution headers; optional, and they identify the app. Shared with the voice. */
-export const OPENROUTER_HEADERS = {
-  'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'https://archit.ai',
-  'X-Title': 'ARCHIT.AI',
-};
 
 let client: OpenAI | null = null;
 

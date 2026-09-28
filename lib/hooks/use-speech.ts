@@ -8,10 +8,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * SENTENCE BY SENTENCE
  * Asking for a whole answer as one clip means waiting for all of it to be
  * synthesised and downloaded before a sound plays, which for a long reply is
- * several seconds of silence. So the reply is split into chunks, the first one
- * deliberately short, and playback starts as soon as that first clip arrives.
- * The next chunk is fetched while the current one plays, so later chunks are
- * usually ready by the time they are needed.
+ * several seconds of silence. So the reply is split into chunks, the first a
+ * single short clause, and playback starts as soon as that first clip lands.
+ * The next two chunks are fetched while the current one plays, so later clips
+ * are ready before they are needed.
+ *
+ * AHEAD OF THE CLICK
+ * Resting the pointer on Listen (or focusing it) fetches the first clip, so
+ * the click usually finds it waiting. Clips are kept for the session, keyed
+ * by their text, so playing a reply again is instant and costs no requests.
  *
  * One `Audio` element is reused for the session so starting a new reply stops
  * the previous one: overlapping voices is the obvious failure here.
@@ -21,10 +26,16 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * without voice configured, without a probe request on every page load.
  */
 
-/** The first chunk is short so the first sound comes quickly. */
-const FIRST_CHUNK = 140;
+/** The first chunk is one short clause, so the first sound comes quickly. */
+const FIRST_CHUNK = 90;
 /** Later chunks are longer: fewer requests, fewer seams between clips. */
-const LATER_CHUNK = 360;
+const LATER_CHUNK = 300;
+/** Clips fetched ahead of the one playing. */
+const LOOKAHEAD = 2;
+/** How long the pointer rests on Listen before the first clip is fetched. */
+const PREFETCH_DWELL_MS = 120;
+/** Clips kept for replay; the oldest is dropped past this. */
+const CACHE_SIZE = 40;
 
 /** Splits text into sentence-aligned chunks, the first one short. */
 export function chunkForSpeech(text: string): string[] {
@@ -42,9 +53,13 @@ export function chunkForSpeech(text: string): string[] {
   // A long opening sentence would delay the first sound, so it is cut at a
   // clause boundary instead.
   const first = sentences[0]?.trim() ?? '';
-  if (first.length > FIRST_CHUNK * 1.5) {
-    const cut = Math.max(first.lastIndexOf(', ', FIRST_CHUNK), first.lastIndexOf('; ', FIRST_CHUNK));
-    if (cut > 40) sentences.splice(0, 1, first.slice(0, cut + 1), first.slice(cut + 2));
+  if (first.length > FIRST_CHUNK * 1.3) {
+    const cut = Math.max(
+      first.lastIndexOf(', ', FIRST_CHUNK),
+      first.lastIndexOf('; ', FIRST_CHUNK),
+      first.lastIndexOf(': ', FIRST_CHUNK),
+    );
+    if (cut > 25) sentences.splice(0, 1, first.slice(0, cut + 1), first.slice(cut + 2));
   }
   const chunks: string[] = [];
   let current = '';
@@ -71,10 +86,49 @@ export function useSpeech() {
   /** Surfaced next to the control, so a failure is legible rather than silent. */
   const [error, setError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const urlsRef = useRef<string[]>([]);
+  /** Playback of the current reply; clip downloads are not tied to it. */
   const abortRef = useRef<AbortController | null>(null);
+  /** Clip text → object URL, shared by playback, prefetch and replay. */
+  const clipsRef = useRef(new Map<string, Promise<string>>());
+  const prefetchTimer = useRef<number | undefined>(undefined);
 
-  const cleanup = useCallback(() => {
+  /**
+   * One request per clip text, however many callers ask. Downloads run to
+   * completion even if playback stops, so a clip already paid for in quota
+   * is kept for next time. Failures are forgotten so a retry can succeed.
+   */
+  const clip = useCallback((chunk: string): Promise<string> => {
+    const clips = clipsRef.current;
+    const cached = clips.get(chunk);
+    if (cached) return cached;
+
+    const request = (async () => {
+      const res = await fetch('/api/speak', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: chunk }),
+      });
+      if (res.status === 503) throw new Unavailable();
+      if (!res.ok) {
+        // A wrong key, a busy free tier or a rejected voice all land here,
+        // and the route passes the reason through.
+        const detail = (await res.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(detail?.error ?? `Playback failed (${res.status})`);
+      }
+      return URL.createObjectURL(await res.blob());
+    })();
+
+    clips.set(chunk, request);
+    request.catch(() => clips.delete(chunk));
+    if (clips.size > CACHE_SIZE) {
+      const [oldest, url] = clips.entries().next().value!;
+      clips.delete(oldest);
+      void url.then((u) => URL.revokeObjectURL(u), () => {});
+    }
+    return request;
+  }, []);
+
+  const halt = useCallback(() => {
     abortRef.current?.abort();
     abortRef.current = null;
     const audio = audioRef.current;
@@ -83,16 +137,37 @@ export function useSpeech() {
       audio.onerror = null;
       audio.pause();
     }
-    for (const url of urlsRef.current) URL.revokeObjectURL(url);
-    urlsRef.current = [];
   }, []);
 
-  useEffect(() => cleanup, [cleanup]);
+  useEffect(
+    () => () => {
+      halt();
+      window.clearTimeout(prefetchTimer.current);
+      for (const url of clipsRef.current.values()) void url.then((u) => URL.revokeObjectURL(u), () => {});
+      clipsRef.current.clear();
+    },
+    [halt],
+  );
 
   const stop = useCallback(() => {
-    cleanup();
+    halt();
     setSpeakingId(null);
-  }, [cleanup]);
+  }, [halt]);
+
+  /** Fetches the first clip of `text` once the pointer has rested briefly. */
+  const prefetch = useCallback(
+    (text: string) => {
+      if (!available) return;
+      window.clearTimeout(prefetchTimer.current);
+      prefetchTimer.current = window.setTimeout(() => {
+        const first = chunkForSpeech(text)[0];
+        if (first) clip(first).catch(() => {});
+      }, PREFETCH_DWELL_MS);
+    },
+    [available, clip],
+  );
+
+  const cancelPrefetch = useCallback(() => window.clearTimeout(prefetchTimer.current), []);
 
   const speak = useCallback(
     async (id: string, text: string) => {
@@ -100,7 +175,7 @@ export function useSpeech() {
         stop();
         return;
       }
-      cleanup();
+      halt();
       setError(null);
 
       const chunks = chunkForSpeech(text);
@@ -116,25 +191,6 @@ export function useSpeech() {
       const audio = audioRef.current ?? new Audio();
       audioRef.current = audio;
 
-      const fetchClip = async (chunk: string): Promise<string> => {
-        const res = await fetch('/api/speak', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: chunk }),
-          signal,
-        });
-        if (res.status === 503) throw new Unavailable();
-        if (!res.ok) {
-          // A wrong key, a model the plan lacks, or exhausted quota all land
-          // here, and the route passes the upstream reason through.
-          const detail = (await res.json().catch(() => null)) as { error?: string } | null;
-          throw new Error(detail?.error ?? `Playback failed (${res.status})`);
-        }
-        const url = URL.createObjectURL(await res.blob());
-        urlsRef.current.push(url);
-        return url;
-      };
-
       const play = (url: string) =>
         new Promise<void>((resolve, reject) => {
           audio.onended = () => resolve();
@@ -144,21 +200,14 @@ export function useSpeech() {
         });
 
       try {
-        let next: Promise<string> = fetchClip(chunks[0]!);
         for (let i = 0; i < chunks.length; i++) {
-          const url = await next;
+          // Keep the next clips downloading while this one plays. Errors are
+          // handled when each clip is awaited; this only stops an unhandled
+          // rejection warning if playback is stopped first.
+          for (let j = i + 1; j <= i + LOOKAHEAD && j < chunks.length; j++) clip(chunks[j]!).catch(() => {});
+          const url = await clip(chunks[i]!);
           if (signal.aborted) return;
-          // Start the following request before this clip plays, so it
-          // downloads during playback instead of after it.
-          if (i + 1 < chunks.length) {
-            next = fetchClip(chunks[i + 1]!);
-            // Handled when awaited; this only stops an unhandled-rejection
-            // warning if playback is stopped first.
-            next.catch(() => {});
-          }
           await play(url);
-          URL.revokeObjectURL(url);
-          urlsRef.current = urlsRef.current.filter((u) => u !== url);
           if (signal.aborted) return;
         }
         setSpeakingId(null);
@@ -172,12 +221,12 @@ export function useSpeech() {
           console.error('[speech]', err);
           setError(err instanceof Error ? err.message : 'Playback failed.');
         }
-        cleanup();
+        halt();
         setSpeakingId(null);
       }
     },
-    [cleanup, speakingId, stop],
+    [clip, halt, speakingId, stop],
   );
 
-  return { speak, stop, speakingId, available, error };
+  return { speak, stop, prefetch, cancelPrefetch, speakingId, available, error };
 }
