@@ -5,39 +5,51 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 /**
  * Plays an assistant reply through `/api/speak`.
  *
- * SENTENCE BY SENTENCE
+ * CLIP BY CLIP, WITH NO SEAMS
  * Asking for a whole answer as one clip means waiting for all of it to be
- * synthesised and downloaded before a sound plays, which for a long reply is
- * several seconds of silence. So the reply is split into chunks, the first a
- * single short clause, and playback starts as soon as that first clip lands.
- * The next two chunks are fetched while the current one plays, so later clips
- * are ready before they are needed.
+ * synthesised before a sound plays. So the reply is split into clips that
+ * grow as they go: one short clause first, so the first sound comes quickly,
+ * then a medium clip, then long ones. Each clip takes about as long to make
+ * as the one before it takes to play, so the next is ready when it is due.
+ *
+ * Playback runs on the Web Audio API, not an <audio> element. Swapping an
+ * element's source between clips costs a load and a decode each time, and
+ * every clip carries its own lead-in and tail of silence; together that was
+ * a pause of a second or more between sentences. Here each clip is decoded
+ * as soon as it arrives, its silent edges are trimmed, and it is scheduled
+ * to start the moment the previous one ends, with a short natural pause.
  *
  * AHEAD OF THE CLICK
- * Resting the pointer on Listen (or focusing it) fetches the first clip, so
- * the click usually finds it waiting. Clips are kept for the session, keyed
- * by their text, so playing a reply again is instant and costs no requests.
- *
- * One `Audio` element is reused for the session so starting a new reply stops
- * the previous one: overlapping voices is the obvious failure here.
+ * Resting the pointer on Listen (or focusing it) fetches the first two clips,
+ * so the click usually finds them waiting. Clips are kept for the session,
+ * keyed by their text, so playing a reply again is instant and costs no
+ * requests.
  *
  * `available` starts optimistic and flips to false the first time the route
  * answers 503 (no API key). That keeps the control hidden on deployments
  * without voice configured, without a probe request on every page load.
  */
 
-/** The first chunk is one short clause, so the first sound comes quickly. */
-const FIRST_CHUNK = 90;
-/** Later chunks are longer: fewer requests, fewer seams between clips. */
-const LATER_CHUNK = 300;
+/** Clip lengths in characters, in order; the last one repeats. */
+const CHUNK_SIZES = [90, 170, 300];
+/** Only used to cut a long opening sentence at a clause. */
+const FIRST_CHUNK = CHUNK_SIZES[0]!;
 /** Clips fetched ahead of the one playing. */
-const LOOKAHEAD = 2;
-/** How long the pointer rests on Listen before the first clip is fetched. */
+const LOOKAHEAD = 3;
+/** Clips fetched when the pointer rests on Listen. */
+const PREFETCH_CLIPS = 2;
+/** How long the pointer rests on Listen before clips are fetched. */
 const PREFETCH_DWELL_MS = 120;
-/** Clips kept for replay; the oldest is dropped past this. */
+/** Compressed clips kept for replay; the oldest is dropped past this. */
 const CACHE_SIZE = 40;
+/** The pause between two clips, in seconds, once their silences are trimmed. */
+const CLIP_GAP_S = 0.16;
+/** Below this amplitude a sample counts as silence. */
+const SILENCE = 0.008;
+/** Kept either side of the speech when trimming, in seconds. */
+const TRIM_MARGIN_S = 0.03;
 
-/** Splits text into sentence-aligned chunks, the first one short. */
+/** Splits text into sentence-aligned chunks that grow: short, medium, then long. */
 export function chunkForSpeech(text: string): string[] {
   const clean = text
     .replace(/```[\s\S]*?```/g, ' ')
@@ -66,7 +78,7 @@ export function chunkForSpeech(text: string): string[] {
   for (const raw of sentences) {
     const sentence = raw.trim();
     if (!sentence) continue;
-    const limit = chunks.length === 0 ? FIRST_CHUNK : LATER_CHUNK;
+    const limit = CHUNK_SIZES[Math.min(chunks.length, CHUNK_SIZES.length - 1)]!;
     if (current && current.length + sentence.length + 1 > limit) {
       chunks.push(current);
       current = sentence;
@@ -80,16 +92,45 @@ export function chunkForSpeech(text: string): string[] {
 
 class Unavailable extends Error {}
 
+type AudioContextCtor = typeof AudioContext;
+
+/** Cuts the silent lead-in and tail off a clip, keeping a small margin. */
+function trimSilence(ctx: BaseAudioContext, buffer: AudioBuffer): AudioBuffer {
+  let start = buffer.length;
+  let end = 0;
+  for (let c = 0; c < buffer.numberOfChannels; c++) {
+    const data = buffer.getChannelData(c);
+    let s = 0;
+    while (s < data.length && Math.abs(data[s]!) < SILENCE) s++;
+    let e = data.length - 1;
+    while (e > s && Math.abs(data[e]!) < SILENCE) e--;
+    start = Math.min(start, s);
+    end = Math.max(end, e);
+  }
+  if (end <= start) return buffer;
+  const margin = Math.round(buffer.sampleRate * TRIM_MARGIN_S);
+  start = Math.max(0, start - margin);
+  end = Math.min(buffer.length, end + margin);
+  if (start === 0 && end === buffer.length) return buffer;
+  const out = ctx.createBuffer(buffer.numberOfChannels, end - start, buffer.sampleRate);
+  for (let c = 0; c < buffer.numberOfChannels; c++) {
+    out.copyToChannel(buffer.getChannelData(c).subarray(start, end), c);
+  }
+  return out;
+}
+
 export function useSpeech() {
   const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [available, setAvailable] = useState(true);
   /** Surfaced next to the control, so a failure is legible rather than silent. */
   const [error, setError] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  /** Playback of the current reply; clip downloads are not tied to it. */
-  const abortRef = useRef<AbortController | null>(null);
-  /** Clip text → object URL, shared by playback, prefetch and replay. */
-  const clipsRef = useRef(new Map<string, Promise<string>>());
+  const ctxRef = useRef<AudioContext | null>(null);
+  /** Sources scheduled for the current reply, so stopping can silence them all. */
+  const sourcesRef = useRef<AudioBufferSourceNode[]>([]);
+  /** Bumped on every start and stop; a run that sees a newer value gives up. */
+  const runRef = useRef(0);
+  /** Clip text → compressed audio, shared by playback, prefetch and replay. */
+  const clipsRef = useRef(new Map<string, Promise<ArrayBuffer>>());
   const prefetchTimer = useRef<number | undefined>(undefined);
 
   /**
@@ -97,7 +138,7 @@ export function useSpeech() {
    * completion even if playback stops, so a clip already paid for in quota
    * is kept for next time. Failures are forgotten so a retry can succeed.
    */
-  const clip = useCallback((chunk: string): Promise<string> => {
+  const clip = useCallback((chunk: string): Promise<ArrayBuffer> => {
     const clips = clipsRef.current;
     const cached = clips.get(chunk);
     if (cached) return cached;
@@ -115,36 +156,43 @@ export function useSpeech() {
         const detail = (await res.json().catch(() => null)) as { error?: string } | null;
         throw new Error(detail?.error ?? `Playback failed (${res.status})`);
       }
-      return URL.createObjectURL(await res.blob());
+      return res.arrayBuffer();
     })();
 
     clips.set(chunk, request);
     request.catch(() => clips.delete(chunk));
-    if (clips.size > CACHE_SIZE) {
-      const [oldest, url] = clips.entries().next().value!;
-      clips.delete(oldest);
-      void url.then((u) => URL.revokeObjectURL(u), () => {});
-    }
+    if (clips.size > CACHE_SIZE) clips.delete(clips.keys().next().value!);
     return request;
   }, []);
 
+  /** The shared context, created on first use. Null where Web Audio is missing. */
+  const context = useCallback((): AudioContext | null => {
+    if (ctxRef.current) return ctxRef.current;
+    const Ctor =
+      window.AudioContext ?? (window as unknown as { webkitAudioContext?: AudioContextCtor }).webkitAudioContext;
+    if (!Ctor) return null;
+    ctxRef.current = new Ctor();
+    return ctxRef.current;
+  }, []);
+
   const halt = useCallback(() => {
-    abortRef.current?.abort();
-    abortRef.current = null;
-    const audio = audioRef.current;
-    if (audio) {
-      audio.onended = null;
-      audio.onerror = null;
-      audio.pause();
+    runRef.current++;
+    for (const source of sourcesRef.current) {
+      source.onended = null;
+      try {
+        source.stop();
+      } catch {
+        /* never started */
+      }
     }
+    sourcesRef.current = [];
   }, []);
 
   useEffect(
     () => () => {
       halt();
       window.clearTimeout(prefetchTimer.current);
-      for (const url of clipsRef.current.values()) void url.then((u) => URL.revokeObjectURL(u), () => {});
-      clipsRef.current.clear();
+      void ctxRef.current?.close().catch(() => {});
     },
     [halt],
   );
@@ -154,14 +202,13 @@ export function useSpeech() {
     setSpeakingId(null);
   }, [halt]);
 
-  /** Fetches the first clip of `text` once the pointer has rested briefly. */
+  /** Fetches the first clips of `text` once the pointer has rested briefly. */
   const prefetch = useCallback(
     (text: string) => {
       if (!available) return;
       window.clearTimeout(prefetchTimer.current);
       prefetchTimer.current = window.setTimeout(() => {
-        const first = chunkForSpeech(text)[0];
-        if (first) clip(first).catch(() => {});
+        for (const chunk of chunkForSpeech(text).slice(0, PREFETCH_CLIPS)) clip(chunk).catch(() => {});
       }, PREFETCH_DWELL_MS);
     },
     [available, clip],
@@ -180,39 +227,60 @@ export function useSpeech() {
 
       const chunks = chunkForSpeech(text);
       if (!chunks.length) return;
+      const ctx = context();
+      if (!ctx) {
+        setError('This browser cannot play audio.');
+        return;
+      }
+      // Both inside the click: browsers only let a context start from a
+      // user gesture. The session type keeps iPhones audible with the ringer
+      // switch on silent, as an <audio> element would be.
+      const session = (navigator as unknown as { audioSession?: { type: string } }).audioSession;
+      if (session) session.type = 'playback';
+      void ctx.resume();
+
       setSpeakingId(id);
+      const run = runRef.current;
+      const live = () => runRef.current === run;
 
-      const controller = new AbortController();
-      abortRef.current = controller;
-      const { signal } = controller;
-
-      // Created inside the click, so browsers that gate autoplay on a user
-      // gesture treat every later clip on this element as allowed.
-      const audio = audioRef.current ?? new Audio();
-      audioRef.current = audio;
-
-      const play = (url: string) =>
-        new Promise<void>((resolve, reject) => {
-          audio.onended = () => resolve();
-          audio.onerror = () => reject(new Error('The audio could not be played.'));
-          audio.src = url;
-          audio.play().catch(reject);
-        });
+      // Decoding detaches its input, so each decode gets a copy and the
+      // cached bytes stay reusable.
+      const decoded: Promise<AudioBuffer>[] = [];
+      const decode = (i: number) =>
+        (decoded[i] ??= clip(chunks[i]!).then(async (bytes) => trimSilence(ctx, await ctx.decodeAudioData(bytes.slice(0)))));
 
       try {
+        let at = 0;
+        let last: AudioBufferSourceNode | null = null;
         for (let i = 0; i < chunks.length; i++) {
-          // Keep the next clips downloading while this one plays. Errors are
-          // handled when each clip is awaited; this only stops an unhandled
-          // rejection warning if playback is stopped first.
-          for (let j = i + 1; j <= i + LOOKAHEAD && j < chunks.length; j++) clip(chunks[j]!).catch(() => {});
-          const url = await clip(chunks[i]!);
-          if (signal.aborted) return;
-          await play(url);
-          if (signal.aborted) return;
+          // Keep the next clips downloading and decoding while this one
+          // plays. Errors are handled when each is awaited; this only stops
+          // an unhandled rejection warning if playback is stopped first.
+          for (let j = i; j <= i + LOOKAHEAD && j < chunks.length; j++) decode(j).catch(() => {});
+          const buffer = await decode(i);
+          if (!live()) return;
+
+          const source = ctx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(ctx.destination);
+          // Straight after the previous clip, or now if the clip arrived late.
+          at = Math.max(at, ctx.currentTime + 0.02);
+          source.start(at);
+          at += buffer.duration + CLIP_GAP_S;
+          sourcesRef.current.push(source);
+          last = source;
         }
-        setSpeakingId(null);
+        if (last) {
+          await new Promise<void>((resolve) => {
+            last.onended = () => resolve();
+          });
+        }
+        if (live()) {
+          sourcesRef.current = [];
+          setSpeakingId(null);
+        }
       } catch (err) {
-        if (signal.aborted || (err instanceof DOMException && err.name === 'AbortError')) return;
+        if (!live()) return;
         if (err instanceof Unavailable) {
           // No key configured: hide the control rather than offering
           // something that cannot work.
@@ -225,7 +293,7 @@ export function useSpeech() {
         setSpeakingId(null);
       }
     },
-    [clip, halt, speakingId, stop],
+    [clip, context, halt, speakingId, stop],
   );
 
   return { speak, stop, prefetch, cancelPrefetch, speakingId, available, error };

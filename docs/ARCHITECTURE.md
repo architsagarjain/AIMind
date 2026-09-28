@@ -400,10 +400,14 @@ Four decisions worth recording:
   then `flux-jack-en`. A rejected voice falls through to the next and the
   working one is remembered. `OPENROUTER_TTS_VOICE` puts a voice first.
 - **Latency is spent where it is felt.** The route runs on the edge (no cold
-  start, and the OpenAI SDK stays out of it via `openrouter-config.ts`). The
-  first clip is one short clause; two clips are fetched ahead of the one
-  playing; resting the pointer on Listen fetches the first clip before the
-  click; clips are cached by text for instant replay. Upstream, a request
+  start, and the OpenAI SDK stays out of it via `openrouter-config.ts`). Clips
+  grow as they go (one short clause, then about 170 and 300 characters), so
+  each is made while the one before plays, and three are fetched ahead.
+  Playback is Web Audio: each clip is decoded on arrival, its silent edges
+  trimmed, and scheduled to start 0.16s after the previous one ends. An
+  `<audio>` element swapping sources left a second or more between
+  sentences. Resting the pointer on Listen fetches the first two clips
+  before the click; clips are cached by text for instant replay. Upstream, a request
   with no answer after 2.5s gets a twin and the first to answer wins, the same
   hedging idea as the chat.
 - **Absence is a UI state, not an error.** With no key the route returns 503 and
