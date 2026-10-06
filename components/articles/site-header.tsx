@@ -9,7 +9,7 @@ const LINKS = [
 /** Header for the reading pages: plain links, so every page is reachable without JavaScript. */
 export function SiteHeader() {
   return (
-    <header className="relative z-10 border-b border-hairline">
+    <header className="sticky top-0 z-40 border-b border-hairline bg-[color-mix(in_srgb,var(--color-void)_82%,transparent)] backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <Link href="/" className="shrink-0 font-display text-[15px] font-extrabold tracking-[0.14em] whitespace-nowrap text-ink sm:text-base sm:tracking-[0.2em]">
           ARCHIT.AI

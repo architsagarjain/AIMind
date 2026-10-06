@@ -118,28 +118,6 @@
   color: var(--color-accent);
 }
 
-.article-body blockquote {
-  border-left: 2px solid var(--color-accent);
-  padding: 0.2em 0 0.2em 1.1em;
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  line-height: 1.55;
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
-.article-callout {
-  border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
-  border-radius: 14px;
-  background: var(--color-accent-soft);
-  padding: 1em 1.2em;
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  line-height: 1.5;
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
 /* Tables scroll sideways on a phone instead of widening the page. */
 .article-table {
   overflow-x: auto;
@@ -196,4 +174,245 @@
   font-size: 13px;
   line-height: 1.5;
   color: var(--color-faint);
+}
+
+/* ===========================================================================
+   Editorial details
+
+   Every effect below is CSS, layered on content that is already readable:
+   with the animations unsupported or turned off, the page is simply still.
+   =========================================================================== */
+
+/* Numbered sections: a small accent index above each heading. */
+.article-body {
+  counter-reset: section;
+}
+
+.article-body h2 {
+  counter-increment: section;
+  position: relative;
+  padding-top: 0.9em;
+  font-size: clamp(1.55rem, 1.2rem + 1.1vw, 1.95rem);
+  letter-spacing: -0.02em;
+}
+
+.article-body h2::before {
+  content: counter(section, decimal-leading-zero);
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--color-accent);
+}
+
+.article-body h2::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 30px;
+  width: 36px;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+/* A drop cap opens the piece. */
+.article-body > p:first-child::first-letter {
+  float: left;
+  margin: 0.08em 0.12em 0 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 4.1em;
+  line-height: 0.82;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Pull quotes: large serif italic between hairlines, with an oversized mark. */
+.article-body blockquote {
+  position: relative;
+  margin-block: 2.4em;
+  border-left: 0;
+  border-block: 1px solid var(--color-hairline-strong);
+  padding: 1.4em 0 1.3em 2.6rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.6rem);
+  font-style: italic;
+  line-height: 1.45;
+  font-weight: 400;
+  color: var(--color-ink);
+}
+
+.article-body blockquote::before {
+  content: '\201C';
+  position: absolute;
+  top: 0.18em;
+  left: -0.05em;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 4.2rem;
+  font-style: normal;
+  line-height: 1;
+  color: var(--color-accent);
+}
+
+/* The key-point callout: a paper card with an accent spine. */
+.article-callout {
+  position: relative;
+  border: 1px solid var(--color-hairline);
+  border-radius: 16px;
+  background: var(--color-surface);
+  box-shadow: 0 20px 40px -32px #1b171066;
+  padding: 1.25em 1.4em 1.25em 1.6em;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  line-height: 1.5;
+}
+
+.article-callout::before {
+  content: '';
+  position: absolute;
+  inset: 14px auto 14px 0;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(var(--color-accent), var(--color-accent-2));
+}
+
+/* Tables: a soft card, banded rows. */
+.article-table {
+  background: var(--color-surface);
+  box-shadow: 0 20px 40px -34px #1b171059;
+}
+
+.article-table tbody tr:nth-child(even) td,
+.article-table tbody tr:nth-child(even) th {
+  background: var(--tint-1);
+}
+
+.article-body a {
+  text-decoration-thickness: 1px;
+}
+
+/* ---------------------------------------------------------------- motion */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The header rises in, line by line. */
+  .article-rise {
+    animation: article-rise 0.9s var(--ease-out-expo) both;
+  }
+  .article-rise-2 { animation-delay: 0.08s; }
+  .article-rise-3 { animation-delay: 0.16s; }
+  .article-rise-4 { animation-delay: 0.24s; }
+
+  /* The hero opens from a narrower frame. Clip only, never opacity, so it
+     still counts as the page's first large paint. */
+  .article-hero {
+    animation: article-hero-open 1.2s var(--ease-out-expo) 0.15s both;
+  }
+
+  /* Where the browser supports scroll-driven animation: the photo drifts
+     against the page, and body blocks settle in as they arrive. */
+  @supports (animation-timeline: view()) {
+    .article-hero-img {
+      transform-origin: center;
+      animation: article-parallax linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    .article-body > h2,
+    .article-body > blockquote,
+    .article-body > .article-callout,
+    .article-body > figure {
+      animation: article-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+}
+
+@keyframes article-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@keyframes article-hero-open {
+  from {
+    clip-path: inset(8% 7% 8% 7% round 22px);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 22px);
+  }
+}
+
+@keyframes article-parallax {
+  from {
+    transform: scale(1.12) translateY(-3.5%);
+  }
+  to {
+    transform: scale(1.12) translateY(3.5%);
+  }
+}
+
+@keyframes article-settle {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+/* The hub headline's marked phrase: a highlighter stroke under the words. */
+.hub-mark {
+  background: linear-gradient(transparent 62%, color-mix(in srgb, var(--color-accent) 22%, transparent) 62%, color-mix(in srgb, var(--color-accent) 22%, transparent) 92%, transparent 92%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hub-mark {
+    animation: hub-mark 1.1s var(--ease-out-expo) 0.5s both;
+  }
+}
+
+@keyframes hub-mark {
+  from {
+    background-size: 0% 100%;
+  }
+}
+
+/* The hub's photo collage: three cards fanned out, which spread a little
+   further when the pointer rests on them. */
+.hub-collage-card {
+  position: absolute;
+  width: 270px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 6px solid #fffdf9;
+  border-radius: 20px;
+  background: var(--tint-2);
+  box-shadow: 0 30px 60px -28px #1b171080, 0 0 0 1px #1b171014;
+  transition: transform 0.7s var(--ease-out-expo);
+}
+
+.hub-collage-0 { top: 20px; left: 10px; transform: rotate(-9deg); z-index: 1; }
+.hub-collage-1 { top: 70px; left: 120px; transform: rotate(4deg); z-index: 3; }
+.hub-collage-2 { top: 150px; left: 40px; transform: rotate(-2deg) translateY(60px); z-index: 2; }
+
+.hub-collage:hover .hub-collage-0 { transform: rotate(-14deg) translate(-26px, -10px); }
+.hub-collage:hover .hub-collage-1 { transform: rotate(8deg) translate(30px, -6px); }
+.hub-collage:hover .hub-collage-2 { transform: rotate(-3deg) translateY(84px); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hub-collage {
+    animation: hub-collage-in 1.3s var(--ease-out-expo) 0.2s both;
+  }
+}
+
+@keyframes hub-collage-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+  }
 }

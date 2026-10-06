@@ -141,6 +141,8 @@ export interface ArticleSummary {
   excerpt: string;
   category: Article['category'];
   minutes: number;
+  /** ISO date. */
+  published: string;
 }
 
 export const articleSummaries = (): ArticleSummary[] =>
@@ -150,4 +152,5 @@ export const articleSummaries = (): ArticleSummary[] =>
     excerpt: a.excerpt,
     category: a.category,
     minutes: readingMinutes(a),
+    published: a.published,
   }));
