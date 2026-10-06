@@ -1,6 +1,7 @@
 import { profile } from '@/content/profile';
 import { pressByPriority } from '@/content/press';
 import { plain } from '@/content/articles';
+import { articleImage, articleImageSrc } from '@/content/articles/images';
 import { SITE_URL } from '@/lib/site';
 import type { Article } from '@/types';
 
@@ -62,6 +63,30 @@ export function websiteSchema() {
   };
 }
 
+/**
+ * The article's photo, with the creator and licence Google Images reads,
+ * followed by its generated share card.
+ */
+function articleImages(slug: string, url: string) {
+  const photo = articleImage(slug);
+  const card = `${url}/opengraph-image`;
+  if (!photo) return card;
+  return [
+    {
+      '@type': 'ImageObject',
+      url: absolute(articleImageSrc(slug).full),
+      width: photo.width,
+      height: photo.height,
+      caption: photo.alt,
+      creditText: `${photo.credit} / ${photo.source}`,
+      creator: { '@type': 'Person', name: photo.credit, ...(photo.creatorUrl ? { url: photo.creatorUrl } : {}) },
+      license: photo.licenseUrl,
+      acquireLicensePage: photo.sourceUrl,
+    },
+    card,
+  ];
+}
+
 export function articleSchema(article: Article, wordCount: number) {
   const url = articleUrl(article.slug);
   return {
@@ -71,7 +96,7 @@ export function articleSchema(article: Article, wordCount: number) {
     description: article.description,
     url,
     mainEntityOfPage: url,
-    image: `${url}/opengraph-image`,
+    image: articleImages(article.slug, url),
     datePublished: article.published,
     dateModified: article.updated ?? article.published,
     author: { '@id': PERSON_ID },

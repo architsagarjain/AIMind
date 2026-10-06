@@ -13,6 +13,7 @@ import {
 } from '@/content/articles';
 import { profile } from '@/content/profile';
 import { ArticleBody, Inline } from '@/components/articles/article-body';
+import { ArticlePhoto, PhotoCredit } from '@/components/articles/article-photo';
 import { JsonLd } from '@/components/seo/json-ld';
 import { articleSchema, breadcrumbSchema, faqSchema, graph } from '@/lib/seo';
 
@@ -129,6 +130,19 @@ export default async function ArticlePage({ params }: Props) {
         </p>
       </header>
 
+      {/* The photo runs a little wider than the text column on larger screens. */}
+      <figure className="mt-10 md:-mx-14">
+        <ArticlePhoto
+          slug={article.slug}
+          priority
+          sizes="(min-width: 768px) 832px, 100vw"
+          className="rounded-2xl bg-[var(--tint-2)] shadow-[0_24px_60px_-30px_#1b171066]"
+        />
+        <figcaption className="mt-3 px-1 md:px-14">
+          <PhotoCredit slug={article.slug} />
+        </figcaption>
+      </figure>
+
       {/* Long pieces get a contents list; it is also a set of sitelinks for search. */}
       {sections.length >= 5 && (
         <nav aria-label="On this page" className="mt-10 rounded-2xl border border-hairline bg-surface/60 p-5">
@@ -202,7 +216,7 @@ export default async function ArticlePage({ params }: Props) {
             <li key={r.slug}>
               <Link
                 href={`/articles/${r.slug}`}
-                className="group flex items-center justify-between gap-4 rounded-xl border border-hairline p-4 transition-colors hover:border-accent/40 hover:bg-white/[0.02]"
+                className="group flex items-center justify-between gap-4 rounded-xl border border-hairline p-4 transition-colors hover:border-accent/40 hover:bg-surface-raised hover:shadow-[var(--shadow-glow-sm)]"
               >
                 <span>
                   <span className="block text-[11px] font-semibold tracking-[0.16em] text-accent uppercase">

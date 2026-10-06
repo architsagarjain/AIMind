@@ -137,6 +137,20 @@ export interface Article {
   faq?: ArticleFaq[];
 }
 
+/** An article's hero photo and the credit its licence asks for. */
+export interface ArticleImage {
+  alt: string;
+  /** Pixel size of the full file, for layout without shift. */
+  width: number;
+  height: number;
+  credit: string;
+  creatorUrl?: string;
+  source: 'Flickr' | 'Wikimedia Commons';
+  sourceUrl: string;
+  license: string;
+  licenseUrl: string;
+}
+
 /** Coverage elsewhere. `featured` entries lead the press strip. */
 export interface PressMention {
   outlet: string;

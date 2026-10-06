@@ -27,7 +27,7 @@ function Chip({ children, className }: { children: React.ReactNode; className?: 
   return (
     <span
       className={cn(
-        'inline-block rounded-md bg-white/[0.06] px-2 py-0.5 text-[12px] font-semibold tracking-wide text-accent',
+        'inline-block rounded-md bg-[var(--tint-2)] px-2 py-0.5 text-[12px] font-semibold tracking-wide text-accent',
         className,
       )}
     >

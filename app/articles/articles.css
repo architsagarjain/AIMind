@@ -1,12 +1,72 @@
 /* ===========================================================================
-   Article typography. Long-form reading on the dark theme: a 68ch measure,
-   generous line height, and ink at 82% so body text does not glare.
+   Paper theme for the reading pages.
+
+   The rest of the site is a night scene, which suits a hero and an OS but
+   not ten minutes of reading. The articles get a warm paper ground and
+   near-black ink instead. Like `.os-light`, this redefines the same tokens
+   the components already use, so the pages re-theme without a fork.
+   =========================================================================== */
+
+.theme-paper {
+  --color-void: #f7f4ee;
+  --color-surface: #fffdf9;
+  --color-surface-raised: #ffffff;
+  --color-surface-glass: #fffdf9e6;
+
+  --color-ink: #16181d;
+  --color-muted: #464b55;
+  /* Darker than a typical faint grey so captions and dates still pass
+     WCAG AA on the paper ground. */
+  --color-faint: #6a6f78;
+
+  --color-hairline: #1b17101a;
+  --color-hairline-strong: #1b17102b;
+  --color-border: #1b17102b;
+
+  /* The brand cyan disappears on paper; a deep teal from the same family
+     carries links and labels instead. */
+  --color-accent: #0b6a8c;
+  --color-accent-soft: #0b6a8c12;
+  --color-accent-2: #1d9bf0;
+
+  --tint-1: #1b171008;
+  --tint-2: #1b17100d;
+  --tint-3: #1b171014;
+
+  --shadow-glow: 0 18px 40px -22px #1b171040;
+  --shadow-glow-sm: 0 10px 24px -16px #1b171040;
+
+  color-scheme: light;
+  background: var(--color-void);
+  color: var(--color-ink);
+}
+
+.theme-paper ::selection {
+  background: #0b6a8c2e;
+  color: var(--color-ink);
+}
+
+.theme-paper .bloom {
+  display: none;
+}
+
+/* ===========================================================================
+   Article typography: a serif for running text at a 68ch measure, with the
+   sans kept for headings, labels and tables.
    =========================================================================== */
 
 .article-body {
-  font-size: 17px;
-  line-height: 1.8;
-  color: color-mix(in srgb, var(--color-ink) 82%, transparent);
+  font-family: var(--font-serif), Georgia, 'Times New Roman', serif;
+  font-size: 18.5px;
+  line-height: 1.75;
+  color: color-mix(in srgb, var(--color-ink) 90%, transparent);
+}
+
+/* Tables, captions and figures stay in the sans: figures read better there. */
+.article-body table,
+.article-body figure,
+.article-body figcaption {
+  font-family: var(--font-sans);
 }
 
 .article-body > * + * {

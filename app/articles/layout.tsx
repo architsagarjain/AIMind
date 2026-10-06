@@ -1,12 +1,28 @@
+import type { Viewport } from 'next';
 import Link from 'next/link';
+import { Source_Serif_4 } from 'next/font/google';
 import { SiteHeader } from '@/components/articles/site-header';
 import { profile } from '@/content/profile';
 import './articles.css';
 
+/** A reading serif for article text, loaded only on these pages. */
+const serif = Source_Serif_4({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  display: 'swap',
+  weight: ['400', '600'],
+  style: ['normal', 'italic'],
+});
+
+/** The reading pages are light, so the browser chrome should be too. */
+export const viewport: Viewport = {
+  themeColor: '#f7f4ee',
+  colorScheme: 'light',
+};
+
 export default function ArticlesLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-dvh overflow-x-clip bg-void">
-      <div className="bloom top-[-12rem] left-1/2 h-[30rem] w-[30rem] -translate-x-1/2 opacity-60" />
+    <div className={`theme-paper ${serif.variable} relative min-h-dvh overflow-x-clip`}>
       <SiteHeader />
       <main id="main" className="relative z-10">
         {children}
