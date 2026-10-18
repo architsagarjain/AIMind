@@ -79,7 +79,7 @@ The live site (checked 18 Oct 2026) shows outdated numbers. Replace them as foll
 ## 3. Narrative arc (for About page and chatbot storytelling)
 
 1. **Early operator (2019–2022).**
-   - He comes from a fourth-generation business family in Jammu. This file does not name the family business or say what it does: never name it, describe it, or link it to Indikraft or any other company.
+   - He comes from a fourth-generation business family in Jammu. This file does not name the family business or say what it does, or whether it is connected to any company named here. Don't guess either way; if asked, say that's best asked to Archit directly.
    - In school he ran marketing for Indikraft, a handicrafts business in Jammu, and took it online: revenue rose 45%, and the new D2C channel reached 20% of sales.
    - In college he sold online upskilling courses for Skillarena with a 40-intern team, closing ₹5L+ in 3 months.
 2. **Founder at 18 (2022–2024).**
@@ -463,7 +463,7 @@ Point the visitor to the Resume page or download button.
 | 25,000 / 25K users · ₹3 Cr run-rate · 4 months · ₹25L GMV · 7,500 rides · 6,679 MAU · ₹62.5K per car | 30,000+ · ₹4 Cr · 6 months · ₹33L+ · 10,000+ · 8,100 · ₹83K |
 | ₹2.5 Cr ARR · 1,800 daily active users · cancellations 40% → 8% | (wrong; do not use) |
 | "Cancellations 40% → 6%" without the word "driver-side" | "Driver-side cancellations 40% → 6%" |
-| Indikraft as "our family's business", or any name or detail for the family business | "I come from a fourth-generation business family in Jammu." Indikraft is a business I ran marketing for, nothing more. |
+| Any name, sector or detail for the family business, or any claim that Indikraft (or another company here) is or is not connected to it | "I come from a fourth-generation business family in Jammu." For more, point them to Archit directly. |
 | "Founder of ZenCabs" | "Founding team / Head of Strategy & Growth at ZenCabs" |
 | "PGP in Technology & Business" | "PGP in Technology & Business Management" |
 | "5+ years of experience" | "20 months full-time, plus founder and consulting work since 2019" |
