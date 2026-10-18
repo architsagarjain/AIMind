@@ -7,7 +7,7 @@ import type { Article } from '@/types';
 
 export const weeklyOperatingReview: Article = {
   slug: 'weekly-operating-review-kpi-cadence',
-  title: 'The weekly review that took cancellations from 40% to 6%',
+  title: 'The weekly review that took driver-side cancellations from 40% to 6%',
   seoTitle: 'How to Run a Weekly Operating Review: A KPI Playbook',
   description:
     'How I ran a weekly KPI review at an EV startup: choosing the top metric, building the metric tree, setting thresholds and guardrails, and running the meeting.',
@@ -22,10 +22,11 @@ export const weeklyOperatingReview: Article = {
     'startup KPIs',
   ],
   published: '2026-09-25',
+  updated: '2026-10-18',
   blocks: [
     {
       type: 'p',
-      text: `The most useful thing I built at ZenCabs was a meeting. Every week the founder and I went through 15+ KPIs, and while it ran, ride cancellations fell from 40% to 6% and fleet utilisation rose from 40% to 75%.`,
+      text: `The most useful thing I built at ZenCabs was a meeting. Every week the founder and I went through 15+ KPIs, and while it ran, driver-side cancellations fell from 40% to 6% and fleet utilisation rose from 40% to 75%.`,
     },
     {
       type: 'p',
@@ -327,7 +328,7 @@ export const citySizing: Article = {
     { type: 'h2', text: 'Checking it against reality' },
     {
       type: 'p',
-      text: `ZenCabs ran 7,500+ rides a month at a ₹331 average order value. That is about 3.3% of the base case, 9% of the low case and under 2% of the high case. Even on the pessimistic view, the service had reached a small share of the market, which is what justified adding cars.`,
+      text: `Six months in, ZenCabs ran 10,000+ rides a month at a ₹331 average order value. That is about 4.4% of the base case, 12.5% of the low case and about 2.2% of the high case. Even on the pessimistic view, the service had reached a small share of the market, which is what justified adding cars.`,
     },
     {
       type: 'p',
@@ -337,7 +338,7 @@ export const citySizing: Article = {
     { type: 'h2', text: 'From market size to a fleet plan' },
     {
       type: 'p',
-      text: `A market size only becomes a decision when it turns into cars. At ZenCabs' actual rate of about 187 rides per car a month, serving 10% of the base case, about 22,700 trips, would need roughly 120 cars. That number is the useful output: it is a target the team can plan driver recruitment against.`,
+      text: `A market size only becomes a decision when it turns into cars. At ZenCabs' actual rate of 250 rides per car a month (10,000 rides across 40 cars), serving 10% of the base case, about 22,700 trips, would need roughly 90 cars. That number is the useful output: it is a target the team can plan driver recruitment against.`,
     },
     {
       type: 'p',
@@ -391,8 +392,8 @@ export const pricingPlaybook: Article = {
   title: 'Pricing is the fastest lever in a services business, and the one founders avoid',
   seoTitle: 'Pricing Strategy for Services Businesses: A Playbook',
   description:
-    "How pricing restructures moved conversion from 1.4% to 4% at a wedding business and tripled a magazine's monthly sales, and how to change prices safely.",
-  excerpt: `Two pricing restructures, one wedding business and one magazine, moved more revenue than any campaign I have run. How to change prices without losing the customers you have.`,
+    "How pricing restructures moved conversion from 1.4% to 4% at a matrimony platform and lifted a magazine's monthly sales 3.5x, and how to change prices safely.",
+  excerpt: `Two pricing restructures, one matrimony platform and one magazine, moved more revenue than any campaign I have run. How to change prices without losing the customers you have.`,
   category: 'Operating Playbook',
   keywords: [
     'pricing strategy services business',
@@ -406,7 +407,7 @@ export const pricingPlaybook: Article = {
   blocks: [
     {
       type: 'p',
-      text: `The two largest revenue moves I have been part of both started with pricing. At Shaadi Mangalam, a wedding services business, restructuring pricing and the sales process took conversion from 1.4% to 4% while monthly leads tripled to 3,000. Through Cairros, a pricing and sales restructure took a magazine client from ₹2L to ₹7L of sales a month over six months.`,
+      text: `Two of the largest revenue moves I have been part of started with pricing. At Shaadi Mangalam, a matrimony platform, restructuring pricing and the sales process took conversion from 1.4% to 4% while monthly leads tripled from 1,000 to 3,000, and monthly revenue grew from ₹2L to ₹8L. Through Cairros, a redesign, SEO and distribution overhaul took a magazine client from ₹2L to ₹7L of sales a month over six months.`,
     },
     {
       type: 'p',
@@ -432,13 +433,13 @@ export const pricingPlaybook: Article = {
     { type: 'h2', text: 'Pattern two: fix conversion before buying volume' },
     {
       type: 'p',
-      text: `The brief at Shaadi Mangalam was more leads. At 1.4% conversion, tripling leads would have tripled the cost of the ones that never converted. Measured from lead to booking, the old rate turned roughly 1,000 monthly leads into about 14 bookings; the new one turns 3,000 into about 120. Volume and conversion each contributed close to a threefold gain, and pricing was where the conversion gain started.`,
+      text: `The brief at Shaadi Mangalam was more leads. At 1.4% conversion, tripling leads would have tripled the cost of the ones that never converted. Measured from lead to paying customer, the old rate turned roughly 1,000 monthly leads into about 14 customers; the new one turns 3,000 into about 120. Volume and conversion each contributed close to a threefold gain, and pricing was where the conversion gain started. Revenue grew 4x, less than the customer count, because average package sizes came down as conversion widened: a price structure that lets more families start smaller is part of why more of them bought.`,
     },
 
     { type: 'h2', text: 'Pattern three: price is part of a system' },
     {
       type: 'p',
-      text: `At ZenCabs, GTM and pricing work together pushed monthly GMV past ₹25L across 7,500+ rides, and revenue per car reached ₹62.5K a month through utilisation, driver incentives and ride allocation. On a two-sided platform the price a rider pays and the incentive a driver earns have to be set together. Raising one without the other moves the problem to the other side of the market.`,
+      text: `At ZenCabs, GTM and pricing work together pushed monthly GMV past ₹33L across 10,000+ rides, and revenue per car reached ₹83K a month through utilisation, driver incentives and ride allocation. On a two-sided platform the price a rider pays and the incentive a driver earns have to be set together. Raising one without the other moves the problem to the other side of the market.`,
     },
 
     { type: 'h2', text: 'How to change a price without guessing' },
@@ -484,7 +485,7 @@ export const pricingPlaybook: Article = {
     },
     {
       q: 'Should you fix conversion or buy more leads first?',
-      a: 'Fix conversion first. At 1.4% conversion, tripling leads triples the cost of leads that never convert. At Shaadi Mangalam, conversion moved from 1.4% to 4% while leads tripled, and the combination multiplied bookings roughly eight times.',
+      a: 'Fix conversion first. At 1.4% conversion, tripling leads triples the cost of leads that never convert. At Shaadi Mangalam, conversion moved from 1.4% to 4% while leads tripled, and the combination multiplied paying customers roughly eight times.',
     },
   ],
 };
@@ -495,14 +496,14 @@ export const vocLoops: Article = {
   seoTitle: 'Voice of Customer Loops That Improve Retention',
   description:
     'How to run a voice-of-customer loop that changes decisions: collecting feedback, tagging it, owning each cause and closing the loop, from retention work at ZenCabs.',
-  excerpt: `At ZenCabs, voice-of-customer loops and retention plays turned 27% of the user base into 6,679 monthly active riders. A loop only works if the feedback reaches a decision. How to build one that does.`,
+  excerpt: `At ZenCabs, voice-of-customer loops and retention plays turned 27% of the user base into 8,100 monthly active riders. A loop only works if the feedback reaches a decision. How to build one that does.`,
   category: 'Operating Playbook',
   keywords: ['voice of customer', 'customer feedback loop', 'customer retention strategy', 'churn reduction', 'retention playbook', 'customer research'],
   published: '2026-09-27',
   blocks: [
     {
       type: 'p',
-      text: `At ZenCabs, 27% of the user base became monthly active riders, 6,679 people, through voice-of-customer loops and retention plays. Most companies collect feedback. Far fewer have a loop, where each piece of feedback reaches a person who can change something and the customer later sees the change. This is how I would set one up.`,
+      text: `At ZenCabs, 27% of the user base became monthly active riders, 8,100 people, through voice-of-customer loops and retention plays. Most companies collect feedback. Far fewer have a loop, where each piece of feedback reaches a person who can change something and the customer later sees the change. This is how I would set one up.`,
     },
     { type: 'h2', text: 'Step 1: collect from the moments that matter' },
     {
@@ -517,12 +518,12 @@ export const vocLoops: Article = {
     { type: 'h2', text: 'Step 3: count causes every week' },
     {
       type: 'p',
-      text: `The weekly count by cause is the loop's output. It shows which few causes explain most of the complaints, which is where the effort goes. The count belongs in the same weekly review as the growth numbers, as I describe in [the weekly review that took cancellations from 40% to 6%](/articles/weekly-operating-review-kpi-cadence).`,
+      text: `The weekly count by cause is the loop's output. It shows which few causes explain most of the complaints, which is where the effort goes. The count belongs in the same weekly review as the growth numbers, as I describe in [the weekly review that took driver-side cancellations from 40% to 6%](/articles/weekly-operating-review-kpi-cadence).`,
     },
     { type: 'h2', text: 'Step 4: give each cause an owner and a fix' },
     {
       type: 'p',
-      text: `A cause without an owner never gets fixed. For each of the top causes, name one person, agree the change they will make and the number that should move, and set the date you will check it. At ZenCabs the fixes for cancellations became 10+ standard operating procedures across onboarding and dispatch.`,
+      text: `A cause without an owner never gets fixed. For each of the top causes, name one person, agree the change they will make and the number that should move, and set the date you will check it. At ZenCabs the fixes for driver-side cancellations became 10+ standard operating procedures across onboarding and dispatch, and they took those cancellations from 40% to 6%.`,
     },
     { type: 'h2', text: 'Step 5: close the loop with the customer' },
     {
@@ -546,7 +547,7 @@ export const vocLoops: Article = {
   ],
   faq: [
     { q: 'What is a voice-of-customer loop?', a: 'A process that collects feedback at the moments that matter, tags each item by cause, counts causes weekly, assigns each top cause an owner and a fix, and tells customers what changed.' },
-    { q: 'How do voice-of-customer loops improve retention?', a: 'They find the few causes behind most complaints and get them fixed. At ZenCabs, voice-of-customer loops and retention plays turned 27% of the user base into 6,679 monthly active riders.' },
+    { q: 'How do voice-of-customer loops improve retention?', a: 'They find the few causes behind most complaints and get them fixed. At ZenCabs, voice-of-customer loops and retention plays turned 27% of the user base into 8,100 monthly active riders.' },
   ],
 };
 
@@ -605,7 +606,7 @@ export const monthlyUpdate: Article = {
     },
     {
       type: 'p',
-      text: `The weekly version of this discipline is in [the weekly review that took cancellations from 40% to 6%](/articles/weekly-operating-review-kpi-cadence).`,
+      text: `The weekly version of this discipline is in [the weekly review that took driver-side cancellations from 40% to 6%](/articles/weekly-operating-review-kpi-cadence).`,
     },
   ],
   faq: [

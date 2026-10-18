@@ -1,6 +1,6 @@
 import type { TimelineMilestone } from '@/types';
 
-/** Chronological, oldest first. Figures are from the CV. */
+/** Chronological, oldest first. Figures are from the context file. */
 export const timeline: TimelineMilestone[] = [
   {
     id: 'dps-jammu',
@@ -14,7 +14,19 @@ export const timeline: TimelineMilestone[] = [
       'CBSE Class XII: 92%, Commerce with Maths.',
       'CBSE Class X: 94.2%, including 100/100 in Science, and top 5 out of 600 students.',
       'House Captain, selected from a cohort of 600+.',
-      'Fourth generation of a Jammu business family, so cash flow and customers were dinner-table conversation long before they were coursework.',
+    ],
+  },
+  {
+    id: 'indikraft',
+    year: '2019 to 2021',
+    title: 'Marketing Manager',
+    org: 'Indikraft',
+    location: 'Jammu, India',
+    kind: 'work',
+    summary: 'Took a Jammu handicrafts business online while still at school.',
+    details: [
+      'Increased revenue 45% by launching digital order channels and onboarding 40+ artisan suppliers.',
+      'Opened a D2C channel contributing 20% of sales by listing 100+ SKUs in the first online catalogue.',
     ],
   },
   {
@@ -28,9 +40,20 @@ export const timeline: TimelineMilestone[] = [
     details: [
       'CGPA 8.16, top 10% of the batch.',
       'Elected Placement Coordinator from a cohort of 400 students.',
-      'Marketing Head at Sympulse; active with Enactus Pune.',
-      'Started taking on real client work in my second year, two years before the degree ended.',
+      'Marketing Head at Sympulse; directed marketing for Symulate, drawing 10,000+ footfall across three days.',
+      'Led R&D and go-to-market for Enactus Project Zuri, creating livelihoods for 50+ women artisans.',
+      'Founded Cairros at 18, in my second year, two years before the degree ended.',
     ],
+  },
+  {
+    id: 'skillarena',
+    year: '2022',
+    title: 'Sales & Marketing Executive (internship)',
+    org: 'Skillarena.in',
+    location: 'Remote',
+    kind: 'work',
+    summary: 'Selling online upskilling courses with a 40-intern team.',
+    details: ['Closed ₹5L+ in course sales in three months, leading 40 interns across campus, social and referral channels.'],
   },
   {
     id: 'cairros',
@@ -39,7 +62,7 @@ export const timeline: TimelineMilestone[] = [
     org: 'Cairros',
     location: 'Pune, India',
     kind: 'venture',
-    summary: 'Built a consulting and marketing agency to seven-figure revenue while still at college.',
+    summary: 'Founded a consulting and marketing agency at 18 and built it to seven-figure revenue while still at college.',
     details: [
       'Scaled to seven-figure annual revenue in two years, owning strategy, sales and delivery end to end.',
       'Grew three restaurant clients 30% in revenue at 7% month on month.',
@@ -59,6 +82,7 @@ export const timeline: TimelineMilestone[] = [
       'Improved lead conversion 40% and drove 300% profit growth through segmentation-led acquisition.',
       'Generated ₹30L+ in annual revenue owning branding and delivery for 15+ accounts.',
       'Halved content production turnaround by building a content engine and AI workflow agents.',
+      'Owned delivery for brand accounts including JCB, Mahindra and SANY while the startup grew from seed stage to 60+ people.',
     ],
   },
   {
@@ -74,7 +98,8 @@ export const timeline: TimelineMilestone[] = [
       'Realised ₹2 Cr+ by reengineering 25+ processes across procurement, HR and finance.',
       'Saved 10,000+ consulting hours across 200+ consultants by co-developing an internal audit AI tool.',
       'Executed engagements worth ₹12 Cr+ for 10+ clients including Cars24, Stryker India and PIF.',
-      'Promoted from Specialist to Specialist 2 inside a year.',
+      'Led DOA, internal audit and SOP work across 10 functions on mandates in the UAE and West Africa.',
+      'Promoted from Specialist to Specialist 2 within 12 months.',
     ],
   },
   {
@@ -94,17 +119,17 @@ export const timeline: TimelineMilestone[] = [
   {
     id: 'zencabs',
     year: '2026 to Present',
-    title: 'Head of Strategy & Growth',
+    title: 'Head of Strategy & Growth (founding team)',
     org: 'ZenCabs',
     location: 'Jammu, India',
     kind: 'venture',
-    summary: 'An EV mobility venture from launch to 25,000+ users and ₹3 Cr annualised in four months.',
+    summary: 'On the founding team of an EV cab startup: 30,000+ users and a ₹4 Cr annualised run-rate in six months.',
     details: [
-      'Built the venture from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months.',
-      'Grew monthly GMV past ₹25L across 7,500+ rides at ₹331 AOV.',
-      'Cut ride cancellations from 40% to 6% by institutionalising 10+ SOPs.',
-      'Lifted fleet utilisation from 40% to 75%, tracked against 15+ KPIs in weekly founder reviews.',
-      'Onboarded 43 driver partners and grew the fleet to 40 cars in three months.',
+      'Helped scale ZenCabs from launch to 30,000+ users and a ₹4 Cr annualised run-rate in six months.',
+      'Monthly GMV past ₹33L across 10,000+ rides at ₹331 AOV, on marketing spend of about 10% of revenue.',
+      'Refocused the fleet on the top 6 demand zones: utilisation 40% to 75%, revenue per car ₹83K a month, user cancellations down from 200 to 80 a day.',
+      'Cut driver-side cancellations from 40% to 6% with 10+ dispatch SOPs.',
+      'Grew the fleet from 0 to 40 cars in three months and onboarded 43 driver partners.',
     ],
   },
   {
@@ -114,10 +139,11 @@ export const timeline: TimelineMilestone[] = [
     org: 'Shaadi Mangalam',
     location: 'India',
     kind: 'venture',
-    summary: 'Pricing and sales restructure for a wedding services business.',
+    summary: 'Built the conversion funnel for a matrimony platform: monthly revenue up 4x.',
     details: [
-      'Tripled monthly leads to 3,000 and lifted conversion from 1.4% to 4%.',
-      'Shipped 100+ process and product fixes across sprints, leading the website redesign.',
+      'Quadrupled monthly revenue from ₹2L to ₹8L, at 26% month on month.',
+      'Tripled monthly leads from 1,000 to 3,000 and lifted conversion from 1.4% to 4%.',
+      'Shipped 100+ product and UX fixes across sprints, redesigning the website, service journey and brand.',
     ],
   },
   {
@@ -129,9 +155,8 @@ export const timeline: TimelineMilestone[] = [
     kind: 'education',
     summary: 'Adding the technology layer to a consulting and operating background.',
     details: [
-      'Pursuing the PGP TBM, a deliberate step from business operator toward technology builder.',
-      'I had spent three years shipping growth, consulting and operations work; the gap was building the thing itself.',
-      'Masters’ Union is practitioner-taught, which suits how I actually learn: do it, then understand why it worked.',
+      'Pursuing the Post Graduate Programme in Technology & Business Management (PGP TBM).',
+      'Next: a Founder’s Office, Chief of Staff or strategy role that combines consulting structure with operator speed.',
     ],
   },
 ];

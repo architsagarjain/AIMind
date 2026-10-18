@@ -3,55 +3,56 @@ import type { Project } from '@/types';
 /**
  * Case studies.
  *
- * Every number below is from Archit's CV. The AI clone reads this file as fact
- * and is instructed never to invent a figure, so nothing speculative goes in
- * `metrics` or `results`.
+ * Every number below is from content/archit-context.md, the verified context
+ * file. The AI clone is instructed never to invent a figure, so nothing
+ * speculative goes in `metrics` or `results`.
  */
 export const projects: Project[] = [
   {
     slug: 'zencabs',
     name: 'ZenCabs',
-    subtitle: 'EV mobility, built for Jammu',
-    role: 'Head of Strategy & Growth',
+    subtitle: 'EV cab startup, built for Jammu',
+    role: 'Head of Strategy & Growth (founding team)',
     period: 'Jan 2026 to Present',
     summary:
-      'Took an EV mobility venture from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months.',
-    tags: ['Founder’s Office', 'GTM', 'Marketplace Ops', 'Growth'],
+      'On the founding team of an all-electric cab fleet in Jammu: from launch to 30,000+ users and a ₹4 Cr annualised run-rate in six months.',
+    tags: ['Founder’s Office', 'GTM', 'Unit Economics', 'Analytics', 'Ops'],
     metrics: [
-      { label: 'Users', value: '25K+' },
-      { label: 'Run-Rate', value: '₹3 Cr' },
-      { label: 'Monthly GMV', value: '₹25L+' },
+      { label: 'Users', value: '30K+' },
+      { label: 'Run-Rate', value: '₹4 Cr' },
+      { label: 'Monthly GMV', value: '₹33L+' },
     ],
     accent: '#0A84FF',
     caseStudy: {
       challenge:
-        'Jammu is a market the national aggregators never prioritised. Riders defaulted to informal, phone-call bookings and unpredictable fares; drivers had no dependable pipeline of work. An EV fleet adds a second constraint: every idle car is capital sitting still, so utilisation decides whether the model works at all.',
+        'ZenCabs, operated by Shambho EV Cabs and founded by Aayush Chopra, runs an all-electric cab fleet and ride-hailing app in Jammu. Riders there defaulted to phone bookings and unpredictable fares, and an owned EV fleet adds a second constraint: every idle car is capital sitting still, so utilisation decides whether the model works at all.',
       strategy: [
-        'Treat supply as the harder half: sign and retain driver partners first, because a rider who opens the app to zero cars never opens it again.',
-        'Make utilisation the north-star metric. On an owned EV fleet revenue per car is what compounds, and ride count can grow while utilisation falls.',
-        'Compete on reliability. In a small market a ride that shows up is worth more to a rider than a discount.',
-        'Institutionalise the operating cadence early: weekly KPI reviews with the founder, so problems surface within days.',
+        'Find the lever in the ride data before spending: where the cars go, when they are short, and which drivers are struggling.',
+        'Make utilisation and revenue per car the measures that matter, because on an owned fleet ride count can grow while both fall.',
+        'Fix the system (zones, shifts, incentives, SOPs) and hold it with a weekly KPI review with the founder.',
+        'Grow lean: GTM and pricing over paid acquisition, with marketing held at about 10% of revenue.',
       ],
       execution: [
-        'Built the founder’s-office layer end to end: GTM strategy, pricing, and the weekly operating cadence the growth function ran on.',
-        'Onboarded 43 driver partners by designing the recruitment, training and incentive frameworks from scratch.',
-        'Institutionalised 10+ SOPs across onboarding and dispatch to attack the cancellation problem directly.',
-        'Ran voice-of-customer loops and retention plays to convert first-time riders into monthly actives.',
-        'Built the market sizing and expansion case that justified adding 10+ cars a month.',
+        'Zone refocus: ride data showed cars being sent to far-off, low-yield pickups. I found the top 6 demand zones and phased out the far-off ones over two months.',
+        'The 5 pm problem: we were losing evening rides with enough cars on the fleet. Analytics showed a 5 to 8 pm supply gap, with driver shifts ending as demand peaked, so I moved 5 shifts two hours later.',
+        'Driver incentives: lower-performing drivers earned too little, which hurt motivation and retention, so I redesigned the incentive cost structure.',
+        'Dispatch SOPs: put 10+ SOPs in place for onboarding and dispatch, and tracked 15+ KPIs in weekly reviews with the founder.',
+        'Built the market sizing and expansion case for adding 10+ cars a month, and ran voice-of-customer loops and retention plays.',
       ],
       results: [
-        'Scaled from launch to 25,000+ users and a ₹3 Cr annualised run-rate in four months.',
-        'Grew monthly GMV past ₹25L across 7,500+ rides at a ₹331 average order value.',
-        'Converted 27% of the user base into 6,679 monthly active riders.',
-        'Cut ride cancellations from 40% to 6%.',
-        'Lifted fleet utilisation from 40% to 75%, tracked against 15+ KPIs in weekly founder reviews.',
-        'Raised revenue per car to ₹62.5K per month.',
-        'Grew the fleet to 40 cars in three months.',
+        'Launch to 30,000+ users and a ₹4 Cr annualised run-rate in six months.',
+        'Monthly GMV past ₹33L across 10,000+ rides at a ₹331 average order value.',
+        'Fleet utilisation from 40% to 75%, revenue per car ₹83K a month, and user cancellations down 60%, from 200 to 80 a day.',
+        '200+ extra rides a month at zero added cost from the shift change.',
+        'Revenue from the bottom 55% of drivers up 70%.',
+        'Driver-side cancellations from 40% to 6%, which is 94% ride completion.',
+        '27% of users became 8,100 monthly actives.',
+        'Fleet from 0 to 40 cars in three months, with 43 driver partners onboarded.',
       ],
       lessons: [
-        'In a marketplace the constrained side is usually supply, so that is the side to solve first.',
-        'On an owned fleet, utilisation is the business. A 40% to 75% move is worth more than any acquisition campaign I could have run with the same effort.',
-        'Cancellations look like an ops problem and cost you retention. Every cancelled ride costs more than the acquisition that produced it.',
+        'Not all demand is good demand. Serving every far-off pickup felt like growth and was hurting utilisation; look at yield per zone, not just volume.',
+        'Enough supply at the wrong hours is still a supply problem. The cheapest fix was moving shifts, not adding cars.',
+        'The two cancellation numbers measure different things: driver-side cancellations fell with SOPs, user cancellations fell with the zone refocus.',
         'The weekly KPI review with the founder was the most useful thing I built there.',
       ],
     },
@@ -83,8 +84,8 @@ export const projects: Project[] = [
       execution: [
         'Ran root-cause diagnostics and process redesign across procurement, HR and finance, reengineering 25+ processes.',
         'Designed delegation-of-authority matrices and approval workflows for CXOs.',
-        'Co-developed an internal audit AI tool, then led firm-level training across 10 pilot engagements to drive adoption.',
-        'Anchored DOA, internal audit and SOP development across 10 functions in two international mandates.',
+        'Co-developed an internal audit AI tool with an external AI partner: I sourced the partner, shaped the non-technical design and scoped new audit use cases, then led firm-level training across 10 pilot engagements.',
+        'Led DOA, internal audit and SOP development across 10 functions in two international mandates, for UAE and West Africa clients.',
         'Ran structured leadership reporting and business reviews to secure CXO buy-in.',
       ],
       results: [
@@ -96,6 +97,7 @@ export const projects: Project[] = [
         'Won ₹80L in additional business by prioritising 8+ initiatives through opportunity assessment.',
         'Executed engagements worth ₹12 Cr+ for 10+ clients including Cars24, Stryker India and PIF.',
         'Secured CXO buy-in on 20+ recommendations.',
+        'Promoted to Specialist 2 within 12 months.',
       ],
       lessons: [
         'Many problems look unsolvable only because nobody has framed them properly yet.',
@@ -112,7 +114,7 @@ export const projects: Project[] = [
     role: 'Founder & Managing Partner',
     period: 'Aug 2022 to May 2024',
     summary:
-      'The agency I started in college and scaled to seven-figure annual revenue in two years, owning strategy, sales and delivery end to end.',
+      'The agency I founded at 18, during college, and scaled to seven-figure annual revenue across four sectors in two years.',
     tags: ['Venture Building', 'P&L', 'Growth', 'Brand'],
     metrics: [
       { label: 'Revenue', value: '7-Figure' },
@@ -132,8 +134,8 @@ export const projects: Project[] = [
       execution: [
         'Built the agency from scratch while at Symbiosis, owning strategy, sales and delivery end to end.',
         'Ran menu reengineering and table-turnaround operations for restaurant clients.',
-        'Took a magazine client through a pricing and sales restructure over six months.',
-        'Expanded across four sectors via rebrand, hiring and growth mandates backed by market research.',
+        'Took a magazine client through a redesign, SEO and distribution overhaul over six months.',
+        'Expanded across four sectors via rebrand, hiring and growth mandates, including a brand redesign and mascot for a paint brand and a hiring and digital overhaul for a leading Pune realtor.',
       ],
       results: [
         'Scaled to seven-figure annual revenue in two years.',
@@ -192,35 +194,36 @@ export const projects: Project[] = [
   {
     slug: 'shaadi-mangalam',
     name: 'Shaadi Mangalam',
-    subtitle: 'Wedding services',
+    subtitle: 'Matrimony platform',
     role: 'Growth & Business Strategy Consultant',
     period: 'Apr 2026 to Present',
     summary:
-      'Restructured pricing and sales for a wedding services business: monthly leads tripled to 3,000 and conversion moved from 1.4% to 4%.',
-    tags: ['Growth', 'Pricing', 'Lead Generation', 'Product'],
+      'Built the full conversion funnel for a matrimony platform: monthly revenue up 4x, from ₹2L to ₹8L, and conversion from 1.4% to 4%.',
+    tags: ['Funnel', 'Pricing', 'Product', 'Growth'],
     metrics: [
-      { label: 'Monthly Leads', value: '3,000' },
+      { label: 'Monthly Revenue', value: '₹2L → ₹8L' },
       { label: 'Conversion', value: '1.4% → 4%' },
-      { label: 'Fixes Shipped', value: '100+' },
+      { label: 'Monthly Leads', value: '3,000' },
     ],
     accent: '#C05CE0',
     caseStudy: {
       challenge:
-        'Wedding services is a crowded, trust-driven and high-consideration category. Volume alone does nothing: a business can triple its leads and go backwards if pricing and the sales motion are not built to convert them. The constraint was conversion.',
+        'A matrimony platform sells trust to families making a high-stakes decision. Leads were arriving, but pricing, the sales motion and the website were not built to turn them into paying customers. The constraint was conversion.',
       strategy: [
         'Fix conversion before chasing volume, because tripling leads into a 1.4% funnel multiplies the waste.',
-        'Restructure pricing so the sales conversation starts from the value a family is getting.',
-        'Run the website as a product with a backlog: ship fixes in sprints and measure each one.',
+        'Restructure pricing and sales so the conversation starts from what a family is getting.',
+        'Run the website and service journey as a product with a backlog: ship fixes in sprints and measure each one.',
       ],
       execution: [
+        'Worked with the founder across product development, UI/UX, the website, service and customer-service design, marketing and branding.',
         'Restructured pricing and the sales process end to end.',
-        'Led the website redesign and the digital strategy behind it.',
-        'Shipped 100+ process and product fixes across sprints.',
+        'Shipped 100+ product and UX fixes across sprints, redesigning the website, service journey and brand.',
       ],
       results: [
-        'Tripled monthly leads to 3,000.',
+        'Quadrupled monthly revenue from ₹2L to ₹8L, at 26% month on month.',
+        'Tripled monthly leads from 1,000 to 3,000.',
         'Lifted conversion from 1.4% to 4%.',
-        'Shipped 100+ process and product fixes.',
+        'Revenue grew 4x while leads times conversion grew more, because average package sizes became smaller as conversion widened.',
       ],
       lessons: [
         'Conversion first, volume second. Almost every growth brief I get has this backwards.',

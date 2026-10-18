@@ -245,7 +245,7 @@ export const leavingBigFour: Article = {
     },
     {
       type: 'p',
-      text: `The feedback loop changed most. At PwC an engagement took months to show a result. At ZenCabs the weekly review showed within days whether a change was working, and over those first four months the service went from launch to 25,000+ users and a ₹3 Cr annualised run-rate.`,
+      text: `The feedback loop changed most. At PwC an engagement took months to show a result. At ZenCabs the weekly review showed within days whether a change was working, and over the first six months the service went from launch to 30,000+ users and a ₹4 Cr annualised run-rate.`,
     },
 
     { type: 'h2', text: 'What it cost' },
@@ -369,15 +369,15 @@ export const reliabilityStrategy: Article = {
       type: 'table',
       head: ['Business', 'The reliability problem', 'What it was worth'],
       rows: [
-        ['ZenCabs', 'Four in ten ride requests were cancelled', 'Cancellations fell from 40% to 6%, and 27% of users became monthly active riders'],
-        ['Shaadi Mangalam', 'A funnel that lost almost every lead before booking', 'Conversion rose from 1.4% to 4% with pricing, sales and website fixes'],
+        ['ZenCabs', 'Drivers cancelled four in ten accepted rides', 'Driver-side cancellations fell from 40% to 6%, and 27% of users became monthly active riders'],
+        ['Shaadi Mangalam', 'A funnel that lost almost every lead before payment', 'Conversion rose from 1.4% to 4% with pricing, sales and website fixes, and monthly revenue grew 4x'],
         ['Restaurants, through Cairros', 'Waits for the menu, the order, the food and the bill', 'Revenue grew 30% with menu and table-turnaround work'],
         ['This site', 'Free AI models that fail, stall or leak', 'Fallbacks mean a visitor always gets an answer'],
       ],
     },
     {
       type: 'p',
-      text: `The ZenCabs row is the clearest. In Jammu the alternative to an app is a phone call to a driver you already know, so a rider let down twice goes back to making that call. Bringing cancellations down with 10+ standard procedures across onboarding and dispatch removed a reason people were leaving, which no discount addresses.`,
+      text: `The ZenCabs row is the clearest. In Jammu the alternative to an app is a phone call to a driver you already know, so a rider let down twice goes back to making that call. Bringing driver-side cancellations down with 10+ standard procedures across onboarding and dispatch removed a reason people were leaving, which no discount addresses.`,
     },
 
     { type: 'h2', text: 'Why it gets underpriced' },
@@ -403,7 +403,7 @@ export const reliabilityStrategy: Article = {
     },
     {
       type: 'p',
-      text: `The weekly review I describe in [the weekly review that took cancellations from 40% to 6%](/articles/weekly-operating-review-kpi-cadence) is where most of this happened at ZenCabs.`,
+      text: `The weekly review I describe in [the weekly review that took driver-side cancellations from 40% to 6%](/articles/weekly-operating-review-kpi-cadence) is where most of this happened at ZenCabs.`,
     },
 
     { type: 'h2', text: 'Where it matters most' },
@@ -415,7 +415,7 @@ export const reliabilityStrategy: Article = {
   faq: [
     {
       q: 'Why is reliability a growth strategy?',
-      a: 'Because failures drive customers back to their alternatives. At ZenCabs, cutting ride cancellations from 40% to 6% coincided with 27% of users becoming monthly active riders. Reliability removes the reason customers leave, which a discount does not.',
+      a: 'Because failures drive customers back to their alternatives. At ZenCabs, cutting driver-side cancellations from 40% to 6% coincided with 27% of users becoming monthly active riders. Reliability removes the reason customers leave, which a discount does not.',
     },
     {
       q: 'How do you measure service reliability?',
@@ -429,25 +429,26 @@ export const numbersICanDefend: Article = {
   title: 'Why every number on this site is one I can defend',
   seoTitle: 'Credible Numbers: How This Portfolio Handles Every Figure',
   description:
-    'The rules behind every figure on this site: only CV numbers about my work, sources for every industry figure, working shown for derived numbers, and a clone that cannot invent.',
+    'The rules behind every figure on this site: one verified file for numbers about my work, sources for every industry figure, working shown for derived numbers, and a clone that cannot invent.',
   excerpt: `A portfolio full of numbers is only useful if the reader can trust each one. The rules I hold every figure on this site to, and why a recruiter should expect them from anyone.`,
   category: 'Thought Piece',
   keywords: ['portfolio credibility', 'resume metrics', 'personal website numbers', 'hiring due diligence', 'honest metrics', 'AI clone accuracy'],
   published: '2026-09-27',
+  updated: '2026-10-18',
   blocks: [
     {
       type: 'p',
-      text: `This site states a lot of numbers: ₹6+ Cr in client savings, 25,000+ users, a ₹3 Cr run-rate, cancellations from 40% to 6%. A reader has no way to check most of them on the spot, which makes the rules behind them part of what I am offering. These are the rules.`,
+      text: `This site states a lot of numbers: ₹6+ Cr in client savings, 30,000+ users, a ₹4 Cr run-rate, driver-side cancellations from 40% to 6%. A reader has no way to check most of them on the spot, which makes the rules behind them part of what I am offering. These are the rules.`,
     },
     { type: 'h2', text: 'Figures about my work come from one place' },
     {
       type: 'p',
-      text: `Every figure about my own work comes from my CV, stored in one set of content files that feed the site, the resume and the AI clone. Nothing states a number about my work that is not in those files. If a figure changes, it changes everywhere at once, so the site cannot say one thing and the resume another.`,
+      text: `Every figure about my own work comes from one verified context file, checked against my CV, which feeds the site, the resume and the AI clone. Nothing states a number about my work that is not in it. When a figure changes, as the ZenCabs numbers did in October 2026, it changes everywhere at once, so the site cannot say one thing and the resume another. The file also keeps a list of retired figures that must never appear again.`,
     },
     { type: 'h2', text: 'Run-rates come with the months behind them' },
     {
       type: 'p',
-      text: `A run-rate is a fair measure of momentum and an easy one to inflate. So wherever I cite ZenCabs' ₹3 Cr annualised run-rate, I also show the monthly GMV of ₹25L+ and the 7,500+ rides behind it, and the arithmetic that links them. I apply the same test to other people's numbers in [marketplace metrics that flatter](/articles/marketplace-metrics-due-diligence).`,
+      text: `A run-rate is a fair measure of momentum and an easy one to inflate. So wherever I cite ZenCabs' ₹4 Cr annualised run-rate, I also show the monthly GMV of ₹33L+ and the 10,000+ rides behind it, and the arithmetic that links them: 10,000 rides at ₹331 is about ₹33L a month, and twelve of those is ₹4 Cr. I apply the same test to other people's numbers in [marketplace metrics that flatter](/articles/marketplace-metrics-due-diligence).`,
     },
     { type: 'h2', text: 'Industry numbers carry a source' },
     {

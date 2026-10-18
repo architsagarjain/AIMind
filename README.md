@@ -110,7 +110,8 @@ Open <http://localhost:3000>.
 
 Add `OPENROUTER_API_KEY` to switch the chat to the live clone, on free models
 only (see [The live clone](#the-live-clone-free-models-only)). The same key turns on
-the Listen voice, which uses OpenRouter's free Deepgram Flux TTS. Add the Supabase keys
+the Listen voice, which uses whichever free TTS model OpenRouter lists, and the
+browser's own voice when none answers. Add the Supabase keys
 to start persisting conversations. Neither is required to ship.
 
 | Script | Does |
@@ -367,6 +368,14 @@ conversation_summary (view)
 
 Full DDL in `supabase/migrations/0001_init.sql`; setup in `supabase/README.md`.
 
+**Keeping the free project awake.** Supabase's free plan pauses a project after
+about a week without activity, and while it is paused every Vercel deploy fails
+on the integration. `GET /api/keepalive` runs one small read and writes one
+`events` row named `keepalive`. A Vercel Cron job calls it daily (`vercel.json`),
+and the **Keep Supabase awake** GitHub Actions workflow
+(`.github/workflows/keepalive.yml`) calls it every four days as a backup and can
+be run by hand from the Actions tab. Nothing is committed by either.
+
 ---
 
 ## API routes
@@ -398,9 +407,18 @@ where available.
 
 ## Editing the content
 
+**The source of truth is `content/archit-context.md`**, Archit's verified
+context file: every fact and figure about him, the chatbot's persona rules,
+ready answers and a list of retired numbers that must never reappear. The AI
+clone reads its fact sections directly (via `content/archit-context.generated.ts`,
+rebuilt from the markdown by `npm run context` before every build), and the
+site's content files below are written from it. When something changes, edit
+the markdown, bump its "Last verified" date, and bring the content files in
+line.
+
 **Everything visitor-facing lives in `content/`.** The hero, the windows, the
-resume page and the AI's knowledge base all read from the same four files, so
-they cannot drift apart.
+resume page and the articles all read from these files, so they cannot drift
+apart.
 
 > ⚠️ **On metrics.** Every hard figure in this repo comes from Archit's CV and
 > lives in `content/` (`heroStats` in `profile.ts`, `metrics` in
@@ -514,7 +532,7 @@ Set these in **Project → Settings → Environment Variables**:
 | `OPENROUTER_API_KEY` | Production, Preview | No — falls back to offline mode |
 | `OPENROUTER_MODELS` | All | No — comma-separated preference order; only `:free` IDs are accepted |
 | `OPENROUTER_TTS_VOICE` | All | No — Flux voice to try first; defaults to `flux-drew-en` |
-| `OPENROUTER_TTS_MODEL` | All | No — defaults to `deepgram/flux-tts:free`; only `:free` IDs are accepted |
+| `OPENROUTER_TTS_MODEL` | All | No — a free TTS model to prefer while the catalogue lists it; only `:free` IDs are accepted |
 | `NEXT_PUBLIC_SUPABASE_URL` | All | No |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | All | No |
 | `SUPABASE_SERVICE_ROLE_KEY` | Production, Preview | No — **never** prefix with `NEXT_PUBLIC_` |

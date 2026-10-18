@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Printer } from 'lucide-react';
-import { education, experience, skills } from '@/content/resume';
+import { certifications, education, experience, leadership, skills } from '@/content/resume';
 import { projects } from '@/content/projects';
 import { profile } from '@/content/profile';
 import { AutoPrint } from './auto-print';
@@ -112,6 +112,26 @@ export default function ResumePage() {
               <span className="text-muted">{group.items.join(' · ')}</span>
             </p>
           ))}
+        </div>
+      </section>
+
+      {/* ------------------------------------------- leadership and certs */}
+      <section className="mt-9 grid gap-8 sm:grid-cols-2">
+        <div>
+          <h2 className="text-[11px] font-bold tracking-[0.24em] text-accent uppercase">Leadership & Impact</h2>
+          <ul className="mt-4 space-y-2 text-[13px] leading-relaxed text-muted">
+            {leadership.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h2 className="text-[11px] font-bold tracking-[0.24em] text-accent uppercase">Certifications</h2>
+          <ul className="mt-4 space-y-2 text-[13px] leading-relaxed text-muted">
+            {certifications.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
         </div>
       </section>
 

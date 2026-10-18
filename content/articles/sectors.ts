@@ -17,7 +17,7 @@ export const evCabEconomics: Article = {
   seoTitle: 'EV Cab Fleet Unit Economics in Tier-2 India',
   description:
     'Electric cab fleet economics in a tier-2 Indian city from ZenCabs operating numbers, plus what BluSmart and zero-commission apps changed for the sector.',
-  excerpt: `Forty cars, 7,500 rides a month and a ₹3 Cr run-rate. How an owned electric fleet makes money in Jammu, and what the last two years of Indian ride-hailing mean for the model.`,
+  excerpt: `Forty cars, 10,000+ rides a month and a ₹4 Cr run-rate in six months. How an owned electric fleet makes money in Jammu, and what the last two years of Indian ride-hailing mean for the model.`,
   category: 'Sector Breakdown',
   keywords: [
     'EV cab unit economics',
@@ -29,10 +29,11 @@ export const evCabEconomics: Article = {
     'ZenCabs',
   ],
   published: '2026-09-25',
+  updated: '2026-10-18',
   blocks: [
     {
       type: 'p',
-      text: `Since January I have run strategy and growth at ZenCabs, an electric cab service in Jammu. Jammu was never a priority city for the national aggregators, so riders booked cabs over the phone and argued about fares, and drivers had no dependable flow of work. ZenCabs was built to fill that gap.`,
+      text: `Since January I have been Head of Strategy & Growth on the founding team at ZenCabs, an all-electric cab fleet and ride-hailing app in Jammu founded by Aayush Chopra. Jammu was never a priority city for the national aggregators, so riders booked cabs over the phone and argued about fares, and drivers had no dependable flow of work. ZenCabs was built to fill that gap.`,
     },
     {
       type: 'p',
@@ -44,25 +45,27 @@ export const evCabEconomics: Article = {
       type: 'table',
       head: ['Metric', 'Where it stands'],
       rows: [
-        ['Users after four months', '25,000+'],
-        ['Monthly active riders', '6,679, which is 27% of users'],
-        ['Rides per month', '7,500+'],
+        ['Users after six months', '30,000+'],
+        ['Monthly active riders', '8,100, which is 27% of users'],
+        ['Rides per month', '10,000+'],
         ['Average order value', '₹331'],
-        ['Monthly GMV', '₹25L+'],
-        ['Fleet', '40 cars, added at 10+ a month'],
-        ['Revenue per car', '₹62.5K a month'],
+        ['Monthly GMV', '₹33L+'],
+        ['Fleet', '0 to 40 cars in three months, 10+ added a month'],
+        ['Revenue per car', '₹83K a month'],
         ['Fleet utilisation', 'From 40% to 75%'],
-        ['Ride cancellations', 'From 40% to 6%'],
-        ['Annualised run-rate', '₹3 Cr'],
+        ['Driver-side cancellations', 'From 40% to 6%'],
+        ['User cancellations', 'From 200 to 80 a day'],
+        ['Marketing spend', 'About 10% of revenue'],
+        ['Annualised run-rate', '₹4 Cr'],
       ],
     },
     {
       type: 'p',
-      text: `The figures reconcile, which is the first thing I would check in anyone else's deck. Forty cars at ₹62.5K each comes to ₹25L a month, the same as monthly GMV, so revenue per car here means the gross value of the rides that car carried. ₹25L a month annualises to the ₹3 Cr run-rate, and 7,500 rides at ₹331 comes to about ₹24.8L.`,
+      text: `The figures reconcile, which is the first thing I would check in anyone else's deck. 10,000 rides at ₹331 comes to about ₹33L a month, the monthly GMV. Forty cars at ₹83K each comes to the same ₹33L, so revenue per car here means the gross value of the rides that car carried. ₹33L a month times twelve is the ₹4 Cr run-rate.`,
     },
     {
       type: 'p',
-      text: `Per car, 7,500 rides across 40 cars is roughly 187 rides a month. That is about six rides a day, worth a little over ₹2,000 in fares.`,
+      text: `Per car, 10,000 rides across 40 cars is 250 rides a month. That is about eight rides a day, worth roughly ₹2,700 in fares.`,
     },
 
     { type: 'h2', text: 'Utilisation decides everything else' },
@@ -78,21 +81,35 @@ export const evCabEconomics: Article = {
       type: 'p',
       text: `So utilisation became the top number, with everything else underneath it: driver hours on the road, requests by hour and area, completed rides and the empty time between trips. We tracked 15+ KPIs in a weekly review with the founder, and every discussion had to connect back to utilisation. I have written up [how that weekly review ran](/articles/weekly-operating-review-kpi-cadence) separately.`,
     },
-
-    { type: 'h2', text: 'Why cancellations came before growth' },
+    { type: 'h3', text: 'Fewer zones, more revenue' },
     {
       type: 'p',
-      text: `At a 40% cancellation rate, four in every ten people who asked for a cab did not get one. In a city where the fallback is a phone call to a driver you already know, a rider let down twice goes back to making that call.`,
+      text: `The largest single move was on the map. Ride data showed cars being sent to far-off pickup areas where a trip earned little and the drive out cost a lot of empty time, which also drove cancellations. I found the top 6 demand zones and phased out the far-off ones over two months. Utilisation went from 40% to 75%, revenue per car reached ₹83K a month, and user cancellations fell 60%, from 200 to 80 a day. Serving every request had felt like growth. It was lowering yield.`,
+    },
+    { type: 'h3', text: 'The 5 pm problem' },
+    {
+      type: 'p',
+      text: `We were losing evening rides with enough cars on the fleet. The hourly data showed why: driver shifts were ending between 5 and 8 pm, just as demand peaked. Moving 5 driver shifts two hours later added 200+ rides a month at no extra cost. Enough supply at the wrong hours behaves exactly like too little supply.`,
+    },
+
+    { type: 'h2', text: 'Two cancellation numbers, two different fixes' },
+    {
+      type: 'p',
+      text: `ZenCabs tracks cancellations from each side, and the two moved for different reasons. Driver-side cancellations were at 40%: four in every ten rides a driver accepted, the driver then cancelled. In a city where the fallback is a phone call to a driver you already know, a rider let down twice goes back to making that call.`,
     },
     {
       type: 'p',
-      text: `We brought cancellations down to 6% with 10+ standard operating procedures across driver onboarding and dispatch, checked every week in the review. Retention followed. 27% of users became monthly active riders, 6,679 people who now use the service as a habit.`,
+      text: `We brought driver-side cancellations down to 6%, which is 94% ride completion, with 10+ standard operating procedures across driver onboarding and dispatch, checked every week in the review. User cancellations, the rides riders gave up on, fell from 200 to 80 a day for a different reason: the zone refocus meant fewer long waits for a car coming from far away. Retention followed both. 27% of users became monthly active riders, 8,100 people who now use the service as a habit.`,
     },
 
     { type: 'h2', text: 'Supply comes first, and it is slow to build' },
     {
       type: 'p',
-      text: `In a city with no good alternative, riders are cheap to find and drivers are hard to find. We designed recruitment, training and incentives for driver partners from scratch and onboarded 43 of them, while the fleet grew by 10+ cars a month to 40, backed by a market sizing and expansion case for the city.`,
+      text: `In a city with no good alternative, riders are cheap to find and drivers are hard to find. We designed recruitment, training and incentives for driver partners from scratch and onboarded 43 of them, while the fleet grew from 0 to 40 cars in three months, 10+ a month, backed by a market sizing and expansion case for the city. Growth stayed lean: we reached 30,000+ users with marketing at about 10% of revenue.`,
+    },
+    {
+      type: 'p',
+      text: `Keeping drivers mattered as much as finding them. Lower-performing drivers were earning too little, which hurt motivation and retention, so I redesigned the incentive cost structure. Revenue from the bottom 55% of drivers rose 70%.`,
     },
     {
       type: 'p',
@@ -166,7 +183,7 @@ export const evCabEconomics: Article = {
   faq: [
     {
       q: 'How does an electric cab fleet make money in India?',
-      a: 'An owned fleet earns the fare from each ride and carries the fixed costs of its cars, such as financing, insurance, parking and upkeep. Profit depends on utilisation, the share of time each car spends carrying riders. At ZenCabs, raising utilisation from 40% to 75% took revenue per car to ₹62.5K a month.',
+      a: 'An owned fleet earns the fare from each ride and carries the fixed costs of its cars, such as financing, insurance, parking and upkeep. Profit depends on utilisation, the share of time each car spends carrying riders. At ZenCabs, raising utilisation from 40% to 75% took revenue per car to ₹83K a month.',
     },
     {
       q: 'What happened to BluSmart?',
@@ -184,26 +201,27 @@ export const weddingIndustry: Article = {
   title: 'The Indian wedding economy: enormous spend, one-time buyers and leaky funnels',
   seoTitle: 'Indian Wedding Industry Breakdown: Size, Segments, Funnels',
   description:
-    "A breakdown of India's wedding services market: its size, how spending splits by budget, why it resists repeat business, and what makes a wedding funnel convert.",
+    "A breakdown of India's wedding economy: its size, how spending splits by budget, why it resists repeat business, and what makes a wedding or matrimony funnel convert.",
   excerpt: `India spends around ₹6 lakh crore on weddings in a single season, and almost none of those customers will buy again. That one fact explains why most wedding businesses get growth wrong.`,
   category: 'Sector Breakdown',
   keywords: [
     'Indian wedding industry',
     'wedding market size India',
-    'wedding services business',
+    'matrimony platform growth',
     'CAIT wedding season',
     'wedding lead conversion',
     'Shaadi Mangalam',
   ],
   published: '2026-09-25',
+  updated: '2026-10-18',
   blocks: [
     {
       type: 'p',
-      text: `Since April I have been a growth and business strategy consultant for Shaadi Mangalam, a wedding services business. We restructured pricing and the sales process, redesigned the website and shipped more than 100 process and product fixes in sprints. Monthly leads tripled to 3,000 and conversion rose from 1.4% to 4%.`,
+      text: `Since April I have been a growth and business strategy consultant for Shaadi Mangalam, a matrimony platform, working with the founder across product, UX, the website, service design, marketing and branding. We built the full conversion funnel: monthly revenue quadrupled from ₹2L to ₹8L, monthly leads tripled from 1,000 to 3,000, and conversion rose from 1.4% to 4%.`,
     },
     {
       type: 'p',
-      text: `Working inside the category changed how I read it. This is the market as the public numbers describe it, and the structural facts that should decide how a wedding business grows.`,
+      text: `Matchmaking is the first purchase in a family's wedding journey, and it shares the economics of everything that follows. Working inside it changed how I read the whole category. This is the market as the public numbers describe it, and the structural facts that should decide how a wedding or matrimony business grows.`,
     },
 
     { type: 'h2', text: 'How big the market is' },
@@ -248,7 +266,7 @@ export const weddingIndustry: Article = {
     { type: 'h3', text: 'Customers almost never come back' },
     {
       type: 'p',
-      text: `Most families buy wedding services once per child. There is no repeat purchase to spread acquisition cost over, so the economics of a lead have to work on the first sale. The repeat business that exists comes through referral, when a family that had a good wedding recommends the vendor to the next one. Referral is the only retention a wedding business really has, which makes the quality of delivery part of the acquisition strategy.`,
+      text: `Most families buy wedding services, and a matrimony package, once per child. There is no repeat purchase to spread acquisition cost over, so the economics of a lead have to work on the first sale. The repeat business that exists comes through referral, when a family that had a good experience recommends the business to the next one. Referral is the only retention a wedding business really has, which makes the quality of delivery part of the acquisition strategy.`,
     },
     { type: 'h3', text: 'Demand arrives in waves' },
     {
@@ -268,20 +286,20 @@ export const weddingIndustry: Article = {
     },
     {
       type: 'p',
-      text: `Pricing came first. We restructured it so the sales conversation starts from the value a family is getting, and a discount is no longer the opening move. Then the website, which we ran as a product with a backlog. We shipped more than 100 fixes across sprints and measured each one.`,
+      text: `Pricing came first. We restructured it so the sales conversation starts from the value a family is getting, and a discount is no longer the opening move. Then the website and the service journey, which we ran as a product with a backlog. We shipped more than 100 product and UX fixes across sprints and measured each one.`,
     },
     {
       type: 'p',
-      text: `Monthly leads reached 3,000 and conversion reached 4%. Measured from lead to booking, that is about 120 conversions a month, against roughly 14 from the thousand or so monthly leads at the old rate. The business closes around eight times as many customers a month from one funnel.`,
+      text: `Monthly leads went from 1,000 to 3,000 and conversion from 1.4% to 4%. Measured from lead to paying customer, that is about 120 a month against roughly 14 before, around eight times as many. Monthly revenue grew 4x, from ₹2L to ₹8L at 26% a month, which is less than the rise in customers because average package sizes came down as conversion widened. More families bought, and more of them started with a smaller package.`,
     },
 
-    { type: 'h2', text: 'What I would look for in a wedding services company' },
+    { type: 'h2', text: 'What I would look for in a wedding or matrimony business' },
     {
       type: 'ul',
       items: [
-        'Conversion from lead to booking, split by budget band.',
+        'Conversion from lead to paying customer, split by budget band or package.',
         'Response time to a new enquiry during peak weeks.',
-        'The share of bookings that arrive through referral.',
+        'The share of customers who arrive through referral.',
         'Revenue by month, to see how deep the off-season falls.',
         'Whether prices are published or only given on a call.',
       ],

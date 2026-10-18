@@ -387,8 +387,18 @@ with the title optically centred over the full width, 52px dock icons on a
 
 ## 13. Voice
 
-`/api/speak` streams speech for an assistant reply from OpenRouter's free
-Deepgram Flux TTS (`deepgram/flux-tts:free`); `useSpeech` plays it.
+`/api/speak` streams speech for an assistant reply from whichever free TTS
+model OpenRouter lists right now; `useSpeech` plays it.
+
+Free speech models come and go. Deepgram Flux TTS launched free and then lost
+its free endpoint, which broke Listen without warning. So the route reads the
+live catalogue for `:free` models that output audio (cached for 30 minutes),
+tries the known good ones first (`deepgram/flux-tts:free`,
+`fish-audio/s2.1-pro-free:free`), sends Flux voice IDs only to Deepgram models
+and the provider's default voice to the rest, and remembers the model that
+answered. If no free model answers, `useSpeech` carries on in the browser's
+own voice (the Web Speech API), preferring an English male voice, so Listen
+never goes dead. `GET /api/speak` reports the candidates and a live probe.
 
 Four decisions worth recording:
 

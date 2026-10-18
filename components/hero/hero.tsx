@@ -153,9 +153,9 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           // paragraph was what landed across the subject's face.
           className="mt-5 hidden max-w-lg text-[13.5px] leading-relaxed text-muted sm:text-[15px] md:mt-6 md:block md:text-base short:mt-4 shortest:hidden"
         >
-          I turn ambiguous problems into decisions, systems and outcomes.{' '}
+          Big-4 consultant turned founding-team operator. I turn messy businesses into measurable outcomes:{' '}
           <Figure>₹6+ Cr</Figure> in client cost savings at PwC India, and ZenCabs from launch to a{' '}
-          <Figure>₹3 Cr</Figure> annualised run-rate in four months.
+          <Figure>₹4 Cr</Figure> annualised run-rate in six months.
         </motion.p>
 
         {/* Credibility strip: the names do work that adjectives cannot. */}

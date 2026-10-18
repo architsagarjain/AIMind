@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Download, ExternalLink, Mail } from 'lucide-react';
-import { education, experience, skills } from '@/content/resume';
+import { certifications, education, experience, leadership, skills } from '@/content/resume';
 import { projects } from '@/content/projects';
 import { profile } from '@/content/profile';
 import { SectionLabel } from '@/components/ui/section-label';
@@ -120,6 +120,28 @@ export function ResumeWindow() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="rule-fade my-8" />
+
+        {/* ------------------------------------------- leadership and certs */}
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div>
+            <SectionLabel>Leadership & Impact</SectionLabel>
+            <ul className="mt-4 space-y-2 text-[13px] leading-relaxed text-muted">
+              {leadership.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <SectionLabel>Certifications</SectionLabel>
+            <ul className="mt-4 space-y-2 text-[13px] leading-relaxed text-muted">
+              {certifications.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <div className="rule-fade my-8" />

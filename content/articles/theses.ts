@@ -11,7 +11,7 @@ export const tier2Thesis: Article = {
   seoTitle: "Tier-2 India Investment Thesis: An Operator's View",
   description:
     'An investment thesis for tier-2 India from an operator: where demand is growing, why reliability beats price, why supply is the moat, and what would prove it wrong.',
-  excerpt: `Outside the metros the competitor is usually a phone number and a relationship. What mobility in Jammu, wedding services and construction equipment taught me about building against that.`,
+  excerpt: `Outside the metros the competitor is usually a phone number and a relationship. What mobility in Jammu, matrimony and construction equipment taught me about building against that.`,
   category: 'Investment Thesis',
   keywords: [
     'tier 2 India investment thesis',
@@ -25,7 +25,7 @@ export const tier2Thesis: Article = {
   blocks: [
     {
       type: 'p',
-      text: `Much of my operating work has been in markets the large platforms underserve: an electric cab service in Jammu, a wedding services business, a construction equipment marketplace, and restaurants and a magazine through my agency Cairros. The businesses had little in common. The markets they sold into behaved alike, and this is my attempt to write that behaviour down as a thesis I would invest against.`,
+      text: `Much of my operating work has been in markets the large platforms underserve: an electric cab service in Jammu, a matrimony platform, a construction equipment marketplace, and restaurants and a magazine through my agency Cairros. The businesses had little in common. The markets they sold into behaved alike, and this is my attempt to write that behaviour down as a thesis I would invest against.`,
     },
 
     { type: 'h2', text: 'Where the demand is coming from' },
@@ -41,7 +41,7 @@ export const tier2Thesis: Article = {
     { type: 'h2', text: 'The incumbent is a relationship' },
     {
       type: 'p',
-      text: `In Jammu the main competitor for ZenCabs was a driver's number saved in a rider's phone. In wedding services and construction equipment it is a vendor or an owner the family or the site manager already knows. These incumbents cost nothing to use and arrive with trust already built.`,
+      text: `In Jammu the main competitor for ZenCabs was a driver's number saved in a rider's phone. In matchmaking it is a relative or a family contact, and in construction equipment an owner the site manager already knows. These incumbents cost nothing to use and arrive with trust already built.`,
     },
     {
       type: 'p',
@@ -51,7 +51,7 @@ export const tier2Thesis: Article = {
     { type: 'h2', text: 'Reliability beats price' },
     {
       type: 'p',
-      text: `The instinct in a price-sensitive market is to discount. At ZenCabs we chose to compete on reliability, because in a small market a ride that shows up is worth more than a cheaper one that might not. We cut cancellations from 40% to 6%, and 27% of users became monthly active riders.`,
+      text: `The instinct in a price-sensitive market is to discount. At ZenCabs we chose to compete on reliability, because in a small market a ride that shows up is worth more than a cheaper one that might not. We cut driver-side cancellations from 40% to 6% and user cancellations from 200 to 80 a day, and 27% of users became monthly active riders.`,
     },
     {
       type: 'p',
@@ -71,13 +71,13 @@ export const tier2Thesis: Article = {
     { type: 'h2', text: 'Trust travels by word of mouth' },
     {
       type: 'p',
-      text: `In smaller cities and close communities, people ask each other before they try something new, so the quality of delivery becomes the main acquisition channel. At Shaadi Mangalam, where a family books once, referral is effectively the only repeat business there is. At Cairros, a reputation in one sector was what got me into the next, and the agency grew across four sectors that way.`,
+      text: `In smaller cities and close communities, people ask each other before they try something new, so the quality of delivery becomes the main acquisition channel. At Shaadi Mangalam, where a family buys a matrimony package once, referral is effectively the only repeat business there is. At Cairros, a reputation in one sector was what got me into the next, and the agency grew across four sectors that way.`,
     },
 
     { type: 'h2', text: 'What it means for unit economics' },
     {
       type: 'p',
-      text: `Prices are lower outside the metros and so are many costs, but density is lower as well. Fewer customers per square kilometre means a cab drives further empty between rides and a vendor serves fewer customers a week. The businesses that work here tend to combine a high value per transaction with high use of an expensive asset. ZenCabs earns ₹62.5K per car per month at 75% utilisation, and long trips to the airport or to Katra raise the value of a single booking. I broke those numbers down in [the unit economics of an electric cab fleet](/articles/ev-cab-fleet-unit-economics-tier-2-india).`,
+      text: `Prices are lower outside the metros and so are many costs, but density is lower as well. Fewer customers per square kilometre means a cab drives further empty between rides and a vendor serves fewer customers a week. The businesses that work here tend to combine a high value per transaction with high use of an expensive asset. ZenCabs earns ₹83K per car per month at 75% utilisation, and long trips to the airport or to Katra raise the value of a single booking. I broke those numbers down in [the unit economics of an electric cab fleet](/articles/ev-cab-fleet-unit-economics-tier-2-india).`,
     },
 
     { type: 'h2', text: 'Where I would invest, and where I would be careful' },
@@ -176,13 +176,13 @@ export const marketplaceMetrics: Article = {
     { type: 'h2', text: 'Utilisation, and what each unit of supply earns' },
     {
       type: 'p',
-      text: `If the company owns or finances its supply, utilisation is the business. At ZenCabs, moving fleet utilisation from 40% to 75% took revenue per car to ₹62.5K a month, which no acquisition campaign could have matched with the same effort. I would ask for utilisation month by month, revenue per unit of supply, and whether adding supply lowers utilisation for everyone already on the platform.`,
+      text: `If the company owns or finances its supply, utilisation is the business. At ZenCabs, moving fleet utilisation from 40% to 75% took revenue per car to ₹83K a month, which no acquisition campaign could have matched with the same effort. I would ask for utilisation month by month, revenue per unit of supply, and whether adding supply lowers utilisation for everyone already on the platform.`,
     },
 
     { type: 'h2', text: 'Completion rate, the metric hiding in operations' },
     {
       type: 'p',
-      text: `Cancellations and failed transactions look like an operations issue and behave like a retention issue. Every cancelled ride costs more than the acquisition that produced it, because the customer you paid for is now less likely to return. ZenCabs cut cancellations from 40% to 6% with 10+ operating procedures across onboarding and dispatch.`,
+      text: `Cancellations and failed transactions look like an operations issue and behave like a retention issue. Every cancelled ride costs more than the acquisition that produced it, because the customer you paid for is now less likely to return. ZenCabs cut driver-side cancellations from 40% to 6% with 10+ operating procedures across onboarding and dispatch, and a marketplace should report the two sides separately: rider cancellations there moved for a different reason, falling from 200 to 80 a day when we stopped sending cars to far-off zones.`,
     },
     {
       type: 'p',
@@ -192,7 +192,7 @@ export const marketplaceMetrics: Article = {
     { type: 'h2', text: 'Repeat usage by cohort' },
     {
       type: 'p',
-      text: `Total users is the least informative number in the deck. What matters is how many come back. At ZenCabs, 27% of the user base became 6,679 monthly active riders, and a founder's version of that number is the first thing I would ask for on demand. Monthly cohorts show more than a blended rate: whether usage flattens, declines or grows as each group ages.`,
+      text: `Total users is the least informative number in the deck. What matters is how many come back. At ZenCabs, 27% of the user base became 8,100 monthly active riders, and a founder's version of that number is the first thing I would ask for on demand. Monthly cohorts show more than a blended rate: whether usage flattens, declines or grows as each group ages.`,
     },
 
     { type: 'h2', text: 'Unit economics that survive the discounts ending' },
@@ -225,7 +225,7 @@ export const marketplaceMetrics: Article = {
     },
     {
       type: 'p',
-      text: `Run-rate is a fair measure of momentum when the month behind it is typical, so ask to see the months either side. ZenCabs' ₹3 Cr is a run-rate too, which is why on this site I show the monthly GMV of ₹25L+ and the 7,500+ rides behind it.`,
+      text: `Run-rate is a fair measure of momentum when the month behind it is typical, so ask to see the months either side. ZenCabs' ₹4 Cr is a run-rate too, which is why on this site I show the monthly GMV of ₹33L+ and the 10,000+ rides behind it.`,
     },
 
     { type: 'h2', text: 'Who owns the supply, and who paid for it' },

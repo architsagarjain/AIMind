@@ -4,9 +4,10 @@
   "private": true,
   "description": "ARCHIT.AI \u2014 Talk. Explore. Know Me.",
   "scripts": {
-    "dev": "npm run models && next dev",
+    "dev": "npm run models && npm run context && next dev",
     "models": "node scripts/write-model-manifest.mjs",
-    "prebuild": "npm run models",
+    "context": "node scripts/build-context.mjs",
+    "prebuild": "npm run models && npm run context",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
