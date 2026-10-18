@@ -2,12 +2,13 @@
   "name": "archit-ai",
   "version": "1.0.0",
   "private": true,
-  "description": "ARCHIT.AI \u2014 Talk. Explore. Know Me.",
+  "description": "ARCHIT.AI — Talk. Explore. Know Me.",
   "scripts": {
     "dev": "npm run models && npm run context && next dev",
     "models": "node scripts/write-model-manifest.mjs",
     "context": "node scripts/build-context.mjs",
-    "prebuild": "npm run models && npm run context",
+    "migrate": "node scripts/migrate.mjs",
+    "prebuild": "npm run models && npm run context && npm run migrate",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -42,6 +43,7 @@
     "@types/three": "^0.173.0",
     "eslint": "^9.21.0",
     "eslint-config-next": "^15.5.25",
+    "pg": "^8.23.1",
     "tailwindcss": "^4.0.9",
     "typescript": "^5.7.3"
   }

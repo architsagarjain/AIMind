@@ -5,10 +5,10 @@
 // changes its URL, so browsers fetch it instead of serving a stale copy.
 
 export const MODEL_URLS = {
-  /** archit.glb — 2.55MB */
-  archit: '/models/archit.glb?v=a55a00e3',
-  /** macbook.glb — 2.89MB */
-  macbook: '/models/macbook.glb?v=392e7b13',
+  /** archit.glb — 0.76MB */
+  archit: '/models/archit.glb?v=324a2230',
+  /** macbook.glb — 1.31MB */
+  macbook: '/models/macbook.glb?v=a563020e',
 } as const;
 
 export type ModelKey = keyof typeof MODEL_URLS;

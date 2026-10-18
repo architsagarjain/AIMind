@@ -329,6 +329,33 @@
    Hero motion
    =========================================================================== */
 
+/* Entrance. CSS rather than JavaScript, so the hero's text animates in the
+   moment the page arrives: with a script-driven entrance it was sent
+   invisible and stayed that way until the bundle loaded, which on a slow
+   phone was seconds of an empty screen. --i staggers each line. */
+.hero-rise {
+  animation: hero-rise 0.85s var(--ease-out-expo) both;
+  animation-delay: calc(0.2s + var(--i, 0) * 0.075s);
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+}
+
+/* Each letter of the name rises out of its mask. */
+.hero-letter {
+  animation: hero-letter 0.9s var(--ease-out-expo) both;
+}
+
+@keyframes hero-letter {
+  from {
+    transform: translateY(105%);
+  }
+}
+
 /* The surname's gradient with a highlight that sweeps across every few
    seconds, then rests. */
 .hero-sheen {
@@ -347,6 +374,12 @@
   color: transparent;
   animation: hero-sheen 7s ease-in-out 2.2s infinite;
 }
+.hero-letter.hero-sheen {
+  animation:
+    hero-letter 1s var(--ease-out-expo) both,
+    hero-sheen 7s ease-in-out 2.2s infinite;
+}
+
 @keyframes hero-sheen {
   0% { background-position: 100% 50%; }
   30%, 100% { background-position: 0% 50%; }
@@ -366,7 +399,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-sheen,
-  .hero-marquee {
+  .hero-marquee,
+  .hero-rise,
+  .hero-letter,
+  .hero-letter.hero-sheen {
     animation: none;
   }
 }

@@ -5,7 +5,6 @@ import { ArrowRight, ChevronDown, MessageSquare, Play, Volume2 } from 'lucide-re
 import { heroStats, profile } from '@/content/profile';
 import { INITIALS } from '@/lib/boot-content';
 import { CountUp, HeroName, Marquee, PromptTicker, RoleRoller } from './hero-effects';
-import { EASE_OUT_EXPO } from '@/lib/utils';
 
 /**
  * Hero overlay: the copy layer on top of the 3D canvas.
@@ -18,14 +17,6 @@ import { EASE_OUT_EXPO } from '@/lib/utils';
  * begins its push; by the dive, only the 3D scene is left.
  */
 
-const rise = {
-  hidden: { opacity: 0, y: 26 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.85, delay: 0.2 + i * 0.075, ease: EASE_OUT_EXPO },
-  }),
-};
 
 interface HeroProps {
   onTalk: () => void;
@@ -42,12 +33,9 @@ interface ActionsProps {
 
 function Actions({ onTalk, onExplore, className = '' }: ActionsProps) {
   return (
-    <motion.div
-      custom={6}
-      variants={rise}
-      initial="hidden"
-      animate="show"
-      className={`pointer-events-auto items-center gap-3 md:gap-4 ${className}`}
+    <div
+      style={{ "--i": 6 } as React.CSSProperties}
+      className={`hero-rise pointer-events-auto items-center gap-3 md:gap-4 ${className}`}
     >
       <button
         onClick={onTalk}
@@ -68,7 +56,7 @@ function Actions({ onTalk, onExplore, className = '' }: ActionsProps) {
         <span className="hidden md:inline">Explore My Work</span>
         <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" />
       </button>
-    </motion.div>
+    </div>
   );
 }
 
@@ -93,12 +81,9 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
       <div className="max-w-xl lg:max-w-2xl">
         {/* Status pill: what he is doing *right now*, which the rest of the
             page can only tell you by implication. */}
-        <motion.div
-          custom={0}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className="mb-6 short:mb-4 inline-flex max-w-full items-center gap-2.5 rounded-full border border-hairline-strong bg-white/[0.04] py-1.5 pr-3 pl-2.5 backdrop-blur-xl sm:pr-4"
+        <div
+          style={{ "--i": 0 } as React.CSSProperties}
+          className="hero-rise mb-6 short:mb-4 inline-flex max-w-full items-center gap-2.5 rounded-full border border-hairline-strong bg-white/[0.04] py-1.5 pr-3 pl-2.5 backdrop-blur-xl sm:pr-4"
         >
           <span className="relative flex h-2 w-2 shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
@@ -111,63 +96,48 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
             <span className="hidden sm:inline">{profile.currently.split(',')[0]} · </span>
             {profile.alsoCurrently.split(',')[0]}
           </span>
-        </motion.div>
+        </div>
 
-        <motion.p
-          custom={1}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className="text-[11px] font-semibold tracking-[0.34em] text-muted uppercase"
+        <p
+          style={{ "--i": 1 } as React.CSSProperties}
+          className="hero-rise text-[11px] font-semibold tracking-[0.34em] text-muted uppercase"
         >
           Hello, I&apos;m
-        </motion.p>
+        </p>
 
-        <motion.h1
-          custom={2}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className="mt-3 font-display text-[clamp(2.6rem,min(10vw,13svh),6.8rem)] leading-[0.86] font-extrabold md:mt-4 short:mt-3"
+        <h1
+          style={{ "--i": 2 } as React.CSSProperties}
+          className="hero-rise mt-3 font-display text-[clamp(2.6rem,min(10vw,13svh),6.8rem)] leading-[0.86] font-extrabold md:mt-4 short:mt-3"
         >
           <HeroName first="ARCHIT" last="JAIN" />
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          custom={3}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className="mt-5 text-[9.5px] font-semibold tracking-[0.16em] text-ink uppercase sm:text-[10px] sm:tracking-[0.2em] md:mt-6 md:text-[11px] short:mt-4"
+        <p
+          style={{ "--i": 3 } as React.CSSProperties}
+          className="hero-rise mt-5 text-[9.5px] font-semibold tracking-[0.16em] text-ink uppercase sm:text-[10px] sm:tracking-[0.2em] md:mt-6 md:text-[11px] short:mt-4"
         >
           <RoleRoller roles={profile.roles} />
-        </motion.p>
+        </p>
 
         {/* The summary carries the two numbers worth remembering. */}
-        <motion.p
-          custom={4}
-          variants={rise}
-          initial="hidden"
-          animate="show"
+        <p
+          style={{ "--i": 4 } as React.CSSProperties}
           // Phones drop it: the stat row carries the same numbers, and the
           // paragraph was what landed across the subject's face.
-          className="mt-5 hidden max-w-lg text-[13.5px] leading-relaxed text-muted sm:text-[15px] md:mt-6 md:block md:text-base short:mt-4 shortest:hidden"
+          className="hero-rise mt-5 hidden max-w-lg text-[13.5px] leading-relaxed text-muted sm:text-[15px] md:mt-6 md:block md:text-base short:mt-4 shortest:hidden"
         >
           Big-4 consultant turned founding-team operator. I turn messy businesses into measurable outcomes:{' '}
           <Figure>₹6+ Cr</Figure> in client cost savings at PwC India, and ZenCabs from launch to a{' '}
           <Figure>₹4 Cr</Figure> annualised run-rate in six months.
-        </motion.p>
+        </p>
 
         {/* Credibility strip: the names do work that adjectives cannot. */}
-        <motion.p
-          custom={5}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className="pointer-events-auto mt-5 hidden text-[9px] font-semibold tracking-[0.2em] text-faint uppercase sm:flex md:mt-6 md:text-[10px] shorter:hidden"
+        <p
+          style={{ "--i": 5 } as React.CSSProperties}
+          className="hero-rise pointer-events-auto mt-5 hidden text-[9px] font-semibold tracking-[0.2em] text-faint uppercase sm:flex md:mt-6 md:text-[10px] shorter:hidden"
         >
           <Marquee items={profile.affiliations} />
-        </motion.p>
+        </p>
 
         {/* ---------------------------------------------------------- actions */}
         {/* Desktop: under the copy. Phones get the same buttons at the bottom
@@ -175,29 +145,23 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
         <Actions onTalk={onTalk} onExplore={onExplore} className="mt-7 hidden md:mt-9 md:flex short:mt-6" />
 
         {/* A live prompt: it types real questions, and clicking asks one. */}
-        <motion.div
-          custom={7}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className="mt-5 hidden md:mt-6 md:block short:mt-4"
+        <div
+          style={{ "--i": 7 } as React.CSSProperties}
+          className="hero-rise mt-5 hidden md:mt-6 md:block short:mt-4"
         >
           <PromptTicker onTalk={onTalk} />
           <p className="mt-2 pl-1 text-xs text-faint short:hidden">Ask me anything about my journey, projects, experiences or ideas.</p>
-        </motion.div>
+        </div>
       </div>
 
       {/* ------------------------------------------------------------ bottom */}
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-8">
         <Actions onTalk={onTalk} onExplore={onExplore} className="flex md:hidden" />
-        <motion.dl
-          custom={8}
-          variants={rise}
-          initial="hidden"
-          animate="show"
+        <dl
+          style={{ "--i": 8 } as React.CSSProperties}
           // Phones: one compact row of four; two rows of two ate a fifth of
           // the screen and sat over the subject's legs and hands.
-          className="grid grid-cols-4 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-9 sm:gap-y-4"
+          className="hero-rise grid grid-cols-4 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-9 sm:gap-y-4"
         >
           {heroStats.map((stat, i) => (
             <div key={stat.label} className="flex items-center gap-4 sm:gap-9">
@@ -213,15 +177,12 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
               </div>
             </div>
           ))}
-        </motion.dl>
+        </dl>
 
-        <motion.button
-          custom={9}
-          variants={rise}
-          initial="hidden"
-          animate="show"
+        <button
+          style={{ "--i": 9 } as React.CSSProperties}
           onClick={onTalk}
-          className="pointer-events-auto hidden items-center gap-4 rounded-full border border-hairline-strong bg-surface-raised/70 py-2.5 pr-2.5 pl-4 backdrop-blur-2xl transition-all duration-300 hover:border-accent/40 hover:shadow-[var(--shadow-glow-sm)] xl:flex"
+          className="hero-rise pointer-events-auto hidden items-center gap-4 rounded-full border border-hairline-strong bg-surface-raised/70 py-2.5 pr-2.5 pl-4 backdrop-blur-2xl transition-all duration-300 hover:border-accent/40 hover:shadow-[var(--shadow-glow-sm)] xl:flex"
         >
           {/* Who you are talking to, and the two ways to talk: the same
               monogram and online dot as the Ask Archit app, then chat and
@@ -249,7 +210,7 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-void">
             <Play className="h-3.5 w-3.5 fill-current" />
           </span>
-        </motion.button>
+        </button>
       </div>
     </div>
   );

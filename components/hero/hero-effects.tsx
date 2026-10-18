@@ -17,36 +17,32 @@ import { EASE_OUT_EXPO, cn } from '@/lib/utils';
 
 // ------------------------------------------------------------------- name
 
-/** Letters rise out of a mask one after another, then the surname lands with a sheen. */
+/**
+ * Letters rise out of a mask one after another, then the surname lands with a
+ * sheen. Pure CSS (see .hero-letter in globals.css), so the name animates as
+ * soon as the page arrives, without waiting for JavaScript.
+ */
 export function HeroName({ first, last, delay = 0.35 }: { first: string; last: string; delay?: number }) {
-  const reduced = useReducedMotion();
   const letters = [...first];
   return (
     <>
       <span className="block text-ink" aria-label={first}>
         {letters.map((ch, i) => (
           <span key={i} className="inline-block overflow-hidden pt-[0.06em] pb-[0.02em] align-bottom" aria-hidden>
-            <motion.span
-              className="inline-block"
-              initial={reduced ? false : { y: '105%' }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.9, delay: delay + i * 0.05, ease: EASE_OUT_EXPO }}
-            >
+            <span className="hero-letter inline-block" style={{ animationDelay: `${delay + i * 0.05}s` }}>
               {ch}
-            </motion.span>
+            </span>
           </span>
         ))}
       </span>{' '}
       {/* The space keeps the heading's text "ARCHIT JAIN" for crawlers and screen readers. */}
       <span className="block overflow-hidden pt-[0.06em] pb-[0.02em]">
-        <motion.span
-          className="hero-sheen inline-block"
-          initial={reduced ? false : { y: '105%' }}
-          animate={{ y: 0 }}
-          transition={{ duration: 1, delay: delay + letters.length * 0.05 + 0.05, ease: EASE_OUT_EXPO }}
+        <span
+          className="hero-letter hero-sheen inline-block"
+          style={{ animationDelay: `${delay + letters.length * 0.05 + 0.05}s, 2.2s` }}
         >
           {last}
-        </motion.span>
+        </span>
       </span>
     </>
   );
