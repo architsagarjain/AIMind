@@ -142,8 +142,8 @@ export function Chat() {
                   {message.content ? <RichText content={message.content} /> : <TypingDots />}
                 </Bubble>
 
-                {/* Read aloud. Hidden entirely when the deployment has no
-                    OpenRouter key, so it never offers something that 503s. */}
+                {/* Read aloud: a free cloud voice, or the device's own voice
+                    when none answers. Hidden only when neither exists. */}
                 {!mine && message.content && !(isStreaming && message.id === lastId) && speech.available && (
                   <button
                     onClick={() => void speech.speak(message.id, message.content)}

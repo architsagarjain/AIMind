@@ -1,0 +1,50 @@
+# Keeps the Supabase project from pausing, as a backup to the daily Vercel
+# Cron job in vercel.json. Supabase's free plan pauses a project after about
+# a week without activity, and a paused project makes every Vercel deploy fail.
+#
+# Every four days this calls the site's /api/keepalive route, which runs one
+# small read and one small write against Supabase. Nothing is committed.
+#
+# GitHub turns off scheduled workflows in a repository with no activity for 60
+# days, so the last step switches this workflow back on each time it runs.
+
+name: Keep Supabase awake
+
+on:
+  schedule:
+    - cron: '23 5 */4 * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SITE_URL: ${{ vars.SITE_URL || 'https://www.architsagarjain.com' }}
+    steps:
+      - name: Call /api/keepalive
+        run: |
+          for attempt in 1 2 3; do
+            body=$(curl -sS --max-time 30 -w '\n%{http_code}' "$SITE_URL/api/keepalive" || true)
+            code=$(printf '%s' "$body" | tail -n1)
+            printf 'Attempt %s: HTTP %s\n%s\n' "$attempt" "$code" "$(printf '%s' "$body" | sed '$d')"
+            if [ "$code" = "200" ]; then exit 0; fi
+            sleep $((attempt * 20))
+          done
+          echo "::error::Supabase keep-alive failed. Open the Supabase dashboard and restore the project if it is paused."
+          exit 1
+
+      - name: Keep this schedule switched on
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -sS -X PUT \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/keepalive.yml/enable" \
+            -o /dev/null -w 'enable: HTTP %{http_code}\n'

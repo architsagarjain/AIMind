@@ -25,8 +25,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * keyed by their text, so playing a reply again is instant and costs no
  * requests.
  *
- * `available` starts optimistic and flips to false the first time the route
- * answers 503 (no API key). That keeps the control hidden on deployments
+ * WHEN NO FREE VOICE ANSWERS
+ * Free cloud voices come and go. If a clip cannot be fetched, the reply
+ * carries on from that point in the browser's own voice (the Web Speech API,
+ * on the device, at no cost), and the rest of the session stays on it unless
+ * the failure was only the free tier being busy. Listen never goes dead.
+ *
+ * `available` starts optimistic and flips to false only when there is no
+ * cloud voice and the browser has no speech engine either. It first flips on
+ * the route answering 503 (no API key). That keeps the control hidden on deployments
  * without voice configured, without a probe request on every page load.
  */
 
@@ -91,6 +98,43 @@ export function chunkForSpeech(text: string): string[] {
 }
 
 class Unavailable extends Error {}
+/** The free tier is busy: worth trying the cloud again on the next reply. */
+class Busy extends Error {}
+
+const hasDeviceVoice = () => typeof window !== 'undefined' && 'speechSynthesis' in window;
+
+/** An English male voice where the device has one, Indian English first. */
+function pickDeviceVoice(): SpeechSynthesisVoice | null {
+  const voices = window.speechSynthesis.getVoices().filter((v) => /^en([-_]|$)/i.test(v.lang));
+  const preferred = [/rishi/i, /ravi/i, /google uk english male/i, /daniel/i, /aaron/i, /arthur/i, /alex\b/i, /guy/i, /\bmale\b/i];
+  for (const re of preferred) {
+    const match = voices.find((v) => re.test(v.name));
+    if (match) return match;
+  }
+  return voices.find((v) => /en[-_]IN/i.test(v.lang)) ?? voices[0] ?? null;
+}
+
+/** Speaks chunks in order on the device. Resolves when done or cancelled. */
+function speakOnDevice(chunks: string[], live: () => boolean): Promise<void> {
+  const synth = window.speechSynthesis;
+  const voice = pickDeviceVoice();
+  return new Promise((resolve) => {
+    let i = 0;
+    const next = () => {
+      if (!live() || i >= chunks.length) return resolve();
+      const u = new SpeechSynthesisUtterance(chunks[i++]!);
+      if (voice) {
+        u.voice = voice;
+        u.lang = voice.lang;
+      }
+      u.rate = 1.02;
+      u.onend = next;
+      u.onerror = () => resolve();
+      synth.speak(u);
+    };
+    next();
+  });
+}
 
 type AudioContextCtor = typeof AudioContext;
 
@@ -132,6 +176,17 @@ export function useSpeech() {
   /** Clip text → compressed audio, shared by playback, prefetch and replay. */
   const clipsRef = useRef(new Map<string, Promise<ArrayBuffer>>());
   const prefetchTimer = useRef<number | undefined>(undefined);
+  /** Set once the cloud voice has failed for a reason that will not pass quickly. */
+  const deviceOnlyRef = useRef(false);
+
+  // Chrome loads its voice list late; asking early means it is ready by the click.
+  useEffect(() => {
+    if (!hasDeviceVoice()) return;
+    const load = () => window.speechSynthesis.getVoices();
+    load();
+    window.speechSynthesis.addEventListener?.('voiceschanged', load);
+    return () => window.speechSynthesis.removeEventListener?.('voiceschanged', load);
+  }, []);
 
   /**
    * One request per clip text, however many callers ask. Downloads run to
@@ -150,6 +205,7 @@ export function useSpeech() {
         body: JSON.stringify({ text: chunk }),
       });
       if (res.status === 503) throw new Unavailable();
+      if (res.status === 429) throw new Busy();
       if (!res.ok) {
         // A wrong key, a busy free tier or a rejected voice all land here,
         // and the route passes the reason through.
@@ -177,6 +233,7 @@ export function useSpeech() {
 
   const halt = useCallback(() => {
     runRef.current++;
+    if (hasDeviceVoice()) window.speechSynthesis.cancel();
     for (const source of sourcesRef.current) {
       source.onended = null;
       try {
@@ -205,7 +262,7 @@ export function useSpeech() {
   /** Fetches the first clips of `text` once the pointer has rested briefly. */
   const prefetch = useCallback(
     (text: string) => {
-      if (!available) return;
+      if (!available || deviceOnlyRef.current) return;
       window.clearTimeout(prefetchTimer.current);
       prefetchTimer.current = window.setTimeout(() => {
         for (const chunk of chunkForSpeech(text).slice(0, PREFETCH_CLIPS)) clip(chunk).catch(() => {});
@@ -227,6 +284,16 @@ export function useSpeech() {
 
       const chunks = chunkForSpeech(text);
       if (!chunks.length) return;
+
+      // No cloud voice this session: straight to the device.
+      if (deviceOnlyRef.current && hasDeviceVoice()) {
+        setSpeakingId(id);
+        const run = runRef.current;
+        await speakOnDevice(chunks, () => runRef.current === run);
+        if (runRef.current === run) setSpeakingId(null);
+        return;
+      }
+
       const ctx = context();
       if (!ctx) {
         setError('This browser cannot play audio.');
@@ -249,10 +316,11 @@ export function useSpeech() {
       const decode = (i: number) =>
         (decoded[i] ??= clip(chunks[i]!).then(async (bytes) => trimSilence(ctx, await ctx.decodeAudioData(bytes.slice(0)))));
 
+      let at = 0;
+      let i = 0;
       try {
-        let at = 0;
         let last: AudioBufferSourceNode | null = null;
-        for (let i = 0; i < chunks.length; i++) {
+        for (; i < chunks.length; i++) {
           // Keep the next clips downloading and decoding while this one
           // plays. Errors are handled when each is awaited; this only stops
           // an unhandled rejection warning if playback is stopped first.
@@ -281,9 +349,24 @@ export function useSpeech() {
         }
       } catch (err) {
         if (!live()) return;
+        if (hasDeviceVoice()) {
+          // Carry on in the device's voice from the clip that failed, once
+          // whatever cloud audio is already scheduled has played out.
+          if (!(err instanceof Busy)) deviceOnlyRef.current = true;
+          console.warn('[speech] cloud voice unavailable, using the device voice:', (err as Error).message);
+          const wait = Math.max(0, (at - ctx.currentTime) * 1000);
+          await new Promise((r) => window.setTimeout(r, wait));
+          if (!live()) return;
+          await speakOnDevice(chunks.slice(i), live);
+          if (live()) {
+            sourcesRef.current = [];
+            setSpeakingId(null);
+          }
+          return;
+        }
         if (err instanceof Unavailable) {
-          // No key configured: hide the control rather than offering
-          // something that cannot work.
+          // No key and no speech engine: hide the control rather than
+          // offering something that cannot work.
           setAvailable(false);
         } else {
           console.error('[speech]', err);

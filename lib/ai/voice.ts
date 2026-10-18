@@ -2,7 +2,17 @@ import 'server-only';
 import { OPENROUTER_BASE_URL, OPENROUTER_HEADERS, isFreeModelId } from './openrouter-config';
 
 /**
- * Text-to-speech for the AI clone, on OpenRouter's free Deepgram Flux TTS.
+ * Text-to-speech for the AI clone, on whichever free TTS model OpenRouter
+ * currently lists.
+ *
+ * WHICH MODEL
+ * Free speech models come and go: Deepgram Flux TTS was free at launch and
+ * then its free endpoint was withdrawn, which silently broke every Listen
+ * click. So, like the chat, the model is chosen at run time. The live
+ * catalogue is read for `:free` models that output audio, known good ones go
+ * first, and the one that answers is remembered. When the catalogue cannot be
+ * read, the preferred list is tried as it stands. If nothing free answers,
+ * the browser speaks the reply with its own voice instead (see useSpeech).
  *
  * ONE PROVIDER, ONE KEY, FREE ONLY
  * The voice runs on the same OpenRouter key as the chat, under the same rule:
@@ -34,10 +44,80 @@ import { OPENROUTER_BASE_URL, OPENROUTER_HEADERS, isFreeModelId } from './openro
  *    one is already slow.
  */
 
-const DEFAULT_MODEL = 'deepgram/flux-tts:free';
+/** Known free TTS models, best first. Only tried while the catalogue still lists them (or cannot be read). */
+const PREFERRED_MODELS = ['deepgram/flux-tts:free', 'fish-audio/s2.1-pro-free:free'];
 
 const configuredModel = process.env.OPENROUTER_TTS_MODEL?.trim();
-export const TTS_MODEL = configuredModel && isFreeModelId(configuredModel) ? configuredModel : DEFAULT_MODEL;
+const PINNED = configuredModel && isFreeModelId(configuredModel) ? configuredModel : null;
+let workingModel: string | null = null;
+
+/** Deepgram models take Flux voice IDs; for the rest the provider's default voice is used. */
+const takesFluxVoice = (model: string) => model.startsWith('deepgram/');
+
+interface CatalogueModel {
+  id: string;
+  pricing?: Record<string, string | number | undefined>;
+  architecture?: { input_modalities?: string[]; output_modalities?: string[]; modality?: string };
+}
+
+const outputsAudio = (m: CatalogueModel) =>
+  Boolean(
+    m.architecture?.output_modalities?.some((o) => /audio|speech/i.test(o)) ||
+      /->\s*(audio|speech)/i.test(m.architecture?.modality ?? ''),
+  );
+
+/** Every price the catalogue gives must be zero, whatever it is priced per. */
+const pricedAtZero = (m: CatalogueModel) =>
+  Object.values(m.pricing ?? {}).every((v) => v === undefined || Number(v) === 0);
+
+const CATALOGUE_TTL_MS = 30 * 60 * 1000;
+let catalogue: { at: number; models: string[] } | null = null;
+
+/** Free audio-output models in the live catalogue; null when it cannot be read. */
+async function catalogueTtsModels(): Promise<string[] | null> {
+  if (catalogue && Date.now() - catalogue.at < CATALOGUE_TTL_MS) return catalogue.models;
+  const found = new Set<string>();
+  let readAny = false;
+  // The default listing may leave out non-text models, so ask for audio too.
+  for (const query of ['?output_modalities=audio', '']) {
+    try {
+      const res = await fetch(`${OPENROUTER_BASE_URL}/models${query}`, {
+        headers: { Accept: 'application/json' },
+        cache: 'no-store',
+      });
+      if (!res.ok) continue;
+      readAny = true;
+      const body = (await res.json()) as { data?: CatalogueModel[] };
+      for (const m of body.data ?? []) {
+        if (isFreeModelId(m.id) && outputsAudio(m) && pricedAtZero(m)) found.add(m.id);
+      }
+    } catch {
+      /* try the other listing */
+    }
+  }
+  if (!readAny) return null;
+  catalogue = { at: Date.now(), models: [...found] };
+  return catalogue.models;
+}
+
+/** The free TTS models to try, in order. */
+export async function ttsCandidates(): Promise<{ models: string[]; source: 'catalogue' | 'preferred' }> {
+  const listed = await catalogueTtsModels();
+  const order = (ids: string[]) => {
+    const rank = (id: string) => {
+      if (id === workingModel) return -2;
+      if (id === PINNED) return -1;
+      const i = PREFERRED_MODELS.indexOf(id);
+      return i === -1 ? PREFERRED_MODELS.length : i;
+    };
+    return [...new Set(ids)].sort((a, b) => rank(a) - rank(b));
+  };
+  if (listed === null) {
+    return { models: order([...(PINNED ? [PINNED] : []), ...PREFERRED_MODELS]), source: 'preferred' };
+  }
+  // A pinned model is honoured only while it is still listed as free.
+  return { models: order(listed), source: 'catalogue' };
+}
 
 /** Featured male voices only: Drew and Bruce (American), then Jack (British). */
 const DEFAULT_VOICES = ['flux-drew-en', 'flux-bruce-en', 'flux-jack-en'];
@@ -80,18 +160,31 @@ export async function synthesize(text: string): Promise<SynthesisResult> {
   const apiKey = process.env.OPENROUTER_API_KEY?.trim();
   if (!apiKey) return { error: 'OPENROUTER_API_KEY is not set.' };
 
-  const voices = workingVoice ? [workingVoice, ...VOICES.filter((v) => v !== workingVoice)] : VOICES;
-  let last: SynthesisResult = { error: 'No voice accepted the request.' };
-  for (const voice of voices) {
-    const result = await hedged(apiKey, voice, text);
-    if (result.stream) {
-      workingVoice = voice;
-      return result;
+  const { models } = await ttsCandidates();
+  if (!models.length) return { error: 'No free text-to-speech model is listed right now.', status: 404 };
+
+  let last: SynthesisResult = { error: 'No free voice accepted the request.' };
+  for (const model of models) {
+    const voices: (string | undefined)[] = takesFluxVoice(model)
+      ? workingVoice
+        ? [workingVoice, ...VOICES.filter((v) => v !== workingVoice)]
+        : VOICES
+      : [undefined];
+    for (const voice of voices) {
+      const result = await hedged(apiKey, model, voice, text);
+      if (result.stream) {
+        workingModel = model;
+        if (voice) workingVoice = voice;
+        return result;
+      }
+      last = result;
+      // A bad key or the free tier's rate limit fails the same way everywhere.
+      if (result.status === 401 || result.status === 429) return { error: result.error, status: result.status };
+      // Only a rejected voice is worth another voice on the same model.
+      if (!result.voiceRejected) break;
     }
-    last = result;
-    // Only a rejected voice is worth another try; a bad key or the free
-    // tier's rate limit fails the same way on every voice.
-    if (!result.voiceRejected) break;
+    // This model is gone, busy or rejected the request: the next one may not be.
+    if (workingModel === model) workingModel = null;
   }
   return { error: last.error, status: last.status };
 }
@@ -105,7 +198,7 @@ type Attempt = SynthesisResult & { voiceRejected?: boolean };
  * failure (a bad key, a rejected voice, the rate limit) is returned at once:
  * a twin would fail the same way.
  */
-function hedged(apiKey: string, voice: string, text: string): Promise<Attempt> {
+function hedged(apiKey: string, model: string, voice: string | undefined, text: string): Promise<Attempt> {
   return new Promise((resolve) => {
     const controllers: AbortController[] = [];
     let pending = 0;
@@ -116,7 +209,7 @@ function hedged(apiKey: string, voice: string, text: string): Promise<Attempt> {
       const controller = new AbortController();
       controllers.push(controller);
       pending++;
-      void synthesizeWith(apiKey, voice, text, controller).then((result) => {
+      void synthesizeWith(apiKey, model, voice, text, controller).then((result) => {
         pending--;
         if (settled) return;
         if (result.stream) {
@@ -151,7 +244,8 @@ function hedged(apiKey: string, voice: string, text: string): Promise<Attempt> {
 
 async function synthesizeWith(
   apiKey: string,
-  voice: string,
+  model: string,
+  voice: string | undefined,
   text: string,
   controller: AbortController,
 ): Promise<Attempt & { slow?: boolean }> {
@@ -167,13 +261,13 @@ async function synthesizeWith(
       },
       cache: 'no-store',
       signal: controller.signal,
-      body: JSON.stringify({ model: TTS_MODEL, voice, input: text, response_format: 'mp3' }),
+      body: JSON.stringify({ model, ...(voice ? { voice } : {}), input: text, response_format: 'mp3' }),
     });
     // Headers are in; the body streams on its own time from here.
     clearTimeout(timeout);
 
     if (!res.ok || !res.body) {
-      const error = `Synthesis failed (${voice}): ${await upstreamError(res)}`;
+      const error = `Synthesis failed (${model}${voice ? `, ${voice}` : ''}): ${await upstreamError(res)}`;
       if (res.status === 429) {
         return { error: 'The free voice is busy right now. Try again in a moment.', status: 429 };
       }
@@ -206,11 +300,11 @@ export async function voiceDiagnostics() {
   if (!key) {
     return {
       configured: false,
-      model: TTS_MODEL,
       hint: 'Set OPENROUTER_API_KEY in the deployment environment and redeploy.',
     };
   }
 
+  const candidates = await ttsCandidates();
   const started = Date.now();
   const result = await synthesize('Hello.');
   let bytes = 0;
@@ -226,7 +320,9 @@ export async function voiceDiagnostics() {
     configured: true,
     // Enough to tell two keys apart, not enough to help anyone use one.
     keyPreview: `…${key.slice(-4)}`,
-    model: TTS_MODEL,
+    candidates: candidates.models,
+    candidateSource: candidates.source,
+    workingModel,
     voices: VOICES,
     workingVoice,
     probe: result.stream
@@ -234,6 +330,6 @@ export async function voiceDiagnostics() {
       : { ok: false, status: result.status ?? null, error: result.error ?? null },
     hint: result.stream
       ? 'Voice works. If playback still fails in the browser, check the console for an audio error.'
-      : 'The key is set but synthesis failed. The probe error above names the reason.',
+      : 'No free voice answered. The site falls back to the browser voice; the probe error names the reason.',
   };
 }
