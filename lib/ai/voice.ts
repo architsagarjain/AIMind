@@ -71,12 +71,13 @@ const pricedAtZero = (m: CatalogueModel) =>
   Object.values(m.pricing ?? {}).every((v) => v === undefined || Number(v) === 0);
 
 const CATALOGUE_TTL_MS = 30 * 60 * 1000;
-let catalogue: { at: number; models: string[] } | null = null;
+let catalogue: { at: number; models: string[]; audioSeen: string[] } | null = null;
 
 /** Free audio-output models in the live catalogue; null when it cannot be read. */
 async function catalogueTtsModels(): Promise<string[] | null> {
   if (catalogue && Date.now() - catalogue.at < CATALOGUE_TTL_MS) return catalogue.models;
   const found = new Set<string>();
+  const audioSeen = new Set<string>();
   let readAny = false;
   // The default listing may leave out non-text models, so ask for audio too.
   for (const query of ['?output_modalities=audio', '']) {
@@ -89,6 +90,7 @@ async function catalogueTtsModels(): Promise<string[] | null> {
       readAny = true;
       const body = (await res.json()) as { data?: CatalogueModel[] };
       for (const m of body.data ?? []) {
+        if (outputsAudio(m)) audioSeen.add(m.id);
         if (isFreeModelId(m.id) && outputsAudio(m) && pricedAtZero(m)) found.add(m.id);
       }
     } catch {
@@ -96,7 +98,7 @@ async function catalogueTtsModels(): Promise<string[] | null> {
     }
   }
   if (!readAny) return null;
-  catalogue = { at: Date.now(), models: [...found] };
+  catalogue = { at: Date.now(), models: [...found], audioSeen: [...audioSeen].sort() };
   return catalogue.models;
 }
 
@@ -112,7 +114,10 @@ export async function ttsCandidates(): Promise<{ models: string[]; source: 'cata
     };
     return [...new Set(ids)].sort((a, b) => rank(a) - rank(b));
   };
-  if (listed === null) {
+  // Unreadable, or listing no free speech model at all (the listing may leave
+  // speech models out): try the known free ones as they stand. Each costs one
+  // quick 404 if it has gone.
+  if (listed === null || listed.length === 0) {
     return { models: order([...(PINNED ? [PINNED] : []), ...PREFERRED_MODELS]), source: 'preferred' };
   }
   // A pinned model is honoured only while it is still listed as free.
@@ -322,6 +327,8 @@ export async function voiceDiagnostics() {
     keyPreview: `…${key.slice(-4)}`,
     candidates: candidates.models,
     candidateSource: candidates.source,
+    // Every audio-output model the catalogue lists, free or not, to show what exists.
+    audioModelsListed: catalogue?.audioSeen ?? null,
     workingModel,
     voices: VOICES,
     workingVoice,
