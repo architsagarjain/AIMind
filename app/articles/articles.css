@@ -416,3 +416,13 @@
     transform: translateY(30px) scale(0.96);
   }
 }
+
+/* GSAP (components/motion/article-motion.tsx) has taken over the scroll
+   motion, so the CSS scroll-driven fallback above stands down. */
+.gsap-motion .article-hero-img,
+.gsap-motion .article-body > h2,
+.gsap-motion .article-body > blockquote,
+.gsap-motion .article-body > .article-callout,
+.gsap-motion .article-body > figure {
+  animation: none !important;
+}

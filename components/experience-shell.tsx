@@ -7,6 +7,7 @@ import { Nav, type NavTarget } from '@/components/hero/nav';
 import { Hero, ScrollCue } from '@/components/hero/hero';
 import { BootSequence } from '@/components/hero/boot-sequence';
 import { ScenePoster } from '@/components/three/scene-poster';
+import { SmoothScroll, scrollPageTo } from '@/components/motion/smooth-scroll';
 import { Desktop } from '@/components/desktop/desktop';
 import { useExperience } from '@/lib/store/experience';
 import { useWindows } from '@/lib/store/windows';
@@ -126,14 +127,14 @@ export function ExperienceShell() {
     }
     const el = trackRef.current;
     if (!el) return;
-    window.scrollTo({ top: el.offsetHeight - window.innerHeight, behavior: 'smooth' });
+    scrollPageTo(el.offsetHeight - window.innerHeight);
   }, [can3D, goToDesktop, reduced]);
 
   const onNavigate = useCallback(
     (target: NavTarget) => {
       if (target === 'home') {
         returnToHero();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollPageTo(0);
         return;
       }
       if (target === 'contact') {
@@ -163,6 +164,9 @@ export function ExperienceShell() {
 
   return (
     <>
+      {/* Smooth wheel scrolling for the dive. Off once the desktop takes over,
+          since its windows scroll on their own. */}
+      <SmoothScroll enabled={phase === 'hero' && cinematic} />
       {/* ============================================================== HERO */}
       {showHero && (
         <div

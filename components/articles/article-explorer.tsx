@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { Spotlight } from '@/components/motion/spotlight';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { ArticleSummary } from '@/content/articles';
 import { CATEGORIES } from '@/content/articles/categories';
@@ -88,8 +89,9 @@ export function ArticleExplorer({ articles }: { articles: ArticleSummary[] }) {
             >
               <Link
                 href={`/articles/${a.slug}`}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-hairline bg-surface transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-accent/30 hover:shadow-[var(--shadow-glow)]"
+                className="group relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-hairline bg-surface transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-accent/30 hover:shadow-[var(--shadow-glow)]"
               >
+                <Spotlight />
                 <div className="relative overflow-hidden bg-[var(--tint-2)]">
                   <ArticlePhoto
                     slug={a.slug}

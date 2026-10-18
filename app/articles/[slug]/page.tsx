@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Spotlight } from '@/components/motion/spotlight';
 import { notFound } from 'next/navigation';
 import { ArrowRight, Clock, MessagesSquare, Plus } from 'lucide-react';
 import {
@@ -285,8 +286,9 @@ export default async function ArticlePage({ params }: Props) {
             <li key={r.slug}>
               <Link
                 href={`/articles/${r.slug}`}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-hairline bg-surface transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-accent/30 hover:shadow-[var(--shadow-glow)]"
+                className="group relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-hairline bg-surface transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-accent/30 hover:shadow-[var(--shadow-glow)]"
               >
+                <Spotlight />
                 <div className="overflow-hidden">
                   <ArticlePhoto
                     slug={r.slug}

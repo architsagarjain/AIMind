@@ -2,6 +2,8 @@ import type { Viewport } from 'next';
 import Link from 'next/link';
 import { Source_Serif_4 } from 'next/font/google';
 import { SiteHeader } from '@/components/articles/site-header';
+import { SmoothScroll } from '@/components/motion/smooth-scroll';
+import { ArticleMotion } from '@/components/motion/article-motion';
 import { profile } from '@/content/profile';
 import './articles.css';
 
@@ -23,6 +25,8 @@ export const viewport: Viewport = {
 export default function ArticlesLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`theme-paper ${serif.variable} relative min-h-dvh overflow-x-clip`}>
+      <SmoothScroll />
+      <ArticleMotion />
       <SiteHeader />
       <main id="main" className="relative z-10">
         {children}

@@ -72,20 +72,32 @@ straight to the desktop.
 | Framework | Next.js 15 (App Router, React Server Components where possible) |
 | Language | TypeScript (strict, `noUncheckedIndexedAccess`) |
 | Styling | Tailwind CSS v4 (CSS-first `@theme` tokens) |
-| Animation | Framer Motion (UI), GSAP-free scroll rig (see note) |
+| Animation | Framer Motion (UI), GSAP SplitText + ScrollTrigger (articles), Lenis smooth scroll, React Bits patterns (see note) |
 | 3D | React Three Fiber 9 + three.js |
 | State | Zustand (two small stores) |
 | AI | OpenRouter, **free models only**, streamed (via the OpenAI-compatible SDK) |
 | Data | Supabase (Postgres + RLS) |
 | Hosting | Vercel |
 
-> **Note on GSAP.** The brief listed GSAP, but the scroll cinematic ended up
-> needing exactly one thing: a damped camera follow driven by scroll progress,
-> which runs inside the R3F render loop. Adding GSAP + ScrollTrigger would have
-> meant a second animation clock fighting `useFrame` for the same camera, plus
-> ~70KB. The rig in `components/three/camera-rig.tsx` does it in ~60 lines. If
-> you later want GSAP timelines for the window choreography, it drops in cleanly
-> alongside — nothing here depends on Framer Motion specifically.
+> **Motion libraries.** Each one has one job, and none loads before the page
+> is interactive:
+>
+> - **Lenis** (`components/motion/smooth-scroll.tsx`) smooths wheel scrolling
+>   on the hero dive and the article pages. A mouse or trackpad only; touch
+>   stays native. Off once the desktop opens, since its windows scroll on
+>   their own.
+> - **GSAP** (`components/motion/article-motion.tsx`, articles only) rises
+>   section headings in word by word with SplitText and drifts the hero photo
+>   with ScrollTrigger. The CSS scroll-driven version in `articles.css` is the
+>   fallback. The hero camera stays on its own damped follow inside the R3F
+>   loop (`components/three/camera-rig.tsx`), so two clocks never fight over
+>   the camera.
+> - **React Bits** (github.com/DavidHDev/react-bits, MIT + Commons Clause):
+>   the cursor spotlight on article cards (`components/motion/spotlight.tsx`)
+>   and the dock's magnification (`components/desktop/dock.tsx`) are adapted
+>   from its SpotlightCard and Dock, with attribution in each file.
+>
+> Everything respects `prefers-reduced-motion`.
 
 ---
 
@@ -482,12 +494,18 @@ from that one object.
 
 - 3D is code-split and gated behind a capability check, so the initial JS for
   `/` is ~180KB and three.js never loads on a device that cannot use it.
+- A still of the scene (`public/hero/poster-*.webp`, 25KB portrait / 55KB
+  landscape) paints with the page and fades into the live scene once its
+  models are in. Re-capture it if the scene changes.
+- The scene measures its own frame rate after it loads; under 20fps for two
+  two-second windows, it hands over to the still for the rest of the session.
+  Software WebGL renderers skip 3D outright. `?force3d` overrides both.
 - `dpr={[1, 1.75]}` — above ~1.75 the extra pixels are invisible and the cost
   is real. `performance={{ min: 0.5 }}` auto-degrades DPR rather than dropping
   frames.
 - Scroll handling is rAF-coalesced; drag/resize bypass React entirely during the
   gesture.
-- The two models (2.55MB + 2.89MB) are fetched only after the capability check
+- The two models (meshopt-compressed, about 1.4MB together) are fetched only after the capability check
   passes, in parallel with the room rendering, and served `immutable` for a
   year. They are never requested on a device that would stutter on them.
 - Model URLs carry a content hash (`scripts/write-model-manifest.mjs`, run on
