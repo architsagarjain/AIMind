@@ -35,8 +35,8 @@ export function TimelineWindow() {
         <SectionLabel>The path so far</SectionLabel>
         <h2 className="mt-3 font-display text-3xl font-extrabold text-ink">Timeline</h2>
         <p className="mt-2 max-w-md text-sm text-muted">
-          Five steps from a business degree in Pune to building at Masters&apos; Union. Tap any one
-          to open it.
+          {timeline.length} stops, from school in Jammu to ZenCabs and Masters&apos; Union. Tap any
+          one to open it.
         </p>
 
         <ol className="relative mt-9">

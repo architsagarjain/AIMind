@@ -164,14 +164,14 @@ export function Hero({ onTalk, onExplore, fade }: HeroProps) {
           className="hero-rise grid grid-cols-4 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-9 sm:gap-y-4"
         >
           {heroStats.map((stat, i) => (
-            <div key={stat.label} className="flex items-center gap-4 sm:gap-9">
+            <div key={stat.label} className="flex items-start gap-4 sm:items-center sm:gap-9">
               {i > 0 && <span className="hidden h-9 w-px bg-hairline-strong sm:block" />}
               <div>
                 <dt className="sr-only">{stat.label}</dt>
                 <dd className="text-gradient-accent font-display text-lg font-extrabold tabular-nums sm:text-2xl md:text-[30px]">
                   <CountUp value={stat.value} delay={1 + i * 0.12} />
                 </dd>
-                <p className="mt-1 text-[8px] font-semibold tracking-[0.12em] text-faint uppercase sm:text-[9px] sm:tracking-[0.16em]">
+                <p className="mt-1 text-[8px] leading-snug font-semibold tracking-[0.08em] text-faint uppercase sm:text-[9px] sm:tracking-[0.16em]">
                   {stat.label}
                 </p>
               </div>

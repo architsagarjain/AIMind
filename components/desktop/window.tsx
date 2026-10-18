@@ -145,6 +145,10 @@ export function DesktopWindow({ id, title, subtitle, icon, children }: DesktopWi
         'shadow-[var(--shadow-window)]',
         // macOS dims an unfocused window rather than ringing the focused one.
         focused ? 'opacity-100' : 'opacity-[0.97]',
+        // Phones show one full-screen window at a time, so the ones behind are
+        // hidden once the front one has animated in. That keeps text from
+        // showing through and saves drawing blurred layers nobody can see.
+        !focused && 'max-md:invisible max-md:transition-[visibility] max-md:delay-300',
       )}
       style={{
         zIndex: win.z,

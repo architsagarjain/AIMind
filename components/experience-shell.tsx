@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Nav, type NavTarget } from '@/components/hero/nav';
 import { Hero, ScrollCue } from '@/components/hero/hero';
 import { BootSequence } from '@/components/hero/boot-sequence';
-import { SceneFallback } from '@/components/three/scene-fallback';
+import { ScenePoster } from '@/components/three/scene-poster';
 import { Desktop } from '@/components/desktop/desktop';
 import { useExperience } from '@/lib/store/experience';
 import { useWindows } from '@/lib/store/windows';
@@ -23,7 +23,9 @@ import { profile } from '@/content/profile';
  */
 const Scene = dynamic(() => import('@/components/three/scene'), {
   ssr: false,
-  loading: () => <SceneFallback />,
+  // The poster sits over the canvas until the scene is ready, so nothing else
+  // needs to show while the chunk loads.
+  loading: () => null,
 });
 
 /** Scroll runway for the hero cinematic, as a multiple of viewport height.
@@ -45,6 +47,8 @@ export function ExperienceShell() {
 
   const reduced = useReducedMotion();
   const can3D = useCanRender3D();
+  /** The live scene has drawn its first frames with the models in. */
+  const [sceneReady, setSceneReady] = useState(false);
   const track = useTelemetry();
 
   const trackRef = useRef<HTMLDivElement>(null);
@@ -149,6 +153,11 @@ export function ExperienceShell() {
   }, [closeAll, returnToHero]);
 
   const showHero = phase === 'hero' || phase === 'diving';
+  // The scene remounts when the visitor comes back from the desktop, so the
+  // poster covers it again until it is ready.
+  useEffect(() => {
+    if (!showHero) setSceneReady(false);
+  }, [showHero]);
   /** The cinematic only plays when the device can render it and motion is welcome. */
   const cinematic = can3D && !reduced;
 
@@ -165,7 +174,8 @@ export function ExperienceShell() {
           <div className="sticky top-0 h-screen w-full overflow-hidden">
             {/* 3D layer */}
             <div className="absolute inset-0">
-              {can3D ? <Scene /> : <SceneFallback animated={!reduced} />}
+              {can3D && <Scene onReady={() => setSceneReady(true)} />}
+              <ScenePoster hidden={can3D && sceneReady} />
             </div>
 
             {/* Readability scrim.

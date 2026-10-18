@@ -1,7 +1,7 @@
 'use client';
 
-import { Suspense, useEffect, useRef } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { ContactShadows } from '@react-three/drei';
 import { AvatarModel } from './avatar-model';
@@ -9,7 +9,69 @@ import { Laptop } from './laptop';
 import { Office } from './office';
 import { CameraRig } from './camera-rig';
 import { useExperience } from '@/lib/store/experience';
-import { useIsMobile, useReducedMotion } from '@/lib/hooks/use-preferences';
+import { markSceneSlow, useIsMobile, useReducedMotion } from '@/lib/hooks/use-preferences';
+
+/**
+ * Tells the page once the figure and laptop are on screen, so the still
+ * poster over the canvas can fade out. Waits a few frames after the models
+ * mount, since the first frames also compile shaders.
+ */
+function ReadySignal({ onReady }: { onReady?: () => void }) {
+  const frames = useRef(0);
+  const done = useRef(false);
+  useFrame(() => {
+    if (done.current || ++frames.current < 4) return;
+    done.current = true;
+    onReady?.();
+  });
+  return null;
+}
+
+/**
+ * Gives up on the scene when this device cannot draw it smoothly. After the
+ * models are up it counts frames over two-second windows; two slow windows in
+ * a row (under 20fps) and the page swaps to the still poster for the rest of
+ * the session. A long gap between frames (a background tab) resets the count
+ * instead of counting as slow.
+ */
+const SLOW_FPS = 20;
+const WINDOW_S = 2;
+
+function FrameRateGuard({ active, progress }: { active: boolean; progress: React.RefObject<number> }) {
+  const state = useRef({ start: 0, frames: 0, slowWindows: 0, checked: 0, gaveUp: false });
+  useFrame((_, delta) => {
+    const s = state.current;
+    if (!active || s.gaveUp) return;
+    const now = performance.now() / 1000;
+    // Only judge the opening frame: once the visitor scrolls into the dive,
+    // swapping the scene out would break the scroll they are in the middle of.
+    if ((progress.current ?? 0) > 0.02) {
+      s.gaveUp = true;
+      return;
+    }
+    if (delta > 1 || document.hidden) {
+      s.start = now;
+      s.frames = 0;
+      return;
+    }
+    if (!s.start) s.start = now;
+    s.frames++;
+    const span = now - s.start;
+    if (span < WINDOW_S) return;
+    const fps = s.frames / span;
+    s.start = now;
+    s.frames = 0;
+    s.checked++;
+    s.slowWindows = fps < SLOW_FPS ? s.slowWindows + 1 : 0;
+    if (s.slowWindows >= 2) {
+      s.gaveUp = true;
+      markSceneSlow();
+    }
+    // Five windows (ten seconds) of measuring is enough to judge.
+    if (s.checked >= 5) s.gaveUp = true;
+  });
+  return null;
+}
 
 /**
  * The hero 3D scene.
@@ -19,7 +81,8 @@ import { useIsMobile, useReducedMotion } from '@/lib/hooks/use-preferences';
  * frame and re-mount nothing useful — the render loop already runs at 60fps and
  * only needs the current value, so a ref is both faster and simpler.
  */
-export default function Scene() {
+export default function Scene({ onReady }: { onReady?: () => void }) {
+  const [ready, setReady] = useState(false);
   const progress = useRef(0);
   const pointer = useRef({ x: 0, y: 0 });
   const reduced = useReducedMotion();
@@ -83,7 +146,14 @@ export default function Scene() {
           frames={1}
           color="#000814"
         />
+        <ReadySignal
+          onReady={() => {
+            setReady(true);
+            onReady?.();
+          }}
+        />
       </Suspense>
+      <FrameRateGuard active={ready} progress={progress} />
       <CameraRig progress={progress} pointer={pointer} still={reduced} />
     </Canvas>
   );
