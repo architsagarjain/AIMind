@@ -14,6 +14,7 @@ import { useCanRender3D, useReducedMotion } from '@/lib/hooks/use-preferences';
 import { useTelemetry } from '@/lib/hooks/use-telemetry';
 import { clamp } from '@/lib/utils';
 import type { WindowId } from '@/types';
+import { profile } from '@/content/profile';
 
 /**
  * The 3D scene is code-split and only requested once the device has been judged
@@ -132,7 +133,7 @@ export function ExperienceShell() {
         return;
       }
       if (target === 'contact') {
-        window.location.href = 'mailto:hello@architjain.ai';
+        window.location.href = `mailto:${profile.links.email}`;
         return;
       }
       const windowId = NAV_TO_WINDOW[target];

@@ -36,7 +36,7 @@ export const timeline: TimelineMilestone[] = [
     org: 'Symbiosis Centre for Management Studies',
     location: 'Pune, India',
     kind: 'education',
-    summary: 'Where the commercial instinct from a business family met actual frameworks.',
+    summary: 'Where the commercial instinct from a fourth-generation business family met actual frameworks.',
     details: [
       'CGPA 8.16, top 10% of the batch.',
       'Elected Placement Coordinator from a cohort of 400 students.',

@@ -27,9 +27,9 @@ const ENTRIES: FallbackEntry[] = [
     answer: profile.about.join('\n\n'),
   },
   {
-    keys: ['jammu', 'where are you from', 'hometown', 'grew up', 'school'],
+    keys: ['jammu', 'where are you from', 'hometown', 'grew up', 'school', 'family', 'business family'],
     answer:
-      "I'm from Jammu and went to Delhi Public School there: 92% in Class XII (Commerce with Maths), 94.2% in Class X with 100/100 in Science, and House Captain.\n\nMy first real business work was in Jammu too. From 2019 I ran marketing for Indikraft, a handicrafts business, and took it online: revenue rose 45% and the new D2C channel reached 20% of sales. ZenCabs brought me back to Jammu in 2026.",
+      "I'm from Jammu, from a fourth-generation business family, and went to Delhi Public School there: 92% in Class XII (Commerce with Maths), 94.2% in Class X with 100/100 in Science, and House Captain.\n\nMy first real business work was in Jammu too. From 2019 I ran marketing for Indikraft, a handicrafts business, and took it online: revenue rose 45% and the new D2C channel reached 20% of sales. ZenCabs brought me back to Jammu in 2026.",
   },
   {
     keys: ['are you human', 'are you real', 'are you ai', 'are you a bot', 'chatbot', 'is this really'],

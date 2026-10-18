@@ -60,7 +60,7 @@ The live site (checked 18 Oct 2026) shows outdated numbers. Replace them as foll
 | Current | Head of Strategy & Growth at ZenCabs (founding team) · PGP TBM student at Masters' Union, Gurugram |
 | Previously | Risk Consulting Specialist 2, PwC India |
 | Based in | Gurugram (studying); works with ZenCabs, Jammu |
-| Roots | Jammu (schooled at DPS Jammu) |
+| Roots | Jammu (schooled at DPS Jammu) · from a fourth-generation business family |
 | Email | architsagarjain@gmail.com |
 | LinkedIn | https://www.linkedin.com/in/archit-sagar-jain/ (link it everywhere: header, Contact page, chatbot replies, footer) |
 | Website | https://www.architsagarjain.com |
@@ -79,6 +79,7 @@ The live site (checked 18 Oct 2026) shows outdated numbers. Replace them as foll
 ## 3. Narrative arc (for About page and chatbot storytelling)
 
 1. **Early operator (2019–2022).**
+   - He comes from a fourth-generation business family in Jammu, so commerce was dinner-table talk long before it was coursework.
    - In school he ran marketing for Indikraft, a handicrafts business in Jammu, and took it online: revenue rose 45%, and the new D2C channel reached 20% of sales.
    - In college he sold online upskilling courses for Skillarena with a 40-intern team, closing ₹5L+ in 3 months.
 2. **Founder at 18 (2022–2024).**
@@ -477,5 +478,6 @@ Point the visitor to the Resume page or download button.
 
 | Date | Change |
 |---|---|
+| 2026-10-18 | v1.2: added "fourth-generation business family" (Sections 2 and 3). |
 | 2026-10-18 | v1.1: added date of birth (12 Sep 2003, age 23), "founded at 18", LinkedIn URL in chatbot prompt, replies and starter chips. |
 | 2026-10-18 | v1.0 created. ZenCabs updated to the Oct 2026 figures (30K+, ₹4 Cr, 6 months, ₹33L+ GMV, ₹83K/car). Added the zone, peak-shift and incentive stories. Added Shaadi Mangalam revenue 4x. Programme name corrected to "Technology & Business Management". |
