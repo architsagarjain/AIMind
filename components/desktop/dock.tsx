@@ -115,6 +115,9 @@ function useMagnify() {
       wake();
     };
     const onLeave = () => {
+      // A finger lifting off the dock fires this too; touch never magnifies,
+      // so there is nothing to settle and the phone sizes must stay.
+      if (!fine.matches || pointerX === null) return;
       pointerX = null;
       wake();
     };
@@ -242,7 +245,7 @@ export function Dock() {
                 className={cn(
                   // Phones: a little smaller, so the apps and LinkedIn fit a 360px screen.
                   'block h-[40px] w-[40px] sm:h-[52px] sm:w-[52px]',
-                  'drop-shadow-[0_1.5px_2px_#0000002e] transition-transform duration-150 ease-out active:brightness-75',
+                  'transition-[filter] duration-150 ease-out active:brightness-75',
                 )}
               >
                 <AppIcon app={app} className="h-full w-full" />

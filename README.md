@@ -471,6 +471,13 @@ playbooks and investment theses. The house rules:
 - Industry figures carry a linked source in the article's Sources section, and derived numbers show their working.
 - The style is plain: no em or en dashes, no "not X but Y" contrasts, no one-line closers, no bold labels. The live clone is held to the same style, and `tidyDashes` in `lib/ai/answer-guard.ts` normalises any dashes it streams.
 
+### Discovery and backlinks
+
+- **IndexNow** (`scripts/indexnow.mjs`, run after every production build) sends every sitemap URL to Bing, Yandex and the other IndexNow engines. The key file is `public/<key>.txt`. Google reads the sitemap from Search Console instead.
+- **`/llms.txt`** maps the site for AI assistants and AI search, with each article's summary and its Markdown copy.
+- **`/articles/<slug>/markdown`** is each article as Markdown with `canonical_url` front matter, served `noindex` with a canonical link to the HTML page.
+- **`/syndicate`** (not linked, kept out of search) is the cross-posting kit: one-click copies for Dev.to and Hashnode, LinkedIn posts, and Medium's importer. Every copy names the original as canonical and links back to it.
+
 **To add an article:** write a new `Article` in `content/articles/`, add it to
 the array in `content/articles/index.ts`, and build. The page, sitemap entry,
 RSS item, share image, structured data and the AI clone's knowledge all come
@@ -640,5 +647,8 @@ which free models it would use, in order, plus any it skipped and why.
 ---
 
 ## Licence
+
+The macOS-style icons in `public/icons/macos/` are from the [WhiteSur icon theme](https://github.com/vinceliuice/WhiteSur-icon-theme) and stay under its GPL-3.0 licence; see `public/icons/macos/NOTICE.md`.
+
 
 Personal portfolio. The code is yours to learn from; the content is Archit's.

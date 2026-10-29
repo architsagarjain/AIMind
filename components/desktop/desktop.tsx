@@ -92,7 +92,7 @@ export function Desktop({ onExit }: { onExit: () => void }) {
               id={id}
               title={meta.label}
               subtitle={meta.subtitle}
-              icon={<AppIcon app={id} className="h-4 w-4 shrink-0" />}
+              icon={<AppIcon app={id} className="h-[18px] w-[18px] shrink-0" />}
             >
               <Body />
             </DesktopWindow>

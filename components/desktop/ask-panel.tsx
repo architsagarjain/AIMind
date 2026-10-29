@@ -138,7 +138,7 @@ export function AskPanel() {
               }}
               className="inline-flex items-center gap-1.5 font-medium text-muted transition-colors hover:text-ink"
             >
-              <AppIcon app={id} className="h-4 w-4" />
+              <AppIcon app={id} className="h-[18px] w-[18px]" />
               {label}
             </button>
           );
