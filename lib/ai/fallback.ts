@@ -1,4 +1,6 @@
 import { profile } from '@/content/profile';
+import { getArticle, plain } from '@/content/articles';
+import { searchPortfolio } from './site-index';
 
 /**
  * Deterministic offline responder.
@@ -195,6 +197,17 @@ const OFFLINE_NOTE: Record<OfflineReason, string> = {
     '_The live clone is at capacity right now, so this is a pre-written answer. Ask again in a minute for the live one._',
 };
 
+/**
+ * With no pre-written answer, the best matching article: its opening lines
+ * and the link, so the visitor still gets something real to read.
+ */
+function fromArticles(question: string): string | null {
+  const hit = searchPortfolio(question, { limit: 3 }).find((p) => p.path.startsWith('/articles/'));
+  const article = hit && getArticle(hit.path.slice('/articles/'.length).split('#')[0]!);
+  if (!article) return null;
+  return `I've written about this in "${article.title}". ${plain(article.excerpt)}\n\nThe full piece is at /articles/${article.slug}`;
+}
+
 export function fallbackAnswer(question: string, reason: OfflineReason = 'unconfigured'): string {
   const q = question.toLowerCase();
 
@@ -205,7 +218,7 @@ export function fallbackAnswer(question: string, reason: OfflineReason = 'unconf
     if (score > 0 && (!best || score > best.score)) best = { entry, score };
   }
 
-  return `${best?.entry.answer ?? DEFAULT_ANSWER}\n\n${OFFLINE_NOTE[reason]}`;
+  return `${best?.entry.answer ?? fromArticles(question) ?? DEFAULT_ANSWER}\n\n${OFFLINE_NOTE[reason]}`;
 }
 
 /** Streams the fallback in word chunks so the UI path is identical to the real one. */

@@ -394,16 +394,12 @@ export function MenuBar({ onExit }: { onExit: () => void }) {
       return m;
     });
 
+  // The macOS menu bar clock: "Thu 29 Oct  4:05 PM".
   const time = now
-    ? new Intl.DateTimeFormat('en-IN', {
-        weekday: 'short',
-        day: 'numeric',
+    ? `${now.toLocaleDateString('en-GB', { weekday: 'short' })} ${now.getDate()} ${now.toLocaleDateString('en-GB', {
         month: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      }).format(now)
-    : ' ';
+      })}\u2002${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
+    : ' ';
 
   const BatteryIcon = !battery
     ? BatteryFull
@@ -548,6 +544,29 @@ export function MenuBar({ onExit }: { onExit: () => void }) {
             </AnimatePresence>
           </div>
 
+          {/* Wi-Fi status: the connection the page is actually on. */}
+          <span
+            className="flex h-[22px] items-center px-2"
+            role="img"
+            aria-label={online ? 'Wi-Fi: connected' : 'Wi-Fi: offline'}
+            title={online ? 'Wi-Fi: connected' : 'Wi-Fi: offline'}
+          >
+            {online ? <Wifi className="h-3.5 w-3.5" strokeWidth={2.2} /> : <WifiOff className="h-3.5 w-3.5" strokeWidth={2.2} />}
+          </span>
+
+          {/* Spotlight. */}
+          <button
+            type="button"
+            aria-label="Spotlight Search"
+            onClick={() => {
+              setOpenMenu(null);
+              setSpotlight(true);
+            }}
+            className={titleClass('search')}
+          >
+            <Search className="h-3.5 w-3.5" strokeWidth={2} />
+          </button>
+
           {/* Control Centre. */}
           <div className="relative">
             <button
@@ -558,7 +577,7 @@ export function MenuBar({ onExit }: { onExit: () => void }) {
               onPointerEnter={() => hoverMenu('control')}
               className={titleClass('control')}
             >
-              {online ? <Wifi className="h-3.5 w-3.5" strokeWidth={2} /> : <WifiOff className="h-3.5 w-3.5" strokeWidth={2} />}
+              <ControlCentreGlyph />
             </button>
             <AnimatePresence>
               {openMenu === 'control' && (
@@ -618,19 +637,6 @@ export function MenuBar({ onExit }: { onExit: () => void }) {
               )}
             </AnimatePresence>
           </div>
-
-          {/* Spotlight. */}
-          <button
-            type="button"
-            aria-label="Spotlight Search"
-            onClick={() => {
-              setOpenMenu(null);
-              setSpotlight(true);
-            }}
-            className={titleClass('search')}
-          >
-            <Search className="h-3.5 w-3.5" strokeWidth={2} />
-          </button>
 
           {/* Clock and calendar. */}
           <div className="relative">
@@ -785,6 +791,18 @@ function Tile({
         <span className="block truncate text-[11px] text-faint">{detail}</span>
       </span>
     </button>
+  );
+}
+
+/** The Control Centre symbol: two switches, one on the left and one on the right. */
+function ControlCentreGlyph() {
+  return (
+    <svg viewBox="0 0 16 16" className="h-[15px] w-[15px]" aria-hidden>
+      <rect x="1" y="2.2" width="14" height="5" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.3" />
+      <circle cx="12.4" cy="4.7" r="1.6" fill="currentColor" />
+      <rect x="1" y="8.8" width="14" height="5" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.3" />
+      <circle cx="3.6" cy="11.3" r="1.6" fill="currentColor" />
+    </svg>
   );
 }
 

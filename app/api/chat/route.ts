@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import type OpenAI from 'openai';
 import { attemptGroups, freeCandidates, getOpenRouter, isAIConfigured, isFreeModelId } from '@/lib/ai/openrouter';
 import { buildSystemPrompt } from '@/lib/ai/system-prompt';
+import { portfolioContext, terms } from '@/lib/ai/site-index';
 import { fallbackAnswer, fallbackStream } from '@/lib/ai/fallback';
 import {
   GUARD_CHARS,
@@ -167,8 +168,16 @@ export async function POST(req: Request) {
   const deadline = startedAt + TOTAL_BUDGET_MS;
   const left = () => deadline - Date.now();
   const answerLeft = () => startedAt + ANSWER_DEADLINE_MS - Date.now();
+  // The pages of the site that match this question. A short follow-up ("say
+  // more", "and the pricing?") borrows the words of the question before it.
+  const userTurns = history.filter((m) => m.role === 'user').map((m) => m.content);
+  const query =
+    terms(latest.content).length < 6 && userTurns.length > 1
+      ? `${userTurns[userTurns.length - 2]} ${latest.content}`
+      : latest.content;
+  const fromPages = portfolioContext(query);
   const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-    { role: 'system', content: buildSystemPrompt() },
+    { role: 'system', content: fromPages ? `${buildSystemPrompt()}\n\n---\n\n${fromPages}` : buildSystemPrompt() },
     ...history,
   ];
   const encoder = new TextEncoder();

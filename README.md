@@ -300,6 +300,10 @@ lib/ai/knowledge.ts ──► compiles a ~3k-token corpus
 lib/ai/system-prompt.ts ──► persona contract + the corpus
        │
        ▼
+lib/ai/site-index.ts ──► every article section, case study, timeline stop
+       │                 and resume role as passages; BM25 picks the ones
+       │                 that match each question and they ride along
+       ▼
 app/api/chat/route.ts ──► rate limit → validate → stream → persist
        │
        ├── OPENROUTER_API_KEY set? → free models on OpenRouter, streamed,

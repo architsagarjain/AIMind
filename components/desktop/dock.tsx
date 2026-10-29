@@ -2,31 +2,51 @@
 
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { profile } from '@/content/profile';
 import { useWindows, WINDOW_IDS } from '@/lib/store/windows';
-import { WINDOW_META } from './icons';
 import { useTelemetry } from '@/lib/hooks/use-telemetry';
 import { cn } from '@/lib/utils';
+import { AppIcon, type AppIconId } from './app-icons';
+import { WINDOW_META } from './icons';
 
 /**
- * The dock. Open windows carry an indicator dot; clicking an open-but-focused
- * window minimises it, matching the platform convention people already know.
+ * The dock, laid out as on a Mac: the apps, a divider, then LinkedIn and
+ * Mail (which open Archit's profile and a new email), and the Trash at the
+ * end. Open apps carry a dot; clicking the app in front minimises it.
  *
  * With a mouse or trackpad the icons swell under the pointer and an app
- * bounces as it launches, as on a Mac. The magnification follows React Bits'
- * Dock (github.com/DavidHDev/react-bits, MIT + Commons Clause, © David Haz):
- * a cos² falloff measured from each icon's resting position, so growing
- * icons never shift the curve under the pointer, eased by a damped spring.
- * Sizes are written straight to the DOM, so moving the pointer re-renders
- * nothing.
+ * bounces as it launches. The magnification follows React Bits' Dock
+ * (github.com/DavidHDev/react-bits, MIT + Commons Clause, © David Haz): a
+ * cos² falloff measured from each icon's resting position, so growing icons
+ * never shift the curve under the pointer, eased by a damped spring. Sizes
+ * are written straight to the DOM, so moving the pointer re-renders nothing.
  */
+
+type Slot =
+  | { kind: 'app'; app: AppIconId; label: string }
+  | { kind: 'divider' };
+
+const SLOTS: Slot[] = [
+  ...WINDOW_IDS.map((id) => ({ kind: 'app' as const, app: id, label: WINDOW_META[id].label })),
+  { kind: 'divider' },
+  { kind: 'app', app: 'linkedin', label: 'LinkedIn' },
+  { kind: 'app', app: 'mail', label: 'Mail' },
+  { kind: 'app', app: 'trash', label: 'Trash' },
+];
+
+/** Phones have room for the apps and LinkedIn; Mail and the Trash wait for a wider screen. */
+const DESKTOP_ONLY = new Set<AppIconId>(['mail', 'trash']);
+
 const BASE = 52;
-const PEAK = 76;
-const REACH = 150;
-const GAP = 8;
+const PEAK = 80;
+const REACH = 160;
+const GAP = 6;
+/** The divider's width including its margins (1px line + 2 × 5px). */
+const DIVIDER = 11;
 const STIFFNESS = 520;
 const DAMPING = 38;
 
-function useMagnify(count: number) {
+function useMagnify() {
   const dockRef = useRef<HTMLDivElement>(null);
   const tiles = useRef<(HTMLSpanElement | null)[]>([]);
 
@@ -35,7 +55,17 @@ function useMagnify(count: number) {
     if (!dock) return;
     const fine = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 640px)');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const sizes = Array.from({ length: count }, () => ({ size: BASE, velocity: 0 }));
+
+    // Resting centres, measured from the dock's centre, which stays put as it grows.
+    const widths = SLOTS.map((s) => (s.kind === 'divider' ? DIVIDER : BASE));
+    const total = widths.reduce((a, b) => a + b, 0) + GAP * (widths.length - 1);
+    let cursor = -total / 2;
+    const rest = widths.map((w) => {
+      const centre = cursor + w / 2;
+      cursor += w + GAP;
+      return centre;
+    });
+    const sizes = SLOTS.map(() => ({ size: BASE, velocity: 0 }));
     let pointerX: number | null = null;
     let raf = 0;
     let last = 0;
@@ -45,12 +75,12 @@ function useMagnify(count: number) {
       const dt = Math.min(0.032, Math.max(0.001, (now - last) / 1000));
       last = now;
       const rect = dock.getBoundingClientRect();
-      // The dock stays centred while it grows, so its centre is a fixed origin.
       const focus = pointerX === null ? null : pointerX - (rect.left + rect.width / 2);
       let moving = false;
-      sizes.forEach((state, i) => {
-        const rest = (i - (count - 1) / 2) * (BASE + GAP);
-        const reach = focus === null ? 1 : Math.abs(focus - rest) / REACH;
+      SLOTS.forEach((slot, i) => {
+        if (slot.kind === 'divider') return;
+        const state = sizes[i]!;
+        const reach = focus === null ? 1 : Math.abs(focus - rest[i]!) / REACH;
         const target = BASE + (PEAK - BASE) * (reach < 1 ? Math.cos((reach * Math.PI) / 2) ** 2 : 0);
         if (reduce.matches) {
           state.size = target;
@@ -105,7 +135,7 @@ function useMagnify(count: number) {
       dock.removeEventListener('pointerleave', onLeave);
       fine.removeEventListener('change', onChange);
     };
-  }, [count]);
+  }, []);
 
   return { dockRef, tiles };
 }
@@ -128,79 +158,100 @@ function hop(el: HTMLElement | null) {
 export function Dock() {
   const windows = useWindows((s) => s.windows);
   const focused = useWindows((s) => s.focused);
-  const { open, focus, minimize } = useWindows();
+  const { open, focus, minimize, closeAll } = useWindows();
   const track = useTelemetry();
-  const { dockRef, tiles } = useMagnify(WINDOW_IDS.length);
+  const { dockRef, tiles } = useMagnify();
+  const anyOpen = WINDOW_IDS.some((id) => windows[id].open);
+
+  const launch = (app: AppIconId, index: number) => {
+    const tile = tiles.current[index] ?? null;
+    if (app === 'linkedin') {
+      hop(tile);
+      track('link_clicked', { link: 'linkedin', source: 'dock' });
+      window.open(profile.links.linkedin, '_blank', 'noopener');
+      return;
+    }
+    if (app === 'mail') {
+      hop(tile);
+      track('link_clicked', { link: 'email', source: 'dock' });
+      window.location.href = `mailto:${profile.links.email}`;
+      return;
+    }
+    if (app === 'trash') {
+      // Dragging a window to the Trash is not a thing a page can do, so
+      // clicking it clears the desktop instead.
+      closeAll();
+      return;
+    }
+    const win = windows[app];
+    if (win.open && !win.minimized && focused === app) {
+      minimize(app);
+      return;
+    }
+    if (win.open) {
+      focus(app);
+      return;
+    }
+    hop(tile);
+    open(app);
+    track('window_opened', { window: app, source: 'dock' });
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.35, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="absolute bottom-2.5 left-1/2 z-900 -translate-x-1/2"
+      className="absolute bottom-1.5 left-1/2 z-900 -translate-x-1/2"
     >
-      {/* macOS dock: a translucent slab with a hairline, icons as squircles,
-          and a running dot under each open app. */}
+      {/* macOS dock: a frosted slab that lets the wallpaper through, with a
+          light rim, and the icons standing on its floor. */}
       <div
         ref={dockRef}
-        className="glass-strong flex items-end gap-1.5 rounded-[22px] px-2.5 py-2.5 shadow-[var(--shadow-window)] sm:gap-2 sm:px-3"
+        role="toolbar"
+        aria-label="Dock"
+        className="dock-glass flex items-end gap-[6px] rounded-[18px] px-[6px] pt-[6px] pb-[4px] sm:rounded-[22px]"
       >
-        {WINDOW_IDS.map((id, index) => {
-          const { label, Icon, accent } = WINDOW_META[id];
-          const win = windows[id];
-          const isActive = win.open && !win.minimized;
+        {SLOTS.map((slot, index) => {
+          if (slot.kind === 'divider') {
+            return <span key="divider" aria-hidden className="mx-[5px] mb-[9px] h-[38px] w-px self-end bg-black/15 sm:h-[44px]" />;
+          }
+          const { app, label } = slot;
+          const isWindow = app in windows;
+          const running = isWindow && windows[app as keyof typeof windows].open;
+          const name = app === 'trash' ? (anyOpen ? 'Trash: close all windows' : 'Trash') : label;
 
           return (
             <button
-              key={id}
-              onClick={() => {
-                if (isActive && focused === id) {
-                  minimize(id);
-                  return;
-                }
-                if (win.open) {
-                  focus(id);
-                  return;
-                }
-                hop(tiles.current[index] ?? null);
-                open(id);
-                track('window_opened', { window: id, source: 'dock' });
-              }}
-              aria-label={label}
-              aria-pressed={isActive}
-              className="group relative flex flex-col items-center"
+              key={app}
+              type="button"
+              onClick={() => launch(app, index)}
+              aria-label={app === 'linkedin' ? 'LinkedIn: open Archit’s profile' : app === 'mail' ? `Mail: email ${profile.links.email}` : name}
+              aria-pressed={isWindow ? running : undefined}
+              className={cn('group relative flex-col items-center', DESKTOP_ONLY.has(app) ? 'hidden sm:flex' : 'flex')}
             >
-              {/* Tooltip */}
-              {/* macOS shows the label in a floating bubble above the icon. */}
-              <span className="pointer-events-none absolute -top-11 rounded-md border border-hairline bg-surface-raised px-2.5 py-1 text-[12px] font-medium whitespace-nowrap text-ink opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100">
-                {label}
+              {/* The name floats above the icon, as on a Mac. */}
+              <span className="pointer-events-none absolute -top-9 rounded-[7px] border border-black/10 bg-[#f0f0f2]/95 px-2.5 py-[3px] text-[12.5px] font-medium whitespace-nowrap text-[#1d1d1f] opacity-0 shadow-[0_4px_14px_-4px_#0000004d] backdrop-blur-xl transition-opacity duration-100 group-hover:opacity-100">
+                {app === 'trash' ? 'Trash' : label}
               </span>
 
-              {/* Squircle-ish radius and a top-lit gradient: the two things
-                  that read as a macOS app icon rather than a web button. */}
               <span
                 ref={(el) => {
                   tiles.current[index] = el;
                 }}
                 className={cn(
-                  // Six apps: slightly smaller on phones so the dock fits a 360px screen.
-                  'flex h-[46px] w-[46px] items-center justify-center rounded-[13px] sm:h-[52px] sm:w-[52px] sm:rounded-[27%]',
-                  // Touch screens and narrow windows get a press instead of magnification.
-                  'transition-transform duration-150 ease-out active:scale-95',
+                  // Phones: a little smaller, so the apps and LinkedIn fit a 360px screen.
+                  'block h-[40px] w-[40px] sm:h-[52px] sm:w-[52px]',
+                  'drop-shadow-[0_1.5px_2px_#0000002e] transition-transform duration-150 ease-out active:brightness-75',
                 )}
-                style={{
-                  background: `linear-gradient(160deg, ${accent}f2 0%, ${accent}b8 52%, ${accent}8a 100%)`,
-                  boxShadow:
-                    'inset 0 1px 0 #ffffff80, inset 0 -1px 0 #00000014, 0 4px 10px -3px #0b1a3359',
-                }}
               >
-                <Icon className="h-1/2 w-1/2 text-white" strokeWidth={1.7} />
+                <AppIcon app={app} className="h-full w-full" />
               </span>
 
               <span
                 className={cn(
-                  'mt-1 h-[3px] w-[3px] rounded-full transition-colors duration-200',
-                  win.open ? 'bg-ink/55' : 'bg-transparent',
+                  'mt-[3px] h-[4px] w-[4px] rounded-full transition-colors duration-200',
+                  running ? 'bg-black/60' : 'bg-transparent',
                 )}
               />
             </button>

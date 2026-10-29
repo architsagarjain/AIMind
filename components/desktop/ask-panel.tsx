@@ -10,6 +10,7 @@ import { useChatHandoff } from '@/lib/store/chat-handoff';
 import { useWindows, WINDOW_IDS } from '@/lib/store/windows';
 import { useTelemetry } from '@/lib/hooks/use-telemetry';
 import { WINDOW_META } from './icons';
+import { AppIcon } from './app-icons';
 import { EASE_OUT_EXPO } from '@/lib/utils';
 
 /**
@@ -127,7 +128,7 @@ export function AskPanel() {
       <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#0b1a33]/8 pt-4 text-xs text-faint">
         <span>Or explore</span>
         {others.map((id) => {
-          const { label, Icon, accent } = WINDOW_META[id];
+          const { label } = WINDOW_META[id];
           return (
             <button
               key={id}
@@ -137,7 +138,7 @@ export function AskPanel() {
               }}
               className="inline-flex items-center gap-1.5 font-medium text-muted transition-colors hover:text-ink"
             >
-              <Icon className="h-3.5 w-3.5" style={{ color: accent }} />
+              <AppIcon app={id} className="h-4 w-4" />
               {label}
             </button>
           );

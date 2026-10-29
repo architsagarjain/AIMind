@@ -1,89 +1,57 @@
 /**
- * The ARCHIT.OS wallpaper, defined once.
+ * The ARCHIT.OS wallpaper: soft layered waves in the manner of the recent
+ * macOS wallpapers, kept light so windows, labels and the frosted dock stay
+ * easy to read over it. One SVG, scaled to cover the screen like a desktop
+ * picture. It is static, so it paints once and costs nothing afterwards.
  *
- * Three surfaces show it: the desktop, the lock screen that plays as the
- * desktop comes up, and the laptop's own screen in the 3D scene, drawn on a
- * canvas. The dive only reads as flying *into* that laptop if all three are
- * the same image, so they all render from these numbers rather than each
- * keeping its own copy.
- *
- * Pools are placed in fractions of the surface and sized in fractions of its
- * longer side, which is what `vmax` is in CSS; the canvas does the same sum.
+ * Shown on the desktop and behind the full-page chat (/ask).
  */
 
-/** Base gradient: CSS angle and colour stops (0–1). */
-export const WALLPAPER_BASE = {
-  angle: 160,
-  stops: [
-    ['#dfe9f7', 0],
-    ['#eef1f8', 0.38],
-    ['#f6f2f7', 0.7],
-    ['#e9eef9', 1],
-  ],
-} as const;
-
-/** Soft colour pools: centre (fractions), radius (fraction of the long side), alpha. */
-export const WALLPAPER_POOLS = [
-  { color: '#9cc4f2', alpha: 0.55, cx: 0.2, cy: 0.23, r: 0.3 },
-  { color: '#c9b6ee', alpha: 0.5, cx: 0.88, cy: 0.86, r: 0.27 },
-  { color: '#a8e5e5', alpha: 0.5, cx: 0.68, cy: 0.45, r: 0.19 },
+/** Each band: its top edge (a path across a 1600×1000 frame) and two colours, left to right. */
+const BANDS = [
+  { top: 'M0 360 C 300 300 520 210 820 230 S 1340 330 1600 170', from: '#b9d0f5', to: '#cdbff2', alpha: 0.9 },
+  { top: 'M0 520 C 280 430 600 380 900 420 S 1380 470 1600 330', from: '#93b6f0', to: '#b29ce9', alpha: 0.85 },
+  { top: 'M0 650 C 320 600 560 520 860 560 S 1360 660 1600 520', from: '#f4c2d2', to: '#f8d3bd', alpha: 0.9 },
+  { top: 'M0 770 C 260 700 600 680 920 720 S 1400 760 1600 660', from: '#6f95e6', to: '#9a84e4', alpha: 0.9 },
+  { top: 'M0 900 C 340 850 640 830 960 860 S 1420 880 1600 800', from: '#f7d6c6', to: '#f1b9cf', alpha: 0.95 },
 ] as const;
 
-const hexAlpha = (a: number) =>
-  Math.round(a * 255)
-    .toString(16)
-    .padStart(2, '0');
-
 export function Wallpaper() {
-  const base = `linear-gradient(${WALLPAPER_BASE.angle}deg, ${WALLPAPER_BASE.stops
-    .map(([c, p]) => `${c} ${p * 100}%`)
-    .join(', ')})`;
   return (
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-      <div className="absolute inset-0" style={{ background: base }} />
-      {WALLPAPER_POOLS.map((p) => (
-        <div
-          key={p.color}
-          className="absolute rounded-full blur-[100px]"
-          style={{
-            left: `calc(${p.cx * 100}% - ${p.r * 100}vmax)`,
-            top: `calc(${p.cy * 100}% - ${p.r * 100}vmax)`,
-            width: `${p.r * 200}vmax`,
-            height: `${p.r * 200}vmax`,
-            background: `radial-gradient(circle, ${p.color}${hexAlpha(p.alpha)} 0%, transparent 70%)`,
-          }}
-        />
-      ))}
+      <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
+        <defs>
+          <linearGradient id="wp-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#d6e4f8" />
+            <stop offset="0.55" stopColor="#ebe6f6" />
+            <stop offset="1" stopColor="#f6e8ee" />
+          </linearGradient>
+          <radialGradient id="wp-glow" cx="0.72" cy="0.18" r="0.6">
+            <stop offset="0" stopColor="#ffffff" stopOpacity="0.75" />
+            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+          </radialGradient>
+          {BANDS.map((b, i) => (
+            <linearGradient key={i} id={`wp-band-${i}`} x1="0" y1="0" x2="1" y2="0.35">
+              <stop offset="0" stopColor={b.from} />
+              <stop offset="1" stopColor={b.to} />
+            </linearGradient>
+          ))}
+          {/* Each band casts a soft shadow up onto the one behind it. */}
+          <filter id="wp-lift" x="-5%" y="-20%" width="110%" height="140%">
+            <feDropShadow dx="0" dy="-10" stdDeviation="18" floodColor="#34407a" floodOpacity="0.16" />
+          </filter>
+        </defs>
+
+        <rect width="1600" height="1000" fill="url(#wp-sky)" />
+        <rect width="1600" height="1000" fill="url(#wp-glow)" />
+        {BANDS.map((b, i) => (
+          <g key={i}>
+            <path d={`${b.top} L1600 1000 L0 1000 Z`} fill={`url(#wp-band-${i})`} opacity={b.alpha} filter="url(#wp-lift)" />
+            {/* A thin light catch along the crest. */}
+            <path d={b.top} fill="none" stroke="#ffffff" strokeOpacity="0.45" strokeWidth="2" />
+          </g>
+        ))}
+      </svg>
     </div>
   );
-}
-
-/** Paints the same wallpaper on a 2D canvas (for the laptop screen). */
-export function paintWallpaper(ctx: CanvasRenderingContext2D, width: number, height: number) {
-  // CSS gradient angles run clockwise from "to top"; the gradient line passes
-  // through the centre and is long enough to reach the far corners.
-  const a = (WALLPAPER_BASE.angle * Math.PI) / 180;
-  const dx = Math.sin(a);
-  const dy = -Math.cos(a);
-  const half = (Math.abs(width * dx) + Math.abs(height * dy)) / 2;
-  const g = ctx.createLinearGradient(
-    width / 2 - dx * half,
-    height / 2 - dy * half,
-    width / 2 + dx * half,
-    height / 2 + dy * half,
-  );
-  for (const [c, p] of WALLPAPER_BASE.stops) g.addColorStop(p, c);
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, width, height);
-
-  // The DOM pools are blurred; a longer transparent tail stands in for that.
-  const long = Math.max(width, height);
-  for (const p of WALLPAPER_POOLS) {
-    const r = p.r * long * 1.35;
-    const pool = ctx.createRadialGradient(p.cx * width, p.cy * height, 0, p.cx * width, p.cy * height, r);
-    pool.addColorStop(0, `${p.color}${hexAlpha(p.alpha)}`);
-    pool.addColorStop(1, `${p.color}00`);
-    ctx.fillStyle = pool;
-    ctx.fillRect(0, 0, width, height);
-  }
 }

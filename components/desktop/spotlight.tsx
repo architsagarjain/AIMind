@@ -2,13 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Copy, FileText, Linkedin, Mail, PenLine, Search } from 'lucide-react';
+import { ArrowRight, Copy, FileText, PenLine, Search } from 'lucide-react';
 import { profile } from '@/content/profile';
 import { projects } from '@/content/projects';
 import { useWindows, WINDOW_IDS } from '@/lib/store/windows';
 import { useArticleIndex } from '@/components/windows/article-index';
 import { cn } from '@/lib/utils';
 import { WINDOW_META } from './icons';
+import { AppIcon } from './app-icons';
 
 /**
  * Spotlight: one box that finds anything on the site, as ⌘Space does on a Mac
@@ -23,6 +24,8 @@ interface Result {
   title: string;
   detail?: string;
   icon: React.ReactNode;
+  /** A full app icon, drawn without the tinted well behind small glyphs. */
+  bare?: boolean;
   keywords: string;
   run: () => void;
 }
@@ -49,7 +52,8 @@ export function Spotlight({ onClose, onExit }: { onClose: () => void; onExit: ()
           group: 'Applications' as const,
           title: meta.label,
           detail: meta.subtitle,
-          icon: <meta.Icon className="h-4 w-4" style={{ color: meta.accent }} />,
+          icon: <AppIcon app={id} className="h-7 w-7" />,
+          bare: true,
           keywords: `${meta.label} ${meta.subtitle} ${id}`,
           run: go(() => open(id)),
         };
@@ -59,7 +63,8 @@ export function Spotlight({ onClose, onExit }: { onClose: () => void; onExit: ()
         group: 'Actions',
         title: 'Email Archit',
         detail: profile.links.email,
-        icon: <Mail className="h-4 w-4 text-[#0a84ff]" />,
+        icon: <AppIcon app="mail" className="h-7 w-7" />,
+        bare: true,
         keywords: 'email contact mail hire reach',
         run: go(() => (window.location.href = `mailto:${profile.links.email}`)),
       },
@@ -77,7 +82,8 @@ export function Spotlight({ onClose, onExit }: { onClose: () => void; onExit: ()
         group: 'Actions',
         title: 'Open LinkedIn',
         detail: 'linkedin.com/in/archit-sagar-jain',
-        icon: <Linkedin className="h-4 w-4 text-[#0a66c2]" />,
+        icon: <AppIcon app="linkedin" className="h-7 w-7" />,
+        bare: true,
         keywords: 'linkedin connect profile social',
         run: go(() => window.open(profile.links.linkedin, '_blank', 'noopener')),
       },
@@ -215,7 +221,7 @@ export function Spotlight({ onClose, onExit }: { onClose: () => void; onExit: ()
                   <span
                     className={cn(
                       'flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px]',
-                      i === active ? 'bg-white/90' : 'bg-black/[0.05]',
+                      !r.bare && (i === active ? 'bg-white/90' : 'bg-black/[0.05]'),
                     )}
                   >
                     {r.icon}

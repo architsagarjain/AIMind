@@ -16,6 +16,7 @@ const ALLOWED = new Set([
   'article_opened',
   'press_opened',
   'app_opened',
+  'link_clicked',
 ]);
 
 export async function POST(req: Request) {

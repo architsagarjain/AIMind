@@ -18,6 +18,3 @@ export const WINDOW_META: Record<
   writing: { label: 'Writing', subtitle: 'Articles & frameworks', Icon: PenLine, accent: '#FF375F' },
   ask: { label: 'Ask Archit', subtitle: 'Talk to the clone', Icon: MessagesSquare, accent: '#BF5AF2' },
 };
-
-/** macOS paints every folder the same blue; only apps vary. */
-export const FOLDER_BLUE = '#3E9BE9';

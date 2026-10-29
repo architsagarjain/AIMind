@@ -9,10 +9,11 @@ import { CONTEXT_LAST_VERIFIED, CONTEXT_SECTIONS } from '@/content/archit-contex
  *
  * The facts about Archit come straight from content/archit-context.md, the
  * file he keeps up to date and the single source of truth for the whole site.
- * It is read in full rather than retrieved in pieces: the corpus is a few
- * thousand tokens, so a vector search would add latency and a failure mode
- * (a missed chunk, which the model fills by inventing) without buying
- * accuracy.
+ * It is read in full rather than retrieved in pieces: the facts are a few
+ * thousand tokens, and a missed chunk is a gap the model fills by inventing.
+ * The rest of the site (every article, case study, timeline stop and resume
+ * role, about 175K characters) is too long for that, so the chat route adds
+ * the passages that match each question; see lib/ai/site-index.ts.
  *
  * From that file the clone gets the identity and pitch (2), the narrative (3),
  * every role with its stories and numbers (4), education (5), leadership and
@@ -53,6 +54,15 @@ export function buildKnowledgeBase(): string {
       // Titles and paths only: the excerpts cost prompt length, which is
       // latency on every answer, and the title is enough to pick a link.
       ...articles.map((a) => `- ${a.title} (${a.category}) at /articles/${a.slug}`),
+    ].join('\n'),
+  );
+
+  sections.push(
+    [
+      '## MY SITE (where things are, for pointing visitors around)',
+      '- The home page opens on a 3D intro; "Talk to Archit" or scrolling leads into ARCHIT.OS, a Mac-style desktop.',
+      '- Its dock holds the apps: About, Projects (case studies), Timeline, Resume, Writing (articles), Ask Archit (this chat), then LinkedIn and Mail, which open my LinkedIn profile and an email to me.',
+      '- /articles is the writing hub; each article lives at /articles/<slug>. /resume is a printable resume.',
     ].join('\n'),
   );
 

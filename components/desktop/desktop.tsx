@@ -9,6 +9,7 @@ import { FolderGrid } from './folder-grid';
 import { Dock } from './dock';
 import { DesktopWindow } from './window';
 import { WINDOW_META } from './icons';
+import { AppIcon } from './app-icons';
 import { AboutWindow } from '@/components/windows/about-window';
 import { ProjectsWindow } from '@/components/windows/projects-window';
 import { TimelineWindow } from '@/components/windows/timeline-window';
@@ -91,7 +92,7 @@ export function Desktop({ onExit }: { onExit: () => void }) {
               id={id}
               title={meta.label}
               subtitle={meta.subtitle}
-              icon={<meta.Icon className="h-3.5 w-3.5 shrink-0" style={{ color: meta.accent }} />}
+              icon={<AppIcon app={id} className="h-4 w-4 shrink-0" />}
             >
               <Body />
             </DesktopWindow>
