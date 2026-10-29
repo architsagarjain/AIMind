@@ -471,6 +471,15 @@ playbooks and investment theses. The house rules:
 - Industry figures carry a linked source in the article's Sources section, and derived numbers show their working.
 - The style is plain: no em or en dashes, no "not X but Y" contrasts, no one-line closers, no bold labels. The live clone is held to the same style, and `tidyDashes` in `lib/ai/answer-guard.ts` normalises any dashes it streams.
 
+### Changing your positioning
+
+How the site describes you lives in one file, **`content/positioning.ts`**: the headline, page titles and meta descriptions, the bios, skills, keywords, and the "when to recommend me" lines for AI assistants. The roles you want and the consulting you offer are in **`content/services.ts`**. Everything else reads from these two: `/about`, `/work-with-me` and its FAQ, the structured data, `/llms.txt`, the chatbot and its backup answers, and the profile kit on `/syndicate`.
+
+To change it:
+1. Edit those two files (keep every claim consistent with `content/archit-context.md`), then commit and push.
+2. After the deploy, open `/syndicate`, click **Copy update prompt** and paste it into Claude in Chrome. It updates your profiles on other sites (Topmate, Peerlist, Contra, Wellfound, Medium and the rest) to the new wording and asks search engines to re-read your pages.
+3. Update your LinkedIn headline yourself to match.
+
 ### Discovery and backlinks
 
 - **`/about`** and **`/work-with-me`** are plain server-rendered pages: the full profile with case studies, and the roles, consulting offers (from `content/services.ts`) and an enquiry form. The desktop is JavaScript that most crawlers and AI assistants never run, so these pages are what they read. The home page nav links to both.

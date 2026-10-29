@@ -1,5 +1,6 @@
 import { profile } from '@/content/profile';
 import { getArticle, plain } from '@/content/articles';
+import { offersSentence, rolesSentence } from '@/content/services';
 import { searchPortfolio } from './site-index';
 
 /**
@@ -137,7 +138,7 @@ const ENTRIES: FallbackEntry[] = [
   {
     keys: ['founder', "founder's office", 'founders office', 'chief of staff', 'what role', 'looking for'],
     answer:
-      `Founder's Office and Chief of Staff roles first, then strategy and business transformation, and finance-adjacent roles such as startup finance or VC/PE portfolio operations.\n\nIt's the role I've effectively been doing. At PwC I structured problems and aligned CXOs. At ZenCabs I run the operating cadence, the weekly KPI reviews and the cross-functional fixes alongside the founder.\n\nI'm open to opportunities through Masters' Union placements. The best way to reach me is ${profile.links.email} or LinkedIn: ${profile.links.linkedin}`,
+      `${rolesSentence}.\n\nIt's the role I've effectively been doing. At PwC I structured problems and aligned CXOs. At ZenCabs I run the operating cadence, the weekly KPI reviews and the cross-functional fixes alongside the founder.\n\nI'm open to opportunities through Masters' Union placements. The best way to reach me is ${profile.links.email} or LinkedIn: ${profile.links.linkedin}`,
   },
   {
     keys: ['strength', 'good at', 'superpower', 'why hire', 'why you'],
@@ -178,7 +179,7 @@ const ENTRIES: FallbackEntry[] = [
   // ------------------------------------------------------------------ contact
   {
     keys: ['hire', 'work with', 'contact', 'reach', 'email', 'get in touch', 'available', 'consult', 'freelance', 'project', 'engage'],
-    answer: `The quickest way is the form at /work-with-me, which reaches me directly. You can also email ${profile.links.email} or message me on LinkedIn: ${profile.links.linkedin}\n\nFor full-time roles I'm looking at Founder's Office, Chief of Staff and strategy. For projects I take on GTM and growth strategy, pricing and conversion, unit economics and market sizing, cost reduction, and setting up KPIs, weekly reviews and SOPs.`,
+    answer: `The quickest way is the form at /work-with-me, which reaches me directly. You can also email ${profile.links.email} or message me on LinkedIn: ${profile.links.linkedin}\n\nFor full-time roles: ${rolesSentence}. For projects I take on ${offersSentence}.`,
   },
 ];
 

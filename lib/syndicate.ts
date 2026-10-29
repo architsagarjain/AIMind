@@ -1,5 +1,6 @@
 import { headingId, plain } from '@/content/articles';
 import { profile } from '@/content/profile';
+import { positioning } from '@/content/positioning';
 import { absolute } from '@/lib/seo';
 import type { Article, ArticleBlock } from '@/types';
 
@@ -68,7 +69,7 @@ export function articleMarkdown(a: Article): string {
       : []),
     '---',
     '',
-    `*I'm ${profile.name}. I write about how Indian businesses actually work, from the operator's seat. More at [architsagarjain.com/articles](${absolute('/articles')}), or find me on [LinkedIn](${profile.links.linkedin}).*`,
+    `*I'm ${profile.name}. ${positioning.writingLine} More at [architsagarjain.com/articles](${absolute('/articles')}), or find me on [LinkedIn](${profile.links.linkedin}).*`,
     '',
   ].join('\n');
 }

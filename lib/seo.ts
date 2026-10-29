@@ -3,7 +3,8 @@ import { pressByPriority } from '@/content/press';
 import { plain } from '@/content/articles';
 import { articleImage, articleImageSrc } from '@/content/articles/images';
 import { SITE_URL } from '@/lib/site';
-import { faq as servicesFaq, offers, positioning, roles } from '@/content/services';
+import { positioning } from '@/content/positioning';
+import { faq as servicesFaq, offers, roles } from '@/content/services';
 import type { Article } from '@/types';
 
 /**
@@ -32,10 +33,11 @@ export function personSchema() {
     disambiguatingDescription: positioning.headline,
     jobTitle: 'Head of Strategy & Growth',
     worksFor: { '@type': 'Organization', name: 'ZenCabs' },
-    hasOccupation: [
-      { '@type': 'Occupation', name: 'Go-to-market and growth strategist', occupationLocation: { '@type': 'Country', name: 'India' } },
-      { '@type': 'Occupation', name: 'Strategy consultant', occupationLocation: { '@type': 'Country', name: 'India' } },
-    ],
+    hasOccupation: positioning.occupations.map((name) => ({
+      '@type': 'Occupation',
+      name,
+      occupationLocation: { '@type': 'Country', name: 'India' },
+    })),
     address: { '@type': 'PostalAddress', addressLocality: 'Gurugram', addressCountry: 'IN' },
     nationality: { '@type': 'Country', name: 'India' },
     email: `mailto:${profile.links.email}`,
@@ -50,20 +52,7 @@ export function personSchema() {
       { '@type': 'CollegeOrUniversity', name: 'Masters’ Union' },
     ],
     homeLocation: { '@type': 'Place', name: profile.hometown },
-    knowsAbout: [
-      ...profile.interests,
-      'Go-to-market strategy',
-      'Growth strategy',
-      'Pricing strategy',
-      'Unit economics',
-      'Market sizing',
-      'Business transformation',
-      'Cost reduction',
-      'Risk consulting',
-      'Operating cadence and KPIs',
-      'Chief of Staff',
-      'Venture Capital',
-    ],
+    knowsAbout: [...new Set([...profile.interests, ...positioning.knowsAbout])],
     sameAs: [profile.links.linkedin],
     ...(press.length
       ? {

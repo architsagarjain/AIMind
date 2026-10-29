@@ -5,7 +5,7 @@ import { heroStats, profile } from '@/content/profile';
 import { projects } from '@/content/projects';
 import { education, experience, skills } from '@/content/resume';
 import { articlesByDate, plain } from '@/content/articles';
-import { positioning } from '@/content/services';
+import { positioning } from '@/content/positioning';
 import { JsonLd } from '@/components/seo/json-ld';
 import { Eyebrow, PageHeader } from '@/components/site/page-header';
 import { breadcrumbSchema, graph, profilePageSchema } from '@/lib/seo';
@@ -40,7 +40,7 @@ export default function AboutPage() {
             {profile.name}
           </h1>
           <p className="mt-4 text-lg font-semibold text-ink/90 sm:text-xl">
-            Go-to-market, growth and strategy · Founder’s Office · India
+            {positioning.subtitle}
           </p>
           <p className="mt-5 max-w-3xl text-[16px] leading-relaxed text-muted sm:text-[17px]">{positioning.summary}</p>
           <div className="mt-7 flex flex-wrap gap-3">
@@ -211,8 +211,7 @@ export default function AboutPage() {
         <section className="mt-16 rounded-3xl border border-hairline bg-surface p-6 sm:p-10">
           <h2 className="font-display text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">Hiring, or need a hand?</h2>
           <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
-            I’m looking at Founder’s Office, Chief of Staff and strategy roles, and I take on GTM, pricing and growth work
-            for Indian businesses.
+            {positioning.closing}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link

@@ -3,6 +3,7 @@ import { ExternalLink } from 'lucide-react';
 import { articlesByDate, plain } from '@/content/articles';
 import { CopyButton } from '@/components/articles/copy-button';
 import { articleUrl, linkedInPost } from '@/lib/syndicate';
+import { profileFields, setupPrompt, updatePrompt } from '@/lib/profile-kit';
 
 /**
  * A private tool page for cross-posting the articles. Each republished copy
@@ -11,7 +12,7 @@ import { articleUrl, linkedInPost } from '@/lib/syndicate';
  * site and kept out of search.
  */
 export const metadata: Metadata = {
-  title: 'Cross-posting kit',
+  title: 'Profile and cross-posting kit',
   robots: { index: false, follow: false },
 };
 
@@ -26,7 +27,30 @@ export default function SyndicatePage() {
   return (
     <div className="min-h-dvh bg-[var(--color-void)] px-4 py-10 text-ink sm:px-6">
       <div className="mx-auto max-w-3xl">
-        <h1 className="font-display text-3xl font-extrabold tracking-tight">Cross-posting kit</h1>
+        <h1 className="font-display text-3xl font-extrabold tracking-tight">Profile kit</h1>
+        <p className="mt-3 text-[15px] leading-relaxed text-muted">
+          What to paste into profiles on other sites, generated from <code className="text-ink">content/positioning.ts</code>.
+          When your positioning changes, edit that file, deploy, then copy the update prompt below into Claude in Chrome.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          <CopyButton label="Copy setup prompt (first time)" text={setupPrompt()} />
+          <CopyButton label="Copy update prompt (after a change)" text={updatePrompt()} />
+        </div>
+        <dl className="mt-6 divide-y divide-hairline rounded-2xl border border-hairline bg-surface">
+          {profileFields().map((f) => (
+            <div key={f.label} className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+              <div className="min-w-0">
+                <dt className="text-[11px] font-bold tracking-[0.14em] text-accent uppercase">{f.label}</dt>
+                <dd className="mt-1 text-[14px] leading-relaxed break-words text-ink/90">{f.value}</dd>
+              </div>
+              <div className="shrink-0">
+                <CopyButton label="Copy" text={f.value} />
+              </div>
+            </div>
+          ))}
+        </dl>
+
+        <h2 className="mt-14 font-display text-3xl font-extrabold tracking-tight">Cross-posting kit</h2>
         <p className="mt-3 text-[15px] leading-relaxed text-muted">
           Every copy below points back to the original on this site, so each platform you post on adds a backlink and none
           of them competes with the original in search.

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Inter_Tight } from 'next/font/google';
 import { profile } from '@/content/profile';
+import { positioning } from '@/content/positioning';
 import { SITE_URL_OBJECT } from '@/lib/site';
 import { JsonLd } from '@/components/seo/json-ld';
 import { graph, personSchema, websiteSchema } from '@/lib/seo';
@@ -24,11 +25,10 @@ export const metadata: Metadata = {
   title: {
     // Name and what he does first: this is the line search results and AI
     // assistants quote when they mention the site.
-    default: `${profile.name} | GTM, Growth & Strategy Operator in India`,
+    default: `${profile.name} | ${positioning.titleTag}`,
     template: `%s | ${profile.product}`,
   },
-  description:
-    'Archit Sagar Jain: GTM, growth and strategy operator in India. Ex-PwC, founding team at ZenCabs (launch to 30,000+ users and a ₹4 Cr run-rate). Open to roles and projects.',
+  description: positioning.metaDescription,
   applicationName: profile.product,
   authors: [{ name: profile.name }],
   creator: profile.name,
@@ -42,14 +42,8 @@ export const metadata: Metadata = {
     'PwC India',
     'Cairros Consulting',
     'Founder’s Office',
-    'Chief of Staff',
     'venture capital',
-    'GTM strategy India',
-    'go-to-market consultant India',
-    'growth strategy consultant',
-    'pricing strategy',
-    'unit economics',
-    'strategy consultant India',
+    ...positioning.keywords,
   ],
   openGraph: {
     type: 'website',

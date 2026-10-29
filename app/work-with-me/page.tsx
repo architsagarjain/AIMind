@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, Briefcase, Linkedin, Mail, Rocket } from 'lucide-react';
 import { profile } from '@/content/profile';
-import { faq, howItStarts, industries, offers, positioning, roles } from '@/content/services';
+import { positioning } from '@/content/positioning';
+import { faq, howItStarts, industries, offers, roles } from '@/content/services';
 import { JsonLd } from '@/components/seo/json-ld';
 import { IntentButton, LeadForm } from '@/components/site/lead-form';
 import { Eyebrow, PageHeader } from '@/components/site/page-header';
@@ -15,9 +16,8 @@ import { breadcrumbSchema, graph, servicesFaqSchema } from '@/lib/seo';
  * one read what Archit does, the proof, and how to reach him.
  */
 
-const TITLE = `Work with ${profile.name}: GTM, growth and strategy in India`;
-const DESCRIPTION =
-  "Hire Archit Sagar Jain for Founder's Office, Chief of Staff and strategy roles, or bring him in for GTM and growth strategy, pricing, unit economics and cost reduction. Ex-PwC India, founding team at ZenCabs.";
+const TITLE = `Work with ${profile.name}: ${positioning.headline}`;
+const DESCRIPTION = positioning.metaDescription;
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -52,7 +52,7 @@ export default function WorkWithMePage() {
             <a href="#roles" className="group rounded-2xl border border-hairline bg-surface p-5 transition-colors hover:border-accent/40">
               <Briefcase className="h-5 w-5 text-accent" />
               <p className="mt-3 text-[17px] font-bold text-ink">You’re hiring</p>
-              <p className="mt-1 text-[14px] leading-relaxed text-muted">Founder’s Office, Chief of Staff and strategy roles.</p>
+              <p className="mt-1 text-[14px] leading-relaxed text-muted">{positioning.hiringCard}</p>
               <span className="mt-3 inline-flex items-center gap-1 text-[13px] font-semibold text-accent">
                 Roles I’m open to <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </span>
@@ -60,7 +60,7 @@ export default function WorkWithMePage() {
             <a href="#consulting" className="group rounded-2xl border border-hairline bg-surface p-5 transition-colors hover:border-accent/40">
               <Rocket className="h-5 w-5 text-accent" />
               <p className="mt-3 text-[17px] font-bold text-ink">You need a problem solved</p>
-              <p className="mt-1 text-[14px] leading-relaxed text-muted">GTM, pricing, unit economics, cost and operating cadence.</p>
+              <p className="mt-1 text-[14px] leading-relaxed text-muted">{positioning.consultingCard}</p>
               <span className="mt-3 inline-flex items-center gap-1 text-[13px] font-semibold text-accent">
                 What I take on <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </span>
@@ -86,9 +86,7 @@ export default function WorkWithMePage() {
             ))}
           </ol>
           <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-muted">
-            I’ve been on both sides of the table. As a consultant I diagnose problems and get CXOs to agree. As an operator I
-            own the fix, from ride data and driver shifts to pricing and SOPs, and I carry it until the number moves. I’m
-            currently on the PGP in Technology &amp; Business Management at Masters’ Union.
+            {positioning.difference} {positioning.currently}
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <IntentButton
