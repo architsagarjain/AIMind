@@ -22,10 +22,13 @@ const interTight = Inter_Tight({
 export const metadata: Metadata = {
   metadataBase: SITE_URL_OBJECT,
   title: {
-    default: `${profile.product} | ${profile.tagline}`,
+    // Name and what he does first: this is the line search results and AI
+    // assistants quote when they mention the site.
+    default: `${profile.name} | GTM, Growth & Strategy Operator in India`,
     template: `%s | ${profile.product}`,
   },
-  description: profile.description,
+  description:
+    'Archit Sagar Jain: GTM, growth and strategy operator in India. Ex-PwC, founding team at ZenCabs (launch to 30,000+ users and a ₹4 Cr run-rate). Open to roles and projects.',
   applicationName: profile.product,
   authors: [{ name: profile.name }],
   creator: profile.name,
@@ -41,6 +44,12 @@ export const metadata: Metadata = {
     'Founder’s Office',
     'Chief of Staff',
     'venture capital',
+    'GTM strategy India',
+    'go-to-market consultant India',
+    'growth strategy consultant',
+    'pricing strategy',
+    'unit economics',
+    'strategy consultant India',
   ],
   openGraph: {
     type: 'website',

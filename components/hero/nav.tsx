@@ -7,11 +7,11 @@ import { profile } from '@/content/profile';
 import { cn } from '@/lib/utils';
 
 const LINKS = [
-  { id: 'home', label: 'Home' },
-  { id: 'about', label: 'About' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'resume', label: 'Resume' },
-  { id: 'contact', label: 'Contact' },
+  { id: 'home', label: 'Home', href: '/' },
+  { id: 'about', label: 'About', href: '/about' },
+  { id: 'projects', label: 'Projects', href: '/about#case-studies' },
+  { id: 'resume', label: 'Resume', href: '/resume' },
+  { id: 'contact', label: 'Work With Me', href: '/work-with-me' },
 ] as const;
 
 export type NavTarget = (typeof LINKS)[number]['id'];
@@ -53,10 +53,18 @@ export function Nav({
 
       {/* Primary links — hidden on small screens where the dock takes over */}
       <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
+        {/* Real links, so crawlers and AI assistants reach the profile pages
+            from the home page HTML. A plain click still opens the matching
+            window here; a modified click opens the page, as links should. */}
         {LINKS.map((link) => (
-          <button
+          <a
             key={link.id}
-            onClick={() => onNavigate(link.id)}
+            href={link.href}
+            onClick={(e) => {
+              if (link.id === 'contact' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+              e.preventDefault();
+              onNavigate(link.id);
+            }}
             className={cn(
               'relative text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors duration-300',
               active === link.id ? 'text-ink' : 'text-muted hover:text-ink',
@@ -69,7 +77,7 @@ export function Nav({
                 className="absolute -bottom-2 left-0 h-px w-full bg-accent shadow-[var(--shadow-glow-sm)]"
               />
             )}
-          </button>
+          </a>
         ))}
         {/* A real link rather than a window: the articles are their own pages,
             and an <a href> in the home page HTML is how crawlers find them. */}

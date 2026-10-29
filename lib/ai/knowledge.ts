@@ -1,6 +1,7 @@
 import { articles, plain } from '@/content/articles';
 import { pushAndAbsorb } from '@/content/articles/push-and-absorb';
 import { apps } from '@/content/apps';
+import { howItStarts, industries, offers, roles } from '@/content/services';
 import { pressByPriority } from '@/content/press';
 import { CONTEXT_LAST_VERIFIED, CONTEXT_SECTIONS } from '@/content/archit-context.generated';
 
@@ -59,9 +60,21 @@ export function buildKnowledgeBase(): string {
 
   sections.push(
     [
+      '## WORK WITH ME (roles I want, and consulting I take on; the form is at /work-with-me)',
+      `Roles, in order: ${roles.map((r) => r.title).join('; ')}.`,
+      'Consulting offers:',
+      ...offers.map((o) => `- ${o.title}: ${o.what} Done before: ${o.proof}`),
+      `How it starts: ${howItStarts}`,
+      `Industries: ${industries.join(', ')}.`,
+    ].join('\n'),
+  );
+
+  sections.push(
+    [
       '## MY SITE (where things are, for pointing visitors around)',
       '- The home page opens on a 3D intro; "Talk to Archit" or scrolling leads into ARCHIT.OS, a Mac-style desktop.',
       '- Its dock holds the apps: About, Projects (case studies), Timeline, Resume, Writing (articles), Ask Archit (this chat), then LinkedIn and Mail, which open my LinkedIn profile and an email to me.',
+      '- /about is my full profile with case studies. /work-with-me has the roles I want, my consulting offers and an enquiry form.',
       '- /articles is the writing hub; each article lives at /articles/<slug>. /resume is a printable resume.',
     ].join('\n'),
   );

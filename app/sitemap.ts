@@ -8,6 +8,8 @@ const latest = articles.map((a) => a.updated ?? a.published).sort().at(-1);
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: base, changeFrequency: 'monthly', priority: 1 },
+    { url: `${base}/about`, changeFrequency: 'monthly', priority: 0.95 },
+    { url: `${base}/work-with-me`, changeFrequency: 'monthly', priority: 0.95 },
     {
       url: `${base}/articles`,
       lastModified: latest,

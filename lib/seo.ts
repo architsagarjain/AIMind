@@ -3,6 +3,7 @@ import { pressByPriority } from '@/content/press';
 import { plain } from '@/content/articles';
 import { articleImage, articleImageSrc } from '@/content/articles/images';
 import { SITE_URL } from '@/lib/site';
+import { faq as servicesFaq, offers, positioning, roles } from '@/content/services';
 import type { Article } from '@/types';
 
 /**
@@ -27,15 +28,42 @@ export function personSchema() {
     name: profile.name,
     alternateName: `${profile.firstName} ${profile.lastName}`,
     url: SITE_URL,
-    description: profile.description,
+    description: positioning.summary,
+    disambiguatingDescription: positioning.headline,
     jobTitle: 'Head of Strategy & Growth',
     worksFor: { '@type': 'Organization', name: 'ZenCabs' },
+    hasOccupation: [
+      { '@type': 'Occupation', name: 'Go-to-market and growth strategist', occupationLocation: { '@type': 'Country', name: 'India' } },
+      { '@type': 'Occupation', name: 'Strategy consultant', occupationLocation: { '@type': 'Country', name: 'India' } },
+    ],
+    address: { '@type': 'PostalAddress', addressLocality: 'Gurugram', addressCountry: 'IN' },
+    nationality: { '@type': 'Country', name: 'India' },
+    email: `mailto:${profile.links.email}`,
+    seeks: roles.map((r) => ({ '@type': 'Demand', name: r.title })),
+    makesOffer: offers.map((o) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: o.title, description: o.what, areaServed: { '@type': 'Country', name: 'India' } },
+      url: absolute(`/work-with-me#${o.id}`),
+    })),
     alumniOf: [
       { '@type': 'CollegeOrUniversity', name: 'Symbiosis Centre for Management Studies' },
       { '@type': 'CollegeOrUniversity', name: 'Masters’ Union' },
     ],
     homeLocation: { '@type': 'Place', name: profile.hometown },
-    knowsAbout: [...profile.interests, 'Chief of Staff', 'Venture Capital'],
+    knowsAbout: [
+      ...profile.interests,
+      'Go-to-market strategy',
+      'Growth strategy',
+      'Pricing strategy',
+      'Unit economics',
+      'Market sizing',
+      'Business transformation',
+      'Cost reduction',
+      'Risk consulting',
+      'Operating cadence and KPIs',
+      'Chief of Staff',
+      'Venture Capital',
+    ],
     sameAs: [profile.links.linkedin],
     ...(press.length
       ? {
@@ -129,6 +157,30 @@ export function faqSchema(article: Article) {
       '@type': 'Question',
       name: f.q,
       acceptedAnswer: { '@type': 'Answer', text: plain(f.a) },
+    })),
+  };
+}
+
+/** The /about page: a profile page whose subject is the Person node. */
+export function profilePageSchema() {
+  return {
+    '@type': 'ProfilePage',
+    '@id': `${absolute('/about')}#page`,
+    url: absolute('/about'),
+    name: `${profile.name}: ${positioning.headline}`,
+    mainEntity: { '@id': PERSON_ID },
+    isPartOf: { '@id': WEBSITE_ID },
+  };
+}
+
+/** FAQ for /work-with-me, answered from content/services.ts. */
+export function servicesFaqSchema() {
+  return {
+    '@type': 'FAQPage',
+    mainEntity: servicesFaq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
     })),
   };
 }

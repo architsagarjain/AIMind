@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Copy, FileText, PenLine, Search } from 'lucide-react';
+import { ArrowRight, Briefcase, Copy, FileText, PenLine, Search } from 'lucide-react';
 import { profile } from '@/content/profile';
 import { projects } from '@/content/projects';
 import { useWindows, WINDOW_IDS } from '@/lib/store/windows';
@@ -86,6 +86,15 @@ export function Spotlight({ onClose, onExit }: { onClose: () => void; onExit: ()
         bare: true,
         keywords: 'linkedin connect profile social',
         run: go(() => window.open(profile.links.linkedin, '_blank', 'noopener')),
+      },
+      {
+        id: 'act-work',
+        group: 'Actions',
+        title: 'Work with me (roles and consulting)',
+        detail: 'architsagarjain.com/work-with-me',
+        icon: <Briefcase className="h-4 w-4 text-[#5e5ce6]" />,
+        keywords: 'work with me hire hiring consulting consultant project gtm growth pricing enquiry contact',
+        run: go(() => window.open('/work-with-me', '_blank', 'noopener')),
       },
       {
         id: 'act-resume',

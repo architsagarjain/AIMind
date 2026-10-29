@@ -190,6 +190,7 @@ export function MenuBar({ onExit }: { onExit: () => void }) {
           { label: 'Spotlight Search…', shortcut: '⌘K', run: () => setSpotlight(true) },
           { label: 'Read the Articles', run: () => (window.location.href = '/articles') },
           { label: 'Open Resume Page', run: () => (window.location.href = '/resume') },
+          { label: 'Work With Me…', run: () => (window.location.href = '/work-with-me') },
           'separator',
           { label: 'Copy Email Address', run: () => void copy(profile.links.email, 'Email address') },
           { label: 'Connect on LinkedIn', run: () => window.open(profile.links.linkedin, '_blank', 'noopener') },

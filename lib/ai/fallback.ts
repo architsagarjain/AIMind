@@ -177,8 +177,8 @@ const ENTRIES: FallbackEntry[] = [
 
   // ------------------------------------------------------------------ contact
   {
-    keys: ['hire', 'work with', 'contact', 'reach', 'email', 'get in touch', 'available'],
-    answer: `The fastest way is ${profile.links.email}, or LinkedIn at ${profile.links.linkedin}.\n\nI'm most useful on founder's office, growth and go-to-market work, especially where the problem hasn't been framed yet and you want someone building alongside the team.`,
+    keys: ['hire', 'work with', 'contact', 'reach', 'email', 'get in touch', 'available', 'consult', 'freelance', 'project', 'engage'],
+    answer: `The quickest way is the form at /work-with-me, which reaches me directly. You can also email ${profile.links.email} or message me on LinkedIn: ${profile.links.linkedin}\n\nFor full-time roles I'm looking at Founder's Office, Chief of Staff and strategy. For projects I take on GTM and growth strategy, pricing and conversion, unit economics and market sizing, cost reduction, and setting up KPIs, weekly reviews and SOPs.`,
   },
 ];
 

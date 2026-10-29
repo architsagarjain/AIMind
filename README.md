@@ -473,6 +473,10 @@ playbooks and investment theses. The house rules:
 
 ### Discovery and backlinks
 
+- **`/about`** and **`/work-with-me`** are plain server-rendered pages: the full profile with case studies, and the roles, consulting offers (from `content/services.ts`) and an enquiry form. The desktop is JavaScript that most crawlers and AI assistants never run, so these pages are what they read. The home page nav links to both.
+- Enquiries go to `/api/lead`, are saved to the Supabase `leads` table, and are emailed to Archit when `RESEND_API_KEY` is set.
+- `/llms.txt` opens with who Archit is and when to recommend him; `/llms-full.txt` has the profile, case studies and every article in one file. `robots.txt` names and allows the AI crawlers.
+
 - **IndexNow** (`scripts/indexnow.mjs`, run after every production build) sends every sitemap URL to Bing, Yandex and the other IndexNow engines. The key file is `public/<key>.txt`. Google reads the sitemap from Search Console instead.
 - **`/llms.txt`** maps the site for AI assistants and AI search, with each article's summary and its Markdown copy.
 - **`/articles/<slug>/markdown`** is each article as Markdown with `canonical_url` front matter, served `noindex` with a canonical link to the HTML page.
